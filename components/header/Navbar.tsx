@@ -21,10 +21,10 @@ export default function Navbar() {
               </div>
             </li>
             <li>
-              <Link href="/login">Login</Link>
+              <Link href="/user/login">Login</Link>
             </li>
             <li>
-              <Link href="/register">Sign Up Free</Link>
+              <Link href="/user/register">Sign Up Free</Link>
             </li>
           </ul>
         </div>

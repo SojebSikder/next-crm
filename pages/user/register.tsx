@@ -1,8 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import Footer from "../components/footer/Footer";
-import Header from "../components/header/Header";
-import Meta from "../components/header/Meta";
+import Meta from "../../components/header/Meta";
 
 export default function Register() {
   return (
@@ -18,10 +16,7 @@ export default function Register() {
         >
           <div className="text-center font-bold">Whatsapp crm</div>
           <div className="text-center">
-            Already have an account?{" "}
-            <Link className="text-[var(--primary-color)]" href={"/login"}>
-              Sign in
-            </Link>
+            Already have an account? <Link href={"/user/login"}>Sign in</Link>
           </div>
           <div className="m-4 btn-primary">Continue with google</div>
           <div className="m-4">OR</div>
