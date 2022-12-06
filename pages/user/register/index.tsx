@@ -1,8 +1,8 @@
 import Link from "next/link";
 import React from "react";
-import Meta from "../../components/header/Meta";
+import Meta from "../../../components/header/Meta";
 
-export default function Login() {
+export default function Register() {
   return (
     <div>
       <Meta />
@@ -16,21 +16,20 @@ export default function Login() {
         >
           <div className="text-center font-bold">Whatsapp crm</div>
           <div className="text-center">
-            Don{"'"}t have an account?{" "}
-            <Link href={"/user/register"}>Sign up for free</Link>
+            Already have an account? <Link href={"/user/login"}>Sign in</Link>
           </div>
           <div className="m-4 btn-primary">Continue with google</div>
           <div className="m-4">OR</div>
           <div className="m-4">
-            <input className="input" type="email" placeholder="Email address" />
-          </div>
-          <div className="m-4">
-            <input className="input" type="password" placeholder="Password" />
+            <input className="input" type="email" placeholder="Work Email" />
           </div>
 
-          <div className="m-4 btn-primary">Sign In</div>
+          <div className="m-4 btn-primary">Get Started</div>
           <div className="m-4">
-            <Link href={"/user/password/forget"}>Forget password</Link>
+            <span>
+              By signing up you agree to our terms of service and privacy
+              policy.
+            </span>
           </div>
         </div>
       </main>
