@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import Meta from "../../../components/header/Meta";
+import { Logo } from "../../../components/reusable/Logo";
 
 export default function Login() {
   return (
@@ -14,7 +15,7 @@ export default function Login() {
           }}
           className="self-center"
         >
-          <div className="text-center font-bold">Whatsapp crm</div>
+          <Logo />
           <div className="text-center">
             Don{"'"}t have an account?{" "}
             <Link href={"/user/register"}>Sign up for free</Link>

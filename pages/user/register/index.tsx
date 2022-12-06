@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import Meta from "../../../components/header/Meta";
+import { Logo } from "../../../components/reusable/Logo";
 
 export default function Register() {
   return (
@@ -14,13 +15,13 @@ export default function Register() {
           }}
           className="self-center"
         >
-          <div className="text-center font-bold">Whatsapp crm</div>
+          <Logo />
           <div className="text-center">
             Already have an account? <Link href={"/user/login"}>Sign in</Link>
           </div>
           <div className="m-4 btn-primary">Continue with google</div>
           <div className="m-4">OR</div>
-          <div>
+          <div className="mb-10">
             <div className="flex flex-row justify-center">
               <div className="m-4 w-full">
                 <input className="input" type="text" placeholder="First Name" />
