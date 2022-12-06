@@ -11,12 +11,6 @@ export default function Navbar() {
           <li>
             <Link href="/pricing">Pricing</Link>
           </li>
-          <li>
-            <Link href="/login">Login</Link>
-          </li>
-          <li>
-            <Link href="/register">Sign Up Free</Link>
-          </li>
           <li className="dropdown">
             <a className="dropbtn">Resources</a>
             <div className="dropdown-content">
@@ -24,6 +18,12 @@ export default function Navbar() {
               <Link href="#">Link 2</Link>
               <Link href="#">Link 3</Link>
             </div>
+          </li>
+          <li>
+            <Link href="/login">Login</Link>
+          </li>
+          <li>
+            <Link href="/register">Sign Up Free</Link>
           </li>
         </ul>
       </nav>
