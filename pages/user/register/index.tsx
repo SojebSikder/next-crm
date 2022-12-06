@@ -20,8 +20,22 @@ export default function Register() {
           </div>
           <div className="m-4 btn-primary">Continue with google</div>
           <div className="m-4">OR</div>
-          <div className="m-4">
-            <input className="input" type="email" placeholder="Work Email" />
+          <div>
+            <div className="flex flex-row justify-center">
+              <div className="m-4 w-full">
+                <input className="input" type="text" placeholder="First Name" />
+              </div>
+              <div className="m-4 w-full">
+                <input className="input" type="text" placeholder="Last Name" />
+              </div>
+            </div>
+
+            <div className="m-4">
+              <input className="input" type="email" placeholder="Work Email" />
+            </div>
+            <div className="m-4">
+              <input className="input" type="password" placeholder="Password" />
+            </div>
           </div>
 
           <div className="m-4 btn-primary">Get Started</div>
