@@ -2,20 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-  .btn-primary {
-    @apply cursor-pointer text-center py-2 px-4 bg-blue-500 text-white font-semibold 
-    rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 
-    focus:ring-blue-400 focus:ring-opacity-75;
-  }
-  .input {
-    @apply focus:ring-2 focus:ring-blue-500 focus:outline-none 
-    appearance-none w-full text-sm leading-6 text-slate-900
-     placeholder-slate-400 rounded-md py-2 pl-2 ring-1 
-     ring-slate-200 shadow-sm;
-  }
-}
-
 :root {
   --primary-color: #5b9cce;
   --primary-hover-color: #0b4f84;
@@ -100,4 +86,46 @@ a:hover {
 
 .navbar-container .dropdown:hover .dropdown-content {
   display: block;
+}
+
+@layer components {
+  /* form control */
+  .btn-primary {
+    @apply cursor-pointer text-center py-2 px-4 bg-blue-500 text-white font-semibold 
+    rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 
+    focus:ring-blue-400 focus:ring-opacity-75;
+  }
+  .input {
+    @apply focus:ring-2 focus:ring-blue-500 focus:outline-none 
+    appearance-none w-full text-sm leading-6 text-slate-900
+     placeholder-slate-400 rounded-md py-2 pl-2 ring-1 
+     ring-slate-200 shadow-sm;
+  }
+  /* end form control */
+
+  /* sidebar */
+  .sidebar-icon {
+    @apply relative flex items-center justify-center 
+    h-12 w-12 mt-2 mb-2 mx-auto  
+  bg-white hover:bg-[var(--primary-hover-color)] dark:bg-gray-800 
+  text-black hover:text-white
+    /* hover:rounded-xl  */
+    rounded-3xl
+    transition-all duration-300 ease-linear
+    cursor-pointer shadow-lg;
+  }
+
+  .sidebar-tooltip {
+    @apply absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md
+    text-white bg-gray-900 
+    text-xs font-bold 
+    transition-all duration-100 scale-0 origin-left;
+  }
+
+  .sidebar-hr {
+    @apply bg-gray-200 dark:bg-gray-800 
+    border border-gray-200 dark:border-gray-800 rounded-full
+    mx-2;
+  }
+  /* end sidebar */
 }
