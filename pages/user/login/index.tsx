@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import Meta from "../../../components/header/Meta";
 import { Logo } from "../../../components/reusable/Logo";
 import { CookieHelper } from "../../../helper/cookie.helper";
@@ -12,6 +12,7 @@ export default function Login() {
   const [message, setMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   // handle login
   const handlelogin = async (e: any) => {
@@ -43,7 +44,8 @@ export default function Login() {
         setLoading(false);
         const userDetails = await getUser();
         const workspace_id = userDetails.WorkspaceUser[0].Workspace.id;
-        redirect(`/space/${workspace_id}/dashboard`);
+
+        router.push(`/space/${workspace_id}/dashboard`);
       }
     } catch (error: any) {
       // return custom error message from API if any
