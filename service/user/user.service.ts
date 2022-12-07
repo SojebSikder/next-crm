@@ -1,3 +1,4 @@
+import { CookieHelper } from "../../helper/cookie.helper";
 import { Fetch } from "../../util/Fetch";
 
 const config = {
@@ -13,5 +14,19 @@ export const UserService = {
       password: password,
     };
     return await Fetch.post("/auth/login", data, config);
+  },
+
+  // get user details
+  getUserDetails: async (context = null) => {
+    const userToken = CookieHelper.get({ key: "token", context });
+
+    const _config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + userToken,
+      },
+    };
+
+    return await Fetch.get(`/user/me`, _config);
   },
 };

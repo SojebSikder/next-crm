@@ -6,6 +6,7 @@ import { Logo } from "../../../components/reusable/Logo";
 import { CookieHelper } from "../../../helper/cookie.helper";
 import { UserService } from "../../../service/user/user.service";
 import { Alert } from "../../../components/alert/Alert";
+import { getUser } from "../../../hooks/useUser";
 
 export default function Login() {
   const [message, setMessage] = useState(null);
@@ -28,18 +29,21 @@ export default function Login() {
     setLoading(true);
     try {
       const login = await UserService.login(data);
-      if (login.data.error) {
-        setErrorMessage(login.data.message);
+      const resLoginData = login.data;
+      if (resLoginData.error) {
+        setErrorMessage(resLoginData.message);
         setLoading(false);
-      } else if (login.data.authorization) {
+      } else if (resLoginData.authorization) {
         // set cookie
         CookieHelper.set({
           key: "token",
-          value: login.data.authorization.token,
+          value: resLoginData.authorization.token,
         });
-        setMessage(login.data.message);
+        setMessage(resLoginData.message);
         setLoading(false);
-        redirect("/app/space/[id]/dashboard");
+        const userDetails = await getUser();
+        const workspace_id = userDetails.WorkspaceUser[0].Workspace.id;
+        redirect(`/app/space/${workspace_id}/dashboard`);
       }
     } catch (error: any) {
       // return custom error message from API if any
@@ -78,14 +82,22 @@ export default function Login() {
               <input
                 className="input"
                 type="email"
+                name="email"
                 placeholder="Email address"
               />
             </div>
             <div className="m-4">
-              <input className="input" type="password" placeholder="Password" />
+              <input
+                className="input"
+                type="password"
+                name="password"
+                placeholder="Password"
+              />
             </div>
 
-            <div className="m-4 btn-primary">Sign In</div>
+            <button type="submit" className="m-4 btn-primary w-full">
+              Sign In
+            </button>
           </form>
 
           <div className="m-4">
