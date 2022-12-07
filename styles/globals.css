@@ -107,7 +107,7 @@ a:hover {
   .sidebar-icon {
     @apply relative flex items-center justify-center 
     h-12 w-12 mt-2 mb-2 mx-auto  
-  bg-white hover:bg-[var(--primary-hover-color)] dark:bg-gray-800 
+  bg-[#ededed] hover:bg-[var(--primary-hover-color)] dark:bg-gray-800 
   text-black hover:text-white
     /* hover:rounded-xl  */
     rounded-3xl
