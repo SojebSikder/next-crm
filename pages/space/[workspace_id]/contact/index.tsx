@@ -27,6 +27,8 @@ export default function Contact({ workspace_id }: { workspace_id: string }) {
       <Sidebar workspace_id={workspace_id} />
       <main className="mt-5 ml-[80px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
+          <button className="m-4 btn-primary">Add Contact</button>
+          <button className="m-4 btn-primary">Import Contacts</button>
           <table className="overflow-x-scroll w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
