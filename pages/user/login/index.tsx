@@ -43,7 +43,7 @@ export default function Login() {
         setLoading(false);
         const userDetails = await getUser();
         const workspace_id = userDetails.WorkspaceUser[0].Workspace.id;
-        redirect(`/app/space/${workspace_id}/dashboard`);
+        redirect(`/space/${workspace_id}/dashboard`);
       }
     } catch (error: any) {
       // return custom error message from API if any
