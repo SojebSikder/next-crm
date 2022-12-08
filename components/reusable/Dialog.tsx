@@ -22,7 +22,7 @@ export default function Dialog({
         tabIndex={-1}
         className={`${
           show == false && "hidden"
-        } overflow-y-auto overflow-x-hidden fixed z-50 inset-0 h-modal h-full flex justify-center items-center`}
+        } bg-[#000000b5] overflow-y-auto overflow-x-hidden fixed z-50 inset-0 h-modal h-full flex justify-center items-center`}
       >
         <div className="relative p-4 w-full max-w-md h-auto">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">

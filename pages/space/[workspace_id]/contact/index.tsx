@@ -26,6 +26,9 @@ export default function Contact({ workspace_id }: { workspace_id: string }) {
   const handleContactDialog = () => {
     setShowDialog(true);
   };
+
+  const handleContact = () => {};
+
   return (
     <div className="flex">
       <Meta title={`Contacts - ${AppConfig().app.name}`} />
@@ -33,7 +36,29 @@ export default function Contact({ workspace_id }: { workspace_id: string }) {
       <main className="mt-5 ml-[80px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <Dialog handle={setShowDialog} show={showDialog}>
-            login now
+          <div className="m-4 font-semibold text-xl">New Contact</div>
+            <form onSubmit={handleContact} method="post">
+              <div className="m-4">
+                <input
+                  className="input"
+                  type="email"
+                  name="email"
+                  placeholder="Email address"
+                />
+              </div>
+              <div className="m-4">
+                <input
+                  className="input"
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                />
+              </div>
+
+              <button type="submit" className="m-4 btn-primary w-full">
+                Sign In
+              </button>
+            </form>
           </Dialog>
           <button onClick={handleContactDialog} className="m-4 btn-primary">
             Add Contact
