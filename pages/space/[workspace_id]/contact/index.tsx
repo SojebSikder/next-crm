@@ -65,6 +65,7 @@ export default function Contact({
     const email = e.target.email.value;
     const phone_number = e.target.phone_number.value;
     const country_id = e.target.country_id.value;
+    const assignee_id = e.target.assignee_id.value;
 
     const data = {
       fname: fname,
@@ -72,10 +73,11 @@ export default function Contact({
       email: email,
       phone_number: phone_number,
       country_id: country_id,
+      assignee_id: assignee_id,
     };
     try {
       const contactService = await ContactService.create(workspace_id, data);
-      router.refresh();
+      // router.refresh();
     } catch (error: any) {
       // return custom error message from API if any
       if (error.response && error.response.data.message) {
@@ -156,6 +158,7 @@ export default function Contact({
                 </div>
                 <div className="m-4 w-full">
                   <select className="input" name="assignee_id">
+                    <option value={0}>Unassign</option>
                     {workspace_users.map((user: any) => {
                       return (
                         <option key={user.user.id} value={user.user.id}>

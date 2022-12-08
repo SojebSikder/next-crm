@@ -29,12 +29,14 @@ export const ContactService = {
       email,
       phone_number,
       country_id,
+      assignee_id,
     }: {
       fname: string;
       lname: string;
       email: string;
       phone_number: string;
-      country_id: number;
+      country_id: string;
+      assignee_id: string;
     },
     context: any = null
   ) => {
@@ -52,6 +54,7 @@ export const ContactService = {
       email: email,
       phone_number: phone_number,
       country_id: country_id,
+      assignee_id: assignee_id,
     };
 
     return await Fetch.post(`/space/${workspace_id}/contact`, data, _config);
