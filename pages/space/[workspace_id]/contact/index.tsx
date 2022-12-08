@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import Meta from "../../../../components/header/Meta";
 import Dialog from "../../../../components/reusable/Dialog";
 import Sidebar from "../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../config/app.config";
+import { WorkspaceUserService } from "../../../../service/space/WorkspaceUserService";
 
-export const getServerSideProps = (context: {
+export const getServerSideProps = async (context: {
   query: any;
   req?: any;
   res?: any;
@@ -14,20 +16,37 @@ export const getServerSideProps = (context: {
   const { req, query, res, asPath, pathname } = context;
 
   const workspace_id = query.workspace_id;
+  const workspace_users_res = await WorkspaceUserService.findAll(
+    Number(workspace_id),
+    context
+  );
+  const workspace_users = workspace_users_res.data.data;
+
   return {
     props: {
       workspace_id: workspace_id,
+      workspace_users: workspace_users,
     },
   };
 };
 
-export default function Contact({ workspace_id }: { workspace_id: string }) {
+export default function Contact({
+  workspace_id,
+  workspace_users,
+}: {
+  workspace_id: string;
+  workspace_users: [];
+}) {
+  const router = useRouter();
   const [showDialog, setShowDialog] = useState(false);
   const handleContactDialog = () => {
     setShowDialog(true);
   };
 
-  const handleContact = () => {};
+  const handleContact = (e: any) => {
+    e.preventDefault();
+    router.refresh();
+  };
 
   return (
     <div className="flex">
@@ -48,6 +67,7 @@ export default function Contact({ workspace_id }: { workspace_id: string }) {
                   <input
                     className="input"
                     type="text"
+                    name="fname"
                     placeholder="Add First Name"
                   />
                 </div>
@@ -55,6 +75,7 @@ export default function Contact({ workspace_id }: { workspace_id: string }) {
                   <input
                     className="input"
                     type="text"
+                    name="lname"
                     placeholder="Add Last Name"
                   />
                 </div>
@@ -65,6 +86,7 @@ export default function Contact({ workspace_id }: { workspace_id: string }) {
                   <input
                     className="input"
                     type="tel"
+                    name="phone_number"
                     placeholder="Phone Number"
                   />
                 </div>
@@ -72,6 +94,7 @@ export default function Contact({ workspace_id }: { workspace_id: string }) {
                   <input
                     className="input"
                     type="email"
+                    name="email"
                     placeholder="Add email address"
                   />
                 </div>
@@ -79,18 +102,16 @@ export default function Contact({ workspace_id }: { workspace_id: string }) {
 
               <div className="flex flex-row justify-center">
                 <div className="m-4 w-full">
-                  <input
-                    className="input"
-                    type="text"
-                    placeholder="First Name"
-                  />
-                </div>
-                <div className="m-4 w-full">
-                  <input
-                    className="input"
-                    type="text"
-                    placeholder="Last Name"
-                  />
+                  <select className="input" name="assignee_id">
+                    {workspace_users.map((user: any) => {
+                      return (
+                        <option key={user.user.id} value={user.user.id}>
+                          {user.user.fname} {user.user.lname} -{" "}
+                          {user.user.email}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
               </div>
               <div className="m-4">
