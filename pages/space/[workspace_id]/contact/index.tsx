@@ -36,28 +36,68 @@ export default function Contact({ workspace_id }: { workspace_id: string }) {
       <main className="mt-5 ml-[80px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <Dialog handle={setShowDialog} show={showDialog}>
-          <div className="m-4 font-semibold text-xl">New Contact</div>
+            <div className="m-4 text-left font-semibold text-xl">
+              New Contact
+            </div>
+            <div className="m-4 text-left">
+              Fill up the required information to create a contact.
+            </div>
             <form onSubmit={handleContact} method="post">
-              <div className="m-4">
-                <input
-                  className="input"
-                  type="email"
-                  name="email"
-                  placeholder="Email address"
-                />
-              </div>
-              <div className="m-4">
-                <input
-                  className="input"
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                />
+              <div className="flex flex-row justify-center">
+                <div className="m-4 w-full">
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="Add First Name"
+                  />
+                </div>
+                <div className="m-4 w-full">
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="Add Last Name"
+                  />
+                </div>
               </div>
 
-              <button type="submit" className="m-4 btn-primary w-full">
-                Sign In
-              </button>
+              <div className="flex flex-row justify-center">
+                <div className="m-4 w-full">
+                  <input
+                    className="input"
+                    type="tel"
+                    placeholder="Phone Number"
+                  />
+                </div>
+                <div className="m-4 w-full">
+                  <input
+                    className="input"
+                    type="email"
+                    placeholder="Add email address"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-row justify-center">
+                <div className="m-4 w-full">
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="First Name"
+                  />
+                </div>
+                <div className="m-4 w-full">
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="Last Name"
+                  />
+                </div>
+              </div>
+              <div className="m-4">
+                <button type="submit" className="btn-primary w-full">
+                  Add
+                </button>
+              </div>
             </form>
           </Dialog>
           <button onClick={handleContactDialog} className="m-4 btn-primary">

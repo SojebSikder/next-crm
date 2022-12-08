@@ -8,6 +8,22 @@ import { UserService } from "../../../service/user/user.service";
 import { Alert } from "../../../components/alert/Alert";
 import { getUser } from "../../../hooks/useUser";
 
+export const getServerSideProps = async (context: any) => {
+  const userDetails = await getUser(context);
+
+  if (userDetails) {
+    const workspace_id = userDetails.workspace_users[0].workspace.id;
+    return {
+      redirect: {
+        destination: `/space/${workspace_id}/dashboard`,
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
+};
 export default function Login() {
   const [message, setMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
