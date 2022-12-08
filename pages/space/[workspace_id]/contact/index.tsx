@@ -4,6 +4,7 @@ import Meta from "../../../../components/header/Meta";
 import Dialog from "../../../../components/reusable/Dialog";
 import Sidebar from "../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../config/app.config";
+import { CountryService } from "../../../../service/country/country.service";
 import { ContactService } from "../../../../service/space/ContactService";
 import { WorkspaceUserService } from "../../../../service/space/WorkspaceUserService";
 
@@ -18,22 +19,24 @@ export const getServerSideProps = async (context: {
   const workspace_id = query.workspace_id;
 
   // contact
-  const res_contacts = await ContactService.findAll(
-    Number(workspace_id),
-    context
-  );
+  const res_contacts = await ContactService.findAll(workspace_id, context);
   const contacts = res_contacts.data.data;
   // workspace user
   const res_workspace_users = await WorkspaceUserService.findAll(
-    Number(workspace_id),
+    workspace_id,
     context
   );
   const workspace_users = res_workspace_users.data.data;
+  // country
+  const res_countries = await CountryService.findAll(context);
+  const countries = res_countries.data.data;
 
   return {
     props: {
       workspace_id: workspace_id,
       workspace_users: workspace_users,
+      contacts: contacts,
+      countries: countries,
     },
   };
 };
@@ -41,9 +44,13 @@ export const getServerSideProps = async (context: {
 export default function Contact({
   workspace_id,
   workspace_users,
+  contacts,
+  countries,
 }: {
   workspace_id: string;
+  contacts: [];
   workspace_users: [];
+  countries: [];
 }) {
   const router = useRouter();
   const [showDialog, setShowDialog] = useState(false);
@@ -51,9 +58,36 @@ export default function Contact({
     setShowDialog(true);
   };
 
-  const handleContact = (e: any) => {
+  const handleContact = async (e: any) => {
     e.preventDefault();
-    router.refresh();
+    const fname = e.target.fname.value;
+    const lname = e.target.lname.value;
+    const email = e.target.email.value;
+    const phone_number = e.target.phone_number.value;
+    const country_id = e.target.country_id.value;
+
+    const data = {
+      fname: fname,
+      lname: lname,
+      email: email,
+      phone_number: phone_number,
+      country_id: country_id,
+    };
+    try {
+      const contactService = await ContactService.create(workspace_id, data);
+      router.refresh();
+    } catch (error: any) {
+      // return custom error message from API if any
+      if (error.response && error.response.data.message) {
+        // setErrorMessage(error.response.data.message);
+        // setLoading(false);
+        console.log(error.response.data.message);
+      } else {
+        // setErrorMessage(error.message);
+        // setLoading(false);
+        console.log(error.message);
+      }
+    }
   };
 
   return (
@@ -110,12 +144,22 @@ export default function Contact({
 
               <div className="flex flex-row justify-center">
                 <div className="m-4 w-full">
+                  <select className="input" name="country_id">
+                    {countries.map((country: any) => {
+                      return (
+                        <option key={country.id} value={country.id}>
+                          {country.name} {country.dial_code}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <div className="m-4 w-full">
                   <select className="input" name="assignee_id">
                     {workspace_users.map((user: any) => {
                       return (
                         <option key={user.user.id} value={user.user.id}>
-                          {user.user.fname} {user.user.lname} -{" "}
-                          {user.user.email}
+                          {user.user.fname} {user.user.lname}
                         </option>
                       );
                     })}
@@ -176,7 +220,7 @@ export default function Contact({
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              {/* <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th
                   scope="row"
                   className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -202,7 +246,41 @@ export default function Contact({
                     Edit
                   </a>
                 </td>
-              </tr>
+              </tr> */}
+              {contacts.map((contact: any) => {
+                return (
+                  <tr
+                    key={contact.id}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  >
+                    <th
+                      scope="row"
+                      className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    >
+                      Apple MacBook Pro 17{'"'}
+                    </th>
+                    <td className="py-4 px-6">sojebsikder</td>
+                    <td className="py-4 px-6">Whatsapp</td>
+                    <td className="py-4 px-6">sojebsikder@gmail.com</td>
+                    <td className="py-4 px-6">8801833962595</td>
+                    <td className="py-4 px-6">BD</td>
+                    <td className="py-4 px-6">Bangla</td>
+                    <td className="py-4 px-6">Open</td>
+                    <td className="py-4 px-6">N/A</td>
+                    <td className="py-4 px-6">Dec 06, 2022 10:31 AM</td>
+                    <td className="py-4 px-6">Dec 06, 2022 10:31 AM</td>
+
+                    <td className="py-4 px-6 text-right">
+                      <a
+                        href="#"
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Edit
+                      </a>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
