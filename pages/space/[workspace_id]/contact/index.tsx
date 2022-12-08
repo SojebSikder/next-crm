@@ -4,6 +4,7 @@ import Meta from "../../../../components/header/Meta";
 import Dialog from "../../../../components/reusable/Dialog";
 import Sidebar from "../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../config/app.config";
+import { ContactService } from "../../../../service/space/ContactService";
 import { WorkspaceUserService } from "../../../../service/space/WorkspaceUserService";
 
 export const getServerSideProps = async (context: {
@@ -14,13 +15,20 @@ export const getServerSideProps = async (context: {
   pathname?: any;
 }) => {
   const { req, query, res, asPath, pathname } = context;
-
   const workspace_id = query.workspace_id;
-  const workspace_users_res = await WorkspaceUserService.findAll(
+
+  // contact
+  const res_contacts = await ContactService.findAll(
     Number(workspace_id),
     context
   );
-  const workspace_users = workspace_users_res.data.data;
+  const contacts = res_contacts.data.data;
+  // workspace user
+  const res_workspace_users = await WorkspaceUserService.findAll(
+    Number(workspace_id),
+    context
+  );
+  const workspace_users = res_workspace_users.data.data;
 
   return {
     props: {
