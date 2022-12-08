@@ -43,7 +43,7 @@ export default function Login() {
         setMessage(resLoginData.message);
         setLoading(false);
         const userDetails = await getUser();
-        const workspace_id = userDetails.WorkspaceUser[0].Workspace.id;
+        const workspace_id = userDetails.workspace_users[0].workspace.id;
 
         router.push(`/space/${workspace_id}/dashboard`);
       }
