@@ -16,6 +16,26 @@ export const UserService = {
     return await Fetch.post("/auth/login", data, config);
   },
 
+  register: async ({
+    fname,
+    lname,
+    email,
+    password,
+  }: {
+    fname: string;
+    lname: string;
+    email: string;
+    password: string;
+  }) => {
+    const data = {
+      fname: fname,
+      lname: lname,
+      email: email,
+      password: password,
+    };
+    return await Fetch.post("/auth/register", data, config);
+  },
+
   // get user details
   getUserDetails: async (context = null) => {
     const userToken = CookieHelper.get({ key: "token", context });
