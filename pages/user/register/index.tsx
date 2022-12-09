@@ -53,7 +53,7 @@ export default function Register() {
       if (resRegisterData.error) {
         setErrorMessage(resRegisterData.message);
         setLoading(false);
-      } else if (resRegisterData.authorization) {
+      } else {
         setMessage(resRegisterData.message);
         setLoading(false);
 
