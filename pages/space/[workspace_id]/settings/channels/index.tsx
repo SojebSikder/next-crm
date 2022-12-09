@@ -33,10 +33,10 @@ export const getServerSideProps = async (context: {
 };
 export default function Index({
   workspace_id,
-  workspaceChannels,
+  workspace_channels,
 }: {
   workspace_id: string;
-  workspaceChannels: [];
+  workspace_channels: [];
 }) {
   const [showDialog, setShowDialog] = useState(false);
   const handleChannelDialog = () => {
@@ -80,6 +80,15 @@ export default function Index({
           <button onClick={handleChannelDialog} className="m-4 btn-primary">
             Add Channel
           </button>
+          {workspace_channels.map((channel: any) => {
+            return (
+              <div key={channel.id} className="m-4">
+                <div>{channel.channel_type}</div>
+                <div>webhook url: {channel.webhook_url}</div>
+                <div>verify token: {channel.verify_token}</div>
+              </div>
+            );
+          })}
         </div>
       </main>
     </div>
