@@ -16,7 +16,11 @@ export default function Sidebar({ workspace_id }: { workspace_id: string }) {
         icon={<BsPerson size="32" />}
       />
       {/* <Divider /> */}
-      <SideBarItem text="Settings" icon={<BsGearFill size="22" />} />
+      <SideBarItem
+        href={`/space/${workspace_id}/settings/channels`}
+        text="Settings"
+        icon={<BsGearFill size="22" />}
+      />
     </div>
   );
 }
