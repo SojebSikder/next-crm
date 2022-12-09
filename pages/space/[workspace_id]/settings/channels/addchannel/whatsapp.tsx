@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import Meta from "../../../../../../components/header/Meta";
-import Dialog from "../../../../../../components/reusable/Dialog";
 import SettingSidebar from "../../../../../../components/sidebar/SettingSidebar";
 import Sidebar from "../../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../../config/app.config";
-import CustomImage from "../../../../../../components/reusable/CustomImage";
-import Link from "next/link";
 
 export const getServerSideProps = async (context: {
   query: any;

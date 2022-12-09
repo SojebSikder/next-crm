@@ -6,6 +6,7 @@ import Sidebar from "../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../config/app.config";
 import CustomImage from "../../../../../components/reusable/CustomImage";
 import Link from "next/link";
+import { WorkspaceChannelService } from "../../../../../service/space/WorkspaceChannelService";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -16,6 +17,12 @@ export const getServerSideProps = async (context: {
 }) => {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
+
+  const res_workspaceChannels = await WorkspaceChannelService.findAll(
+    workspace_id
+  );
+  const workspaceChannels = res_workspaceChannels.data.data;
+  console.log(workspaceChannels);
 
   return {
     props: {
