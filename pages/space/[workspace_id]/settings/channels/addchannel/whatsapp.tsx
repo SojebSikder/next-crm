@@ -39,9 +39,22 @@ export default function Index({ workspace_id }: { workspace_id: string }) {
       <SettingSidebar workspace_id={workspace_id} />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
-          <button onClick={handleChannelDialog} className="m-4 btn-primary">
-            Submit
-          </button>
+          <div className="m-4">
+            <h2 className="font-bold text-[1.5rem]">WhatsApp API Setup</h2>
+          </div>
+          <div className="m-4">
+            WhatsApp API access will allow you to manage customer support, send
+            promotional broadcasts, and send abandoned cart and other template
+            messages using your WhatsApp API approved phone number.
+          </div>
+          <div className="m-4">
+            <input type="text" className="w-1/3 input" placeholder="" />
+          </div>
+          <div className="m-4">
+            <button onClick={handleChannelDialog} className="btn-primary">
+              Submit
+            </button>
+          </div>
         </div>
       </main>
     </div>
