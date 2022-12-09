@@ -50,7 +50,7 @@ export default function Index({ workspace_id }: { workspace_id: string }) {
               <div className="flex flex-row justify-center">
                 <div className="m-4 w-full">
                   <Link
-                    href={`/space/${workspace_id}/settings/channels/add/whatsapp`}
+                    href={`/space/${workspace_id}/settings/channels/addchannel/whatsapp`}
                   >
                     <CustomImage
                       src="/assets/images/whatsapp_cloud.svg"
