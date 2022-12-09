@@ -48,7 +48,20 @@ export default function Index({ workspace_id }: { workspace_id: string }) {
             messages using your WhatsApp API approved phone number.
           </div>
           <div className="m-4">
-            <input type="text" className="w-1/3 input" placeholder="" />
+            <input
+              type="text"
+              name="access_token"
+              className="w-1/3 input"
+              placeholder="Access token"
+            />
+          </div>
+          <div className="m-4">
+            <input
+              type="text"
+              name="account_id"
+              className="w-1/3 input"
+              placeholder="Account id"
+            />
           </div>
           <div className="m-4">
             <button onClick={handleChannelDialog} className="btn-primary">
