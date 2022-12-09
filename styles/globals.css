@@ -127,5 +127,8 @@ a:hover {
     border border-gray-200 dark:border-gray-800 rounded-full
     mx-2;
   }
+  .sidebar-caption {
+    @apply mx-2 my-4 font-bold;
+  }
   /* end sidebar */
 }

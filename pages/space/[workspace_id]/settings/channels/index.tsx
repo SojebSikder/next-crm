@@ -1,5 +1,6 @@
 import React from "react";
 import Meta from "../../../../../components/header/Meta";
+import SettingSidebar from "../../../../../components/sidebar/SettingSidebar";
 import Sidebar from "../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../config/app.config";
 
@@ -24,6 +25,7 @@ export default function index({ workspace_id }: { workspace_id: string }) {
     <div>
       <Meta title={`Channels | Settigs - ${AppConfig().app.name}`} />
       <Sidebar workspace_id={workspace_id} />
+      <SettingSidebar workspace_id={workspace_id} />
       <main className="flex justify-center h-screen">
         <h1>Hello world</h1>
       </main>
