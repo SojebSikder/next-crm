@@ -4,6 +4,7 @@ import Meta from "../../../../components/header/Meta";
 import Dialog from "../../../../components/reusable/Dialog";
 import Sidebar from "../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../config/app.config";
+import { DateHelper } from "../../../../helper/date.helper";
 import { CountryService } from "../../../../service/country/country.service";
 import { ContactService } from "../../../../service/space/ContactService";
 import { WorkspaceUserService } from "../../../../service/space/WorkspaceUserService";
@@ -183,40 +184,40 @@ export default function Contact({
           <table className="overflow-x-scroll w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   Display
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   Name
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   Channels
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   Email
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   Phone
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   Country
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   Language
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   Conversation Status
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   Conversation Assignee
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   Last Message
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   Date Added
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 whitespace-nowrap">
                   {/* <span className="sr-only">Action</span> */}
                   Action
                 </th>
@@ -260,20 +261,30 @@ export default function Contact({
                       scope="row"
                       className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                      Apple MacBook Pro 17{'"'}
+                      {contact.fname} {contact.lname}
                     </th>
-                    <td className="py-4 px-6">sojebsikder</td>
-                    <td className="py-4 px-6">Whatsapp</td>
-                    <td className="py-4 px-6">sojebsikder@gmail.com</td>
-                    <td className="py-4 px-6">8801833962595</td>
-                    <td className="py-4 px-6">BD</td>
-                    <td className="py-4 px-6">Bangla</td>
-                    <td className="py-4 px-6">Open</td>
-                    <td className="py-4 px-6">N/A</td>
+                    <td className="py-4 px-6 whitespace-nowrap">
+                      {contact.fname} {contact.lname}
+                    </td>
+                    <td className="py-4 px-6 whitespace-nowrap">Whatsapp</td>
+                    <td className="py-4 px-6 whitespace-nowrap">
+                      {contact.email}
+                    </td>
+                    <td className="py-4 px-6 whitespace-nowrap">
+                      {contact.phone_number}
+                    </td>
+                    <td className="py-4 px-6 whitespace-nowrap">BD</td>
+                    <td className="py-4 px-6 whitespace-nowrap">Bangla</td>
+                    <td className="py-4 px-6 whitespace-nowrap">Open</td>
+                    <td className="py-4 px-6 whitespace-nowrap">
+                      {contact.assignee_id}
+                    </td>
                     <td className="py-4 px-6">Dec 06, 2022 10:31 AM</td>
-                    <td className="py-4 px-6">Dec 06, 2022 10:31 AM</td>
+                    <td className="py-4 px-6 whitespace-nowrap">
+                      {DateHelper.format(contact.created_at)}
+                    </td>
 
-                    <td className="py-4 px-6 text-right">
+                    <td className="py-4 px-6 text-right whitespace-nowrap">
                       <a
                         href="#"
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
