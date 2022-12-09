@@ -82,7 +82,10 @@ export default function Index({
           </button>
           {workspace_channels.map((channel: any) => {
             return (
-              <div key={channel.id} className="m-4">
+              <div
+                key={channel.id}
+                className="m-4 p-4 border-solid shadow-sm border-[1px] border-b-slate-500"
+              >
                 <div>{channel.channel_type}</div>
                 <div>webhook url: {channel.webhook_url}</div>
                 <div>verify token: {channel.verify_token}</div>
