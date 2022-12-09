@@ -19,18 +19,25 @@ export const getServerSideProps = async (context: {
   const workspace_id = query.workspace_id;
 
   const res_workspaceChannels = await WorkspaceChannelService.findAll(
-    workspace_id
+    workspace_id,
+    context
   );
   const workspaceChannels = res_workspaceChannels.data.data;
-  console.log(workspaceChannels);
 
   return {
     props: {
       workspace_id: workspace_id,
+      workspace_channels: workspaceChannels,
     },
   };
 };
-export default function Index({ workspace_id }: { workspace_id: string }) {
+export default function Index({
+  workspace_id,
+  workspaceChannels,
+}: {
+  workspace_id: string;
+  workspaceChannels: [];
+}) {
   const [showDialog, setShowDialog] = useState(false);
   const handleChannelDialog = () => {
     setShowDialog(true);
