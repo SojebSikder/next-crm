@@ -9,7 +9,11 @@ export default function Sidebar({ workspace_id }: { workspace_id: string }) {
     bg-[#ededed] dark:bg-gray-900 shadow-lg"
     >
       <SideBarItem text="My new workspace" icon={<BsCircle size="28" />} />
-      <SideBarItem text="Messages" icon={<BsMailbox size="32" />} />
+      <SideBarItem
+        href={`/space/${workspace_id}/message`}
+        text="Messages"
+        icon={<BsMailbox size="32" />}
+      />
       <SideBarItem
         href={`/space/${workspace_id}/contact`}
         text="Contacts"
