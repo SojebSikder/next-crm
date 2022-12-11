@@ -147,7 +147,7 @@ export default function Message({
     <div className="flex">
       <Meta title={`Message - ${AppConfig().app.name}`} />
       <Sidebar />
-      <main className="mt-5 ml-[80px] flex justify-center h-screen">
+      <main className="mt-5 ml-[80px] flex justify-center">
         <div className="flex">
           <div className="w-[130px] border-solid border-[1px]">
             {conversations.map((conversation: any) => {
