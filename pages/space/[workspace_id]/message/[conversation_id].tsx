@@ -65,7 +65,7 @@ export default function Message({
   workspace_id: string;
   conversation_id: string;
   conversations: [];
-  messageDatas: [];
+  messageDatas: any;
   workspace_channels: any;
 }) {
   const router = useRouter();
@@ -88,9 +88,7 @@ export default function Message({
     e.preventDefault();
     const body_text = e.target.body_text.value;
     const workspace_channel_id = workspaceChannelId;
-    console.log(workspace_channel_id);
 
-    return 0;
     const data = {
       body_text: body_text,
       workspace_channel_id: workspace_channel_id,
@@ -99,7 +97,8 @@ export default function Message({
     };
     try {
       const messageService = await MessageService.create(data);
-      // router.refresh();
+
+      setMessages((state: any) => [...messageDatas, messageService.data.data]);
     } catch (error: any) {
       // return custom error message from API if any
       if (error.response && error.response.data.message) {
