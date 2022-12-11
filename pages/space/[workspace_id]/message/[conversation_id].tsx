@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import Meta from "../../../../components/header/Meta";
 import Dialog from "../../../../components/reusable/Dialog";
 import Sidebar from "../../../../components/sidebar/Sidebar";
@@ -55,6 +56,7 @@ export const getServerSideProps = async (context: {
   };
 };
 
+const socket = io(AppConfig().app.url);
 export default function Message({
   workspace_id,
   conversation_id,
@@ -114,6 +116,18 @@ export default function Message({
     // reset message box
     e.target.body_text.value = "";
   };
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("connected");
+    });
+    socket.on("message", (message) => {
+      setMessages((state: any) => [...state, message]);
+    });
+    return () => {
+      socket.off("connect");
+    };
+  }, []);
 
   return (
     <div className="flex">

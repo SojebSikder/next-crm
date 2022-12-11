@@ -4,6 +4,8 @@ export const URL =
 // app config
 export const AppConfig = () => ({
   app: {
+    // server endpoint
+    url: URL,
     name: "Whatsapp crm",
     // api endpoint
     apiUrl: `${URL}/api`,
