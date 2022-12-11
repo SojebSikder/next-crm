@@ -126,7 +126,9 @@ export default function Message({
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {}, [conversation_id]);
+  useEffect(() => {
+    setMessages(messageDatas);
+  }, [conversation_id]);
 
   useEffect(() => {
     socket.on("connect", () => {
