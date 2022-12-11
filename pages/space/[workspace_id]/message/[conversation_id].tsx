@@ -36,7 +36,7 @@ export const getServerSideProps = async (context: {
     conversation_id,
     context
   );
-  const messages = res_messages.data.data;
+  const messageDatas = res_messages.data.data;
   // get workspace channel
   const res_workspace_channels = await WorkspaceChannelService.findAll(
     workspace_id,
@@ -47,8 +47,9 @@ export const getServerSideProps = async (context: {
   return {
     props: {
       workspace_id: workspace_id,
+      conversation_id: conversation_id,
       conversations: conversations,
-      messages: messages,
+      messageDatas: messageDatas,
       workspace_channels: workspace_channels,
     },
   };
@@ -56,40 +57,48 @@ export const getServerSideProps = async (context: {
 
 export default function Message({
   workspace_id,
+  conversation_id,
   conversations,
-  messages,
+  messageDatas,
   workspace_channels,
 }: {
   workspace_id: string;
+  conversation_id: string;
   conversations: [];
-  messages: [];
-  workspace_channels: [];
+  messageDatas: [];
+  workspace_channels: any;
 }) {
   const router = useRouter();
+
+  const [messages, setMessages] = useState(messageDatas);
+  const [workspaceChannelId, setWorkspaceChannelId] = useState(
+    workspace_channels.length > 0 ? workspace_channels[0].id : 0
+  );
   const [showDialog, setShowDialog] = useState(false);
-  const handleContactDialog = () => {
+
+  const handleWorkspaceChannelIdChange = (e: any) => {
+    setWorkspaceChannelId(e.target.value);
+  };
+
+  const handleDialog = () => {
     setShowDialog(true);
   };
 
-  const handleContact = async (e: any) => {
+  const handleSendMessage = async (e: any) => {
     e.preventDefault();
-    const fname = e.target.fname.value;
-    const lname = e.target.lname.value;
-    const email = e.target.email.value;
-    const phone_number = e.target.phone_number.value;
-    const country_id = e.target.country_id.value;
-    const assignee_id = e.target.assignee_id.value;
+    const body_text = e.target.body_text.value;
+    const workspace_channel_id = workspaceChannelId;
+    console.log(workspace_channel_id);
 
+    return 0;
     const data = {
-      fname: fname,
-      lname: lname,
-      email: email,
-      phone_number: phone_number,
-      country_id: country_id,
-      assignee_id: assignee_id,
+      body_text: body_text,
+      workspace_channel_id: workspace_channel_id,
+      conversation_id: conversation_id,
+      workspace_id: workspace_id,
     };
     try {
-      const contactService = await ContactService.create(workspace_id, data);
+      const messageService = await MessageService.create(data);
       // router.refresh();
     } catch (error: any) {
       // return custom error message from API if any
@@ -158,7 +167,11 @@ export default function Message({
                 </div>
               </div>
               <div className="m-4">
-                <select className="input" name="workspace_channel">
+                <select
+                  onChange={handleWorkspaceChannelIdChange}
+                  className="input"
+                  name="workspace_channel_id"
+                >
                   {workspace_channels.map((channel: any) => {
                     return (
                       <option key={channel.id} value={channel.id}>
@@ -168,13 +181,13 @@ export default function Message({
                   })}
                 </select>
               </div>
-              <form action="" method="post">
+              <form onSubmit={handleSendMessage} method="post">
                 <div className="flex flex-row">
                   <div className="m-4 w-full">
                     <input
                       className="input"
                       type="text"
-                      name="message"
+                      name="body_text"
                       placeholder="Message sojebsikder"
                     />
                   </div>
