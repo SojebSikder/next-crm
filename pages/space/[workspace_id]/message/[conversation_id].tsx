@@ -135,6 +135,7 @@ export default function Message({
     });
     return () => {
       socket.off("connect");
+      socket.off("message");
     };
   }, []);
 
@@ -180,7 +181,7 @@ export default function Message({
                     } else {
                       return (
                         <div
-                          key={msg.id}
+                          key={msg.message_id}
                           className="m-2 p-3 rounded-md w-auto inline bg-gray-400"
                         >
                           {msg.body_text}
