@@ -98,7 +98,7 @@ export default function Message({
     try {
       const messageService = await MessageService.create(data);
 
-      setMessages((state: any) => [...messageDatas, messageService.data.data]);
+      setMessages((state: any) => [...state, messageService.data.data]);
     } catch (error: any) {
       // return custom error message from API if any
       if (error.response && error.response.data.message) {
@@ -111,6 +111,8 @@ export default function Message({
         console.log(error.message);
       }
     }
+    // reset message box
+    e.target.body_text.value = "";
   };
 
   return (
