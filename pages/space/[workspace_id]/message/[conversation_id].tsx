@@ -126,9 +126,7 @@ export default function Message({
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    
-  }, [conversation_id]);
+  useEffect(() => {}, [conversation_id]);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -171,7 +169,7 @@ export default function Message({
           <div className="ml-[150px] w-[430px] border-solid border-[1px]">
             <div className="flex flex-col">
               <div className="m-4 h-[38rem]">
-                <div className="flex flex-col h-full overflow-x-scroll">
+                <div className="flex flex-col h-full overflow-y-scroll">
                   {messages.map((msg: any) => {
                     if (msg.message_from_workspace) {
                       return (
