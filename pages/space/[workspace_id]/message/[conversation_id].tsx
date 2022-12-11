@@ -157,8 +157,10 @@ export default function Message({
                   href={`/space/${workspace_id}/message/${conversation.id}`}
                 >
                   <div
-                    className="cursor-pointer bg-[#eeeeee] transition-all 
-                    ease-linear hover:bg-[#a19e9e] h-[80px]"
+                    className={`cursor-pointer bg-[#eeeeee] transition-all 
+                    ease-linear hover:bg-[#a19e9e] ${
+                      conversation_id == conversation.id && "bg-[#a19e9e]"
+                    } h-[80px]`}
                   >
                     <h5 className="m-4 font-[500]">
                       {conversation.contact.fname} {conversation.contact.lname}
