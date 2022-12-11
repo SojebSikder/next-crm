@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import Meta from "../../../../components/header/Meta";
 import Dialog from "../../../../components/reusable/Dialog";
@@ -72,6 +72,7 @@ export default function Message({
 }) {
   const router = useRouter();
 
+  const messagesEndRef = useRef<HTMLInputElement>(null);
   const [messages, setMessages] = useState(messageDatas);
   const [workspaceChannelId, setWorkspaceChannelId] = useState(
     workspace_channels.length > 0 ? workspace_channels[0].id : 0
@@ -117,6 +118,14 @@ export default function Message({
     e.target.body_text.value = "";
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   useEffect(() => {
     socket.on("connect", () => {
       console.log("connected");
@@ -157,12 +166,12 @@ export default function Message({
           <div className="ml-[150px] w-[430px] border-solid border-[1px]">
             <div className="flex flex-col">
               <div className="m-4 h-screen">
-                <div className="flex flex-col">
+                <div className="flex flex-col h-full overflow-x-scroll">
                   {messages.map((msg: any) => {
                     if (msg.message_from_workspace) {
                       return (
                         <div
-                          key={msg.id}
+                          key={msg.message_id}
                           className="text-right m-2 p-3 rounded-md w-auto inline bg-gray-200"
                         >
                           {msg.body_text}
@@ -179,40 +188,43 @@ export default function Message({
                       );
                     }
                   })}
+                  <div ref={messagesEndRef} />
                 </div>
               </div>
-              <div className="m-4">
-                <select
-                  onChange={handleWorkspaceChannelIdChange}
-                  className="input"
-                  name="workspace_channel_id"
-                >
-                  {workspace_channels.map((channel: any) => {
-                    return (
-                      <option key={channel.id} value={channel.id}>
-                        {channel.channel_name}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              <form onSubmit={handleSendMessage} method="post">
-                <div className="flex flex-row">
-                  <div className="m-4 w-full">
-                    <input
-                      className="input"
-                      type="text"
-                      name="body_text"
-                      placeholder="Message sojebsikder"
-                    />
-                  </div>
-                  <div className="m-4">
-                    <button type="submit" className="btn-primary">
-                      Send
-                    </button>
-                  </div>
+              <div>
+                <div className="m-4">
+                  <select
+                    onChange={handleWorkspaceChannelIdChange}
+                    className="input"
+                    name="workspace_channel_id"
+                  >
+                    {workspace_channels.map((channel: any) => {
+                      return (
+                        <option key={channel.id} value={channel.id}>
+                          {channel.channel_name}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
-              </form>
+                <form onSubmit={handleSendMessage} method="post">
+                  <div className="flex flex-row">
+                    <div className="m-4 w-full">
+                      <input
+                        className="input"
+                        type="text"
+                        name="body_text"
+                        placeholder="Message sojebsikder"
+                      />
+                    </div>
+                    <div className="m-4">
+                      <button type="submit" className="btn-primary">
+                        Send
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
