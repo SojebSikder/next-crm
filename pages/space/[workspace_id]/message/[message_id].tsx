@@ -8,6 +8,7 @@ import { AppConfig } from "../../../../config/app.config";
 import { DateHelper } from "../../../../helper/date.helper";
 import { CountryService } from "../../../../service/country/country.service";
 import { ContactService } from "../../../../service/space/ContactService";
+import { ConversationService } from "../../../../service/space/ConversationService";
 import { WorkspaceUserService } from "../../../../service/space/WorkspaceUserService";
 
 export const getServerSideProps = async (context: {
@@ -20,14 +21,27 @@ export const getServerSideProps = async (context: {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
 
+  const res_conversations = await ConversationService.findAll(
+    workspace_id,
+    context
+  );
+  const conversations = res_conversations.data.data;
+
   return {
     props: {
       workspace_id: workspace_id,
+      conversations: conversations,
     },
   };
 };
 
-export default function Message({ workspace_id }: { workspace_id: string }) {
+export default function Message({
+  workspace_id,
+  conversations,
+}: {
+  workspace_id: string;
+  conversations: [];
+}) {
   const router = useRouter();
   const [showDialog, setShowDialog] = useState(false);
   const handleContactDialog = () => {
@@ -75,14 +89,23 @@ export default function Message({ workspace_id }: { workspace_id: string }) {
       <main className="mt-5 ml-[80px] flex justify-center h-screen">
         <div className="flex">
           <div className="w-[130px] border-solid border-[1px]">
-            <Link href={`/space/${workspace_id}/message/1`}>
-              <div
-                className="cursor-pointer bg-[#eeeeee] transition-all 
-                ease-linear hover:bg-[#a19e9e] h-[80px]"
-              >
-                <h5 className="m-4 font-[500]">sojebsikder</h5>
-              </div>
-            </Link>
+            {conversations.map((conversation: any) => {
+              return (
+                <Link
+                  key={conversation.id}
+                  href={`/space/${workspace_id}/message/${conversation.id}`}
+                >
+                  <div
+                    className="cursor-pointer bg-[#eeeeee] transition-all 
+                    ease-linear hover:bg-[#a19e9e] h-[80px]"
+                  >
+                    <h5 className="m-4 font-[500]">
+                      {conversation.contact.fname} {conversation.contact.lname}
+                    </h5>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
           <div className="ml-[150px] w-[430px] border-solid border-[1px]">
             <div className="flex flex-col">
