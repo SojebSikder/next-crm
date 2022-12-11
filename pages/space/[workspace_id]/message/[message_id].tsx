@@ -9,6 +9,7 @@ import { DateHelper } from "../../../../helper/date.helper";
 import { CountryService } from "../../../../service/country/country.service";
 import { ContactService } from "../../../../service/space/ContactService";
 import { ConversationService } from "../../../../service/space/ConversationService";
+import { WorkspaceChannelService } from "../../../../service/space/WorkspaceChannelService";
 import { WorkspaceUserService } from "../../../../service/space/WorkspaceUserService";
 
 export const getServerSideProps = async (context: {
@@ -21,16 +22,24 @@ export const getServerSideProps = async (context: {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
 
+  // get conversation
   const res_conversations = await ConversationService.findAll(
     workspace_id,
     context
   );
   const conversations = res_conversations.data.data;
+  // get workspace channel
+  const res_workspace_channels = await WorkspaceChannelService.findAll(
+    workspace_id,
+    context
+  );
+  const workspace_channels = res_workspace_channels.data.data;
 
   return {
     props: {
       workspace_id: workspace_id,
       conversations: conversations,
+      workspace_channels: workspace_channels,
     },
   };
 };
@@ -38,9 +47,11 @@ export const getServerSideProps = async (context: {
 export default function Message({
   workspace_id,
   conversations,
+  workspace_channels,
 }: {
   workspace_id: string;
   conversations: [];
+  workspace_channels: [];
 }) {
   const router = useRouter();
   const [showDialog, setShowDialog] = useState(false);
@@ -121,7 +132,13 @@ export default function Message({
               </div>
               <div className="m-4">
                 <select className="input" name="" id="">
-                  <option value="">Whatsapp channel 1</option>
+                  {workspace_channels.map((channel: any) => {
+                    return (
+                      <option key={channel.id} value={channel.id}>
+                        {channel.channel_name}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
               <div className="flex flex-row">
