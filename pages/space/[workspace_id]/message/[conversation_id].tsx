@@ -9,6 +9,7 @@ import { DateHelper } from "../../../../helper/date.helper";
 import { CountryService } from "../../../../service/country/country.service";
 import { ContactService } from "../../../../service/space/ContactService";
 import { ConversationService } from "../../../../service/space/ConversationService";
+import { MessageService } from "../../../../service/space/MessageService";
 import { WorkspaceChannelService } from "../../../../service/space/WorkspaceChannelService";
 import { WorkspaceUserService } from "../../../../service/space/WorkspaceUserService";
 
@@ -21,6 +22,7 @@ export const getServerSideProps = async (context: {
 }) => {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
+  const conversation_id = query.conversation_id;
 
   // get conversation
   const res_conversations = await ConversationService.findAll(
@@ -28,6 +30,13 @@ export const getServerSideProps = async (context: {
     context
   );
   const conversations = res_conversations.data.data;
+  // get messages
+  const res_messages = await MessageService.findAll(
+    workspace_id,
+    conversation_id,
+    context
+  );
+  const messages = res_messages.data.data;
   // get workspace channel
   const res_workspace_channels = await WorkspaceChannelService.findAll(
     workspace_id,
@@ -39,6 +48,7 @@ export const getServerSideProps = async (context: {
     props: {
       workspace_id: workspace_id,
       conversations: conversations,
+      messages: messages,
       workspace_channels: workspace_channels,
     },
   };
@@ -47,10 +57,12 @@ export const getServerSideProps = async (context: {
 export default function Message({
   workspace_id,
   conversations,
+  messages,
   workspace_channels,
 }: {
   workspace_id: string;
   conversations: [];
+  messages: [];
   workspace_channels: [];
 }) {
   const router = useRouter();
@@ -122,16 +134,31 @@ export default function Message({
             <div className="flex flex-col">
               <div className="m-4 h-screen">
                 <div className="flex flex-col">
-                  <div className="text-right m-2 p-3 rounded-md w-auto inline bg-gray-200">
-                    message
-                  </div>
-                  <div className="m-2 p-3 rounded-md w-auto inline bg-gray-400">
-                    message
-                  </div>
+                  {messages.map((msg: any) => {
+                    if (msg.message_from_workspace) {
+                      return (
+                        <div
+                          key={msg.id}
+                          className="text-right m-2 p-3 rounded-md w-auto inline bg-gray-200"
+                        >
+                          {msg.body_text}
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div
+                          key={msg.id}
+                          className="m-2 p-3 rounded-md w-auto inline bg-gray-400"
+                        >
+                          {msg.body_text}
+                        </div>
+                      );
+                    }
+                  })}
                 </div>
               </div>
               <div className="m-4">
-                <select className="input" name="" id="">
+                <select className="input" name="workspace_channel">
                   {workspace_channels.map((channel: any) => {
                     return (
                       <option key={channel.id} value={channel.id}>
@@ -141,18 +168,23 @@ export default function Message({
                   })}
                 </select>
               </div>
-              <div className="flex flex-row">
-                <div className="m-4 w-full">
-                  <input
-                    className="input"
-                    type="text"
-                    placeholder="Message sojebsikder"
-                  />
+              <form action="" method="post">
+                <div className="flex flex-row">
+                  <div className="m-4 w-full">
+                    <input
+                      className="input"
+                      type="text"
+                      name="message"
+                      placeholder="Message sojebsikder"
+                    />
+                  </div>
+                  <div className="m-4">
+                    <button type="submit" className="btn-primary">
+                      Send
+                    </button>
+                  </div>
                 </div>
-                <div className="m-4">
-                  <button className="btn-primary">Send</button>
-                </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
