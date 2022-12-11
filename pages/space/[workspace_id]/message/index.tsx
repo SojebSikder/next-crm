@@ -17,7 +17,6 @@ export const getServerSideProps = async (context: {
 }) => {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
-  const conversation_id = query.conversation_id;
 
   // get conversation
   const res_conversations = await ConversationService.findAll(
