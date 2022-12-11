@@ -49,8 +49,8 @@ export default function Index({
   return (
     <div>
       <Meta title={`Channels | Settigs - ${AppConfig().app.name}`} />
-      <Sidebar workspace_id={workspace_id} />
-      <SettingSidebar workspace_id={workspace_id} />
+      <Sidebar />
+      <SettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <Dialog handle={setShowDialog} show={showDialog}>

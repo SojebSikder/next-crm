@@ -71,7 +71,7 @@ export default function Message({ workspace_id }: { workspace_id: string }) {
   return (
     <div className="flex">
       <Meta title={`Message - ${AppConfig().app.name}`} />
-      <Sidebar workspace_id={workspace_id} />
+      <Sidebar />
       <main className="mt-5 ml-[80px] flex justify-center h-screen">
         <div className="flex">
           <div className="w-[130px] border-solid border-[1px]">

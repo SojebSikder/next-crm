@@ -22,7 +22,7 @@ export default function Dashboard({ workspace_id }: { workspace_id: string }) {
   return (
     <div>
       <Meta />
-      <Sidebar workspace_id={workspace_id} />
+      <Sidebar />
       <main className="flex justify-center h-screen">
         <h1>Hello world</h1>
       </main>

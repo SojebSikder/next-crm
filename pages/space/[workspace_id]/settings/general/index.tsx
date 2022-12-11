@@ -24,8 +24,8 @@ export default function index({ workspace_id }: { workspace_id: string }) {
   return (
     <div>
       <Meta title={`Channels | Settigs - ${AppConfig().app.name}`} />
-      <Sidebar workspace_id={workspace_id} />
-      <SettingSidebar workspace_id={workspace_id} />
+      <Sidebar />
+      <SettingSidebar />
       <main className="flex justify-center h-screen">
         <h1>Hello world</h1>
       </main>

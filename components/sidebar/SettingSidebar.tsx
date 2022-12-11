@@ -1,11 +1,10 @@
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-export default function SettingSidebar({
-  workspace_id,
-}: {
-  workspace_id: string;
-}) {
+export default function SettingSidebar() {
+  const router = useRouter();
+  const { workspace_id } = router.query;
   return (
     <div
       className="fixed top-0 left-[64px] h-screen w-[230px] flex flex-col

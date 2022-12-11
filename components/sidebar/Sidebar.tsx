@@ -1,8 +1,11 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 import { BsGearFill, BsMailbox, BsPerson, BsCircle } from "react-icons/bs";
 
-export default function Sidebar({ workspace_id }: { workspace_id: string }) {
+export default function Sidebar() {
+  const router = useRouter();
+  const { workspace_id } = router.query;
   return (
     <div
       className="fixed top-0 left-0 h-screen w-16 flex flex-col

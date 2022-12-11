@@ -96,7 +96,7 @@ export default function Contact({
   return (
     <div className="flex">
       <Meta title={`Contacts - ${AppConfig().app.name}`} />
-      <Sidebar workspace_id={workspace_id} />
+      <Sidebar />
       <main className="mt-5 ml-[80px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <Dialog handle={setShowDialog} show={showDialog}>
