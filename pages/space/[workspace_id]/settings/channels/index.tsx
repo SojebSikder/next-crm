@@ -86,9 +86,22 @@ export default function Index({
                 key={channel.id}
                 className="m-4 p-4 border-solid shadow-sm border-[1px] border-b-slate-500"
               >
-                <div>{channel.channel_type}</div>
-                <div>webhook url: {channel.webhook_url}</div>
-                <div>verify token: {channel.verify_token}</div>
+                <div>
+                  {channel.channel_type} - {channel.channel_name}
+                </div>
+                <br />
+                <div>
+                  webhook url:
+                  <br />
+                  <span className="ml-4 font-[500]">{channel.webhook_url}</span>
+                </div>
+                <div>
+                  verify token:
+                  <br />
+                  <span className="ml-4 font-[500]">
+                    {channel.verify_token}
+                  </span>
+                </div>
               </div>
             );
           })}

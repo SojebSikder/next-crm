@@ -26,7 +26,7 @@ export const getServerSideProps = async (context: {
   const conversations = res_conversations.data.data;
 
   try {
-    if (conversations) {
+    if (conversations && conversations.length > 0) {
       const url = `/space/${workspace_id}/message/${conversations[0].id}`;
       return {
         redirect: {
