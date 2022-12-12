@@ -134,14 +134,19 @@ export default function Message({
     socket.on("connect", () => {
       console.log("connected");
     });
-    socket.on("message", (message) => {
-      setMessages((state: any) => [...state, message]);
+    socket.on("message", ({ message }) => {
+      if (message.conversation_id == conversation_id) {
+        console.log("1st", message.conversation_id);
+        console.log("2nd", conversation_id);
+
+        setMessages((state: any) => [...state, message]);
+      }
     });
     return () => {
       socket.off("connect");
       socket.off("message");
     };
-  }, []);
+  }, [conversation_id]);
 
   return (
     <div className="flex">
