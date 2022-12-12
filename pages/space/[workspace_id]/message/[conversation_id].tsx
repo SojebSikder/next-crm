@@ -136,9 +136,6 @@ export default function Message({
     });
     socket.on("message", ({ message }) => {
       if (message.conversation_id == conversation_id) {
-        console.log("1st", message.conversation_id);
-        console.log("2nd", conversation_id);
-
         setMessages((state: any) => [...state, message]);
       }
     });
