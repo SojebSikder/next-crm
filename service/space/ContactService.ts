@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from "axios";
 import { CookieHelper } from "../../helper/cookie.helper";
 import { Fetch } from "../../util/Fetch";
 
@@ -19,6 +20,20 @@ export const ContactService = {
     };
 
     return await Fetch.get(`/space/${workspace_id}/contact`, _config);
+  },
+
+  export: async (workspace_id: string, context: any = null) => {
+    const userToken = CookieHelper.get({ key: "token", context });
+
+    const _config: AxiosRequestConfig = {
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/csv",
+        Authorization: "Bearer " + userToken,
+      },
+    };
+
+    return await Fetch.get(`/space/${workspace_id}/contact/export`, _config);
   },
 
   create: async (

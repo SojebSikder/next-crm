@@ -93,6 +93,25 @@ export default function Contact({
     }
   };
 
+  const handleExportContact = async () => {
+    const res_contacts = await ContactService.export(workspace_id);
+    if (res_contacts) {
+      // create file link in browser's memory
+      const href = URL.createObjectURL(res_contacts.data);
+
+      // create "a" HTML element with href to file & click
+      const link = document.createElement("a");
+      link.href = href;
+      link.setAttribute("download", "file.csv"); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+
+      // clean up "a" element & remove ObjectURL
+      document.body.removeChild(link);
+      URL.revokeObjectURL(href);
+    }
+  };
+
   return (
     <div className="flex">
       <Meta title={`Contacts - ${AppConfig().app.name}`} />
@@ -181,6 +200,9 @@ export default function Contact({
             Add Contact
           </button>
           <button className="m-4 btn-primary">Import Contacts</button>
+          <button onClick={handleExportContact} className="m-4 btn-primary">
+            Export Contacts
+          </button>
           <table className="overflow-x-scroll w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
