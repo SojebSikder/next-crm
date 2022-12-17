@@ -124,6 +124,8 @@ export default function Message({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const closeConversation = () => {};
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -159,7 +161,7 @@ export default function Message({
       <Sidebar />
       <main className="mt-5 ml-[80px] flex justify-center">
         <div className="flex">
-          <div className="w-[130px] border-solid border-[1px]">
+          <div className="w-[220px] border-solid border-[1px]">
             {conversations.map((conversation: any) => {
               return (
                 <Link
@@ -172,9 +174,22 @@ export default function Message({
                       conversation_id == conversation.id && "bg-[#a19e9e]"
                     } h-[80px]`}
                   >
-                    <h5 className="m-4 font-[500]">
-                      {conversation.contact.fname} {conversation.contact.lname}
-                    </h5>
+                    <div className="flex justify-between">
+                      <div>
+                        <h5 className="m-4 font-[500]">
+                          {conversation.contact.fname}{" "}
+                          {conversation.contact.lname}
+                        </h5>
+                      </div>
+                      <div>
+                        <p className="text-right msg_time m-4 font-[500]">
+                          {DateHelper.format(
+                            conversation.updated_at,
+                            "MMMM-DD"
+                          )}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </Link>
               );
@@ -183,6 +198,14 @@ export default function Message({
           <div className="ml-[150px] w-[430px] border-solid border-[1px]">
             <div className="flex flex-col">
               <div className="m-4 h-[38rem]">
+                <div className="border-b-gray-200 border-b-[1px] flex justify-between">
+                  <div>Select agent</div>
+                  <div>
+                    <button className="mb-4 btn-primary">
+                      Close Conversation
+                    </button>
+                  </div>
+                </div>
                 <div className="flex flex-col h-full overflow-y-scroll">
                   {messages.map((msg: any) => {
                     if (msg.message_from_workspace) {
@@ -207,7 +230,7 @@ export default function Message({
                         >
                           {msg.body_text}
                           <p className="msg_time">
-                            {DateHelper.format(msg.created_at)}
+                            {DateHelper.format(msg.created_at).toString()}
                           </p>
                         </div>
                       );
