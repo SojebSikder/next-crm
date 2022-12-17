@@ -159,10 +159,12 @@ a:hover {
     bottom: 100%;
     color: #888;
     white-space: nowrap;
-    /* Hidden by default */
+
     display: none;
   }
-
+  .msg_time {
+    font-size: 10px;
+  }
   .msg.sent::before {
     right: 15px;
   }

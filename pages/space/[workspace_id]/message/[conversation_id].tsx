@@ -189,20 +189,26 @@ export default function Message({
                       return (
                         <div
                           key={msg.message_id}
-                          data-time="16:35"
+                          data-time={DateHelper.formatDate(msg.created_at)}
                           className="msg sent text-right m-2 p-3 rounded-md w-auto inline bg-gray-200"
                         >
                           {msg.body_text}
+                          <p className="msg_time">
+                            {DateHelper.format(msg.created_at)}
+                          </p>
                         </div>
                       );
                     } else {
                       return (
                         <div
                           key={msg.message_id}
-                          data-time="16:35"
+                          data-time={DateHelper.formatDate(msg.created_at)}
                           className="msg rcvd m-2 p-3 rounded-md w-auto inline bg-gray-400"
                         >
                           {msg.body_text}
+                          <p className="msg_time">
+                            {DateHelper.format(msg.created_at)}
+                          </p>
                         </div>
                       );
                     }

@@ -4,9 +4,13 @@
  */
 export const DateHelper = {
   // format date
-  format: function (date: Date) {
+  formatDate: function (date: Date) {
     const d = new Date(date);
     return d.toDateString();
+  },
+  format: function (date: Date) {
+    const d = new Date(date);
+    return d.toTimeString();
   },
   now: function () {
     const date = new Date();
