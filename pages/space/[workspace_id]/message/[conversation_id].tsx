@@ -189,7 +189,8 @@ export default function Message({
                       return (
                         <div
                           key={msg.message_id}
-                          className="text-right m-2 p-3 rounded-md w-auto inline bg-gray-200"
+                          data-time="16:35"
+                          className="msg sent text-right m-2 p-3 rounded-md w-auto inline bg-gray-200"
                         >
                           {msg.body_text}
                         </div>
@@ -198,7 +199,8 @@ export default function Message({
                       return (
                         <div
                           key={msg.message_id}
-                          className="m-2 p-3 rounded-md w-auto inline bg-gray-400"
+                          data-time="16:35"
+                          className="msg rcvd m-2 p-3 rounded-md w-auto inline bg-gray-400"
                         >
                           {msg.body_text}
                         </div>
