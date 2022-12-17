@@ -53,7 +53,7 @@ export default function Message() {
       <Sidebar />
       <main className="mt-5 ml-[80px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
-          <div className="w-[130px]"></div>
+          <div className="w-[130px]">No conversation</div>
         </div>
       </main>
     </div>

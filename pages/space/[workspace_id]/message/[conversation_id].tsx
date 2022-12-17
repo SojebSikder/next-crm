@@ -49,7 +49,7 @@ export const getServerSideProps = async (context: {
     props: {
       workspace_id: workspace_id,
       conversation_id: conversation_id,
-      conversations: conversations,
+      conversationDatas: conversations,
       messageDatas: messageDatas,
       workspace_channels: workspace_channels,
     },
@@ -60,13 +60,13 @@ const socket = io(AppConfig().app.url);
 export default function Message({
   workspace_id,
   conversation_id,
-  conversations,
+  conversationDatas,
   messageDatas,
   workspace_channels,
 }: {
   workspace_id: string;
   conversation_id: string;
-  conversations: [];
+  conversationDatas: any;
   messageDatas: any;
   workspace_channels: any;
 }) {
@@ -74,6 +74,7 @@ export default function Message({
 
   const messagesEndRef = useRef<HTMLInputElement>(null);
   const [messages, setMessages] = useState(messageDatas);
+  const [conversations, setConversations] = useState(conversationDatas);
   const [workspaceChannelId, setWorkspaceChannelId] = useState(
     workspace_channels.length > 0 ? workspace_channels[0].id : 0
   );
@@ -140,9 +141,15 @@ export default function Message({
         setMessages((state: any) => [...state, message]);
       }
     });
+    socket.on("conversation", ({ conversation, workspace }) => {
+      if (workspace.id == workspace_id) {
+        setConversations((state: any) => [conversation, ...state]);
+      }
+    });
     return () => {
       socket.off("connect");
       socket.off("message");
+      socket.off("conversation");
     };
   }, [conversation_id]);
 
