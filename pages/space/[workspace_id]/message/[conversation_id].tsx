@@ -129,10 +129,10 @@ export default function Message({
   }, [messages]);
 
   useEffect(() => {
+    // set message
     setMessages(messageDatas);
-  }, [conversation_id]);
 
-  useEffect(() => {
+    // handle websocket events
     socket.on("connect", () => {
       console.log("connected");
     });
