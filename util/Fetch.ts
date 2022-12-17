@@ -46,6 +46,17 @@ export class Fetch {
   }
 
   /**
+   * patch request
+   * @param url
+   * @param data
+   * @param header
+   * @returns
+   */
+  static async patch(url: string, data: any, header?: AxiosRequestConfig) {
+    return await axios.patch(`${this._baseUrl}${url}`, data, header);
+  }
+
+  /**
    * delete request
    * @param url
    * @param header

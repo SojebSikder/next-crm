@@ -124,7 +124,26 @@ export default function Message({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const closeConversation = () => {};
+  const handleCloseConversation = async () => {
+    const data = {
+      is_open: false,
+      workspace_id: workspace_id,
+    };
+    try {
+      const conversationService = await ConversationService.update(data);
+    } catch (error: any) {
+      // return custom error message from API if any
+      if (error.response && error.response.data.message) {
+        // setErrorMessage(error.response.data.message);
+        // setLoading(false);
+        console.log(error.response.data.message);
+      } else {
+        // setErrorMessage(error.message);
+        // setLoading(false);
+        console.log(error.message);
+      }
+    }
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -201,7 +220,10 @@ export default function Message({
                 <div className="border-b-gray-200 border-b-[1px] flex justify-between">
                   <div>Select agent</div>
                   <div>
-                    <button className="mb-4 btn-primary">
+                    <button
+                      onClick={handleCloseConversation}
+                      className="mb-4 btn-primary"
+                    >
                       Close Conversation
                     </button>
                   </div>

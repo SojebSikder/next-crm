@@ -12,12 +12,14 @@ export class DateHelper {
   static add(value: number, unit: dayjs.ManipulateType) {
     return dayjs().add(30, unit);
   }
-  // format date
+
+  // format
   static format(date: string | number | Date, format: string = "MM-DD-YYYY") {
     let d;
     d = dayjs(date).format(format);
     return d;
   }
+
   static formatDate(date: string | number | Date) {
     const d = new Date(date);
     return d.toDateString();
