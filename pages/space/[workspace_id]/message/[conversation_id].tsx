@@ -130,7 +130,10 @@ export default function Message({
       workspace_id: workspace_id,
     };
     try {
-      const conversationService = await ConversationService.update(data);
+      const conversationService = await ConversationService.update(
+        conversation_id,
+        data
+      );
     } catch (error: any) {
       // return custom error message from API if any
       if (error.response && error.response.data.message) {

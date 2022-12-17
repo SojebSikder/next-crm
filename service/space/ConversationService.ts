@@ -21,15 +21,18 @@ export const ConversationService = {
     return await Fetch.get(`/space/${workspace_id}/conversation`, _config);
   },
 
-  update: async ({
-    is_open,
-    workspace_id,
-    context = null,
-  }: {
-    is_open: boolean;
-    workspace_id: string;
-    context?: any;
-  }) => {
+  update: async (
+    id: string,
+    {
+      is_open,
+      workspace_id,
+      context = null,
+    }: {
+      is_open: boolean;
+      workspace_id: string;
+      context?: any;
+    }
+  ) => {
     const userToken = CookieHelper.get({ key: "token", context });
 
     const _config = {
@@ -42,8 +45,8 @@ export const ConversationService = {
       is_open: is_open,
     };
 
-    return await Fetch.put(
-      `/space/${workspace_id}/conversation`,
+    return await Fetch.patch(
+      `/space/${workspace_id}/conversation/${id}`,
       data,
       _config
     );
