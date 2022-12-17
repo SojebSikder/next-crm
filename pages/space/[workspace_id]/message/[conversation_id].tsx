@@ -206,7 +206,7 @@ export default function Message({
                     </button>
                   </div>
                 </div>
-                <div className="flex flex-col h-full overflow-y-scroll">
+                <div className="flex flex-col h-[95%] overflow-y-scroll border-b-gray-200 border-b-[1px]">
                   {messages.map((msg: any) => {
                     if (msg.message_from_workspace) {
                       return (
