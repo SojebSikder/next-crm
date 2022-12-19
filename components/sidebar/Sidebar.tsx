@@ -2,45 +2,59 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { BsGearFill, BsMailbox, BsPerson, BsCircle } from "react-icons/bs";
+import { FaLockOpen } from "react-icons/fa";
 
 export default function Sidebar() {
   const router = useRouter();
   const { workspace_id } = router.query;
+
+  const handler = () => {
+    alert("Hello world");
+  };
+
   return (
-    <div
-      className="fixed top-0 left-0 h-screen w-16 flex flex-col
+    <>
+      <div
+        className="fixed top-0 left-0 h-screen w-16 flex flex-col
     bg-[#ededed] dark:bg-gray-900 shadow-lg"
-    >
-      <SideBarItem text="My new workspace" icon={<BsCircle size="28" />} />
-      <SideBarItem
-        href={`/space/${workspace_id}/message`}
-        text="Messages"
-        icon={<BsMailbox size="32" />}
-      />
-      <SideBarItem
-        href={`/space/${workspace_id}/contact`}
-        text="Contacts"
-        icon={<BsPerson size="32" />}
-      />
-      {/* <Divider /> */}
-      <SideBarItem
-        href={`/space/${workspace_id}/settings/channels`}
-        text="Settings"
-        icon={<BsGearFill size="22" />}
-      />
-    </div>
+      >
+        <SideBarItem text="My new workspace" icon={<BsCircle size="28" />} />
+        <SideBarItem
+          href={`/space/${workspace_id}/message`}
+          text="Messages"
+          icon={<BsMailbox size="32" />}
+        />
+        <SideBarItem
+          href={`/space/${workspace_id}/contact`}
+          text="Contacts"
+          icon={<BsPerson size="32" />}
+        />
+        {/* <Divider /> */}
+        <SideBarItem
+          href={`/space/${workspace_id}/settings/channels`}
+          text="Settings"
+          icon={<BsGearFill size="22" />}
+        />
+        <SideBarItem
+          onClick={handler}
+          text="Logout"
+          icon={<FaLockOpen size="22" />}
+        />
+      </div>
+    </>
   );
 }
 
-const SideBarItem = ({
+export const SideBarItem = ({
   icon,
   text,
   href,
+  onClick,
 }: {
   /**
    * Icon element
    */
-  icon: any;
+  icon?: any;
   /**
    * Tooltip
    */
@@ -49,18 +63,36 @@ const SideBarItem = ({
    * url
    */
   href?: string;
+  onClick?: () => void;
 }) => (
   <>
     {href ? (
       <Link href={`${href}`}>
-        <SideBarIcon text={text} icon={icon} />
+        {icon ? (
+          <div onClick={onClick}>
+            <SideBarIcon text={text} icon={icon} />
+          </div>
+        ) : (
+          <div className="mx-6 my-2">{text}</div>
+        )}
       </Link>
     ) : (
-      <SideBarIcon text={text} icon={icon} />
+      <>
+        {icon ? (
+          <div onClick={onClick}>
+            <SideBarIcon text={text} icon={icon} />
+          </div>
+        ) : (
+          <div onClick={onClick} className="mx-6 my-2">
+            {text}
+          </div>
+        )}
+      </>
     )}
   </>
 );
-const SideBarIcon = ({
+
+export const SideBarIcon = ({
   icon,
   text,
 }: {
@@ -80,4 +112,7 @@ const SideBarIcon = ({
     )}
   </div>
 );
-const Divider = () => <hr className="sidebar-hr" />;
+export const Divider = () => <hr className="sidebar-hr" />;
+export const Caption = ({ text }: { text: any }) => (
+  <div className="sidebar-caption">{text}</div>
+);

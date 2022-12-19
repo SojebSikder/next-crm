@@ -1,6 +1,6 @@
 import React from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { Caption, SideBarItem } from "./Sidebar";
 
 export default function SettingSidebar() {
   const router = useRouter();
@@ -22,67 +22,3 @@ export default function SettingSidebar() {
     </div>
   );
 }
-
-const SideBarItem = ({
-  icon,
-  text,
-  href,
-}: {
-  /**
-   * Icon element
-   */
-  icon?: any;
-  /**
-   * Tooltip
-   */
-  text?: string;
-  /**
-   * url
-   */
-  href?: string;
-}) => (
-  <>
-    {href ? (
-      <Link href={`${href}`}>
-        {icon ? (
-          <SideBarIcon text={text} icon={icon} />
-        ) : (
-          <div className="mx-6 my-2">{text}</div>
-        )}
-      </Link>
-    ) : (
-      <>
-        {icon ? (
-          <SideBarIcon text={text} icon={icon} />
-        ) : (
-          <div className="mx-6 my-2">text</div>
-        )}
-      </>
-    )}
-  </>
-);
-
-const SideBarIcon = ({
-  icon,
-  text,
-}: {
-  /**
-   * Icon element
-   */
-  icon: any;
-  /**
-   * Tooltip
-   */
-  text?: string;
-}) => (
-  <div className="sidebar-icon group">
-    {icon}
-    {text && (
-      <span className="sidebar-tooltip group-hover:scale-100">{text}</span>
-    )}
-  </div>
-);
-const Divider = () => <hr className="sidebar-hr" />;
-const Caption = ({ text }: { text: any }) => (
-  <div className="sidebar-caption">{text}</div>
-);

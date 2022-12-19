@@ -134,6 +134,13 @@ export default function Message({
         conversation_id,
         data
       );
+      if (conversationService.data.success == true) {
+        // TODO remove conversation from side panel
+        const data = conversations.filter((con: any) => {
+          return [con.id != conversation_id];
+        });
+        setConversations((state: any) => [data]);
+      }
     } catch (error: any) {
       // return custom error message from API if any
       if (error.response && error.response.data.message) {

@@ -3,6 +3,7 @@ import Meta from "../../../../../../components/header/Meta";
 import SettingSidebar from "../../../../../../components/sidebar/SettingSidebar";
 import Sidebar from "../../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../../config/app.config";
+import { WorkspaceChannelService } from "../../../../../../service/space/WorkspaceChannelService";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -25,8 +26,32 @@ export default function Index({ workspace_id }: { workspace_id: string }) {
   const handleChannelDialog = () => {
     setShowDialog(true);
   };
-  const handleChannel = () => {
-    setShowDialog(true);
+  const handleChannel = async (e: any) => {
+    e.preventDefault();
+    const access_token = e.target.access_token.value;
+    const account_id = e.target.account_id.value;
+
+    const data = {
+      access_token: access_token,
+      account_id: account_id,
+    };
+    try {
+      const workspaceChannelService = await WorkspaceChannelService.create(
+        workspace_id,
+        data
+      );
+    } catch (error: any) {
+      // return custom error message from API if any
+      if (error.response && error.response.data.message) {
+        // setErrorMessage(error.response.data.message);
+        // setLoading(false);
+        console.log(error.response.data.message);
+      } else {
+        // setErrorMessage(error.message);
+        // setLoading(false);
+        console.log(error.message);
+      }
+    }
   };
 
   return (
@@ -44,27 +69,27 @@ export default function Index({ workspace_id }: { workspace_id: string }) {
             promotional broadcasts, and send abandoned cart and other template
             messages using your WhatsApp API approved phone number.
           </div>
-          <div className="m-4">
-            <input
-              type="text"
-              name="access_token"
-              className="w-1/3 input"
-              placeholder="Access token"
-            />
-          </div>
-          <div className="m-4">
-            <input
-              type="text"
-              name="account_id"
-              className="w-1/3 input"
-              placeholder="Account id"
-            />
-          </div>
-          <div className="m-4">
-            <button onClick={handleChannelDialog} className="btn-primary">
-              Submit
-            </button>
-          </div>
+          <form onSubmit={handleChannel} method="post">
+            <div className="m-4">
+              <input
+                type="text"
+                name="access_token"
+                className="w-1/3 input"
+                placeholder="Access token"
+              />
+            </div>
+            <div className="m-4">
+              <input
+                type="text"
+                name="account_id"
+                className="w-1/3 input"
+                placeholder="Account id"
+              />
+            </div>
+            <div className="m-4">
+              <button className="btn-primary">Submit</button>
+            </div>
+          </form>
         </div>
       </main>
     </div>
