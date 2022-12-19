@@ -19,6 +19,7 @@ export default function SettingSidebar() {
         href={`/space/${workspace_id}/settings/channels`}
         text="Channels"
       />
+      <SideBarItem href={`/space/${workspace_id}/settings/roles`} text="Role" />
     </div>
   );
 }
