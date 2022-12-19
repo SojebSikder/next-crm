@@ -7,6 +7,7 @@ import { AppConfig } from "../../../../../config/app.config";
 import CustomImage from "../../../../../components/reusable/CustomImage";
 import Link from "next/link";
 import { WorkspaceChannelService } from "../../../../../service/space/WorkspaceChannelService";
+import { RoleService } from "../../../../../service/space/RoleService";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -18,25 +19,22 @@ export const getServerSideProps = async (context: {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
 
-  const res_workspaceChannels = await WorkspaceChannelService.findAll(
-    workspace_id,
-    context
-  );
-  const workspaceChannels = res_workspaceChannels.data.data;
+  const res_roles = await RoleService.findAll(workspace_id, context);
+  const roles = res_roles.data.data;
 
   return {
     props: {
       workspace_id: workspace_id,
-      workspace_channels: workspaceChannels,
+      roles: roles,
     },
   };
 };
 export default function Index({
   workspace_id,
-  workspace_channels,
+  roles,
 }: {
   workspace_id: string;
-  workspace_channels: [];
+  roles: [];
 }) {
   const [showDialog, setShowDialog] = useState(false);
   const handleChannelDialog = () => {
@@ -56,28 +54,13 @@ export default function Index({
           <Link href={`/space/${workspace_id}/settings/roles/create`}>
             <div className="m-4 w-[20%] btn-primary">Create role</div>
           </Link>
-          {workspace_channels.map((channel: any) => {
+          {roles.map((role: any) => {
             return (
               <div
-                key={channel.id}
+                key={role.id}
                 className="m-4 p-4 border-solid shadow-sm border-[1px] border-b-slate-500"
               >
-                <div>
-                  {channel.channel_type} - {channel.channel_name}
-                </div>
-                <br />
-                <div>
-                  webhook url:
-                  <br />
-                  <span className="ml-4 font-[500]">{channel.webhook_url}</span>
-                </div>
-                <div>
-                  verify token:
-                  <br />
-                  <span className="ml-4 font-[500]">
-                    {channel.verify_token}
-                  </span>
-                </div>
+                <div>{role.title}</div>
               </div>
             );
           })}

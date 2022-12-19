@@ -7,6 +7,7 @@ import { PermissionService } from "../../../../../../service/permission/permissi
 import { WorkspaceChannelService } from "../../../../../../service/space/WorkspaceChannelService";
 import Select from "react-select";
 import { RoleService } from "../../../../../../service/space/RoleService";
+import { Alert } from "../../../../../../components/alert/Alert";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -40,6 +41,10 @@ export default function Index({
     setShowDialog(true);
   };
 
+  const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const [permissionIds, setPermissionIds] = useState<number[]>([]);
 
   const handlePermissionChange = (e: any) => {
@@ -60,15 +65,24 @@ export default function Index({
     };
     try {
       const roleService = await RoleService.create(workspace_id, data);
+      const resRole = roleService.data;
+
+      if (resRole.error) {
+        setErrorMessage(resRole.message);
+        setLoading(false);
+      } else {
+        setMessage(resRole.message);
+        setLoading(false);
+      }
     } catch (error: any) {
       // return custom error message from API if any
       if (error.response && error.response.data.message) {
-        // setErrorMessage(error.response.data.message);
-        // setLoading(false);
+        setErrorMessage(error.response.data.message);
+        setLoading(false);
         console.log(error.response.data.message);
       } else {
-        // setErrorMessage(error.message);
-        // setLoading(false);
+        setErrorMessage(error.message);
+        setLoading(false);
         console.log(error.message);
       }
     }
@@ -85,6 +99,9 @@ export default function Index({
             <h2 className="font-bold text-[1.5rem]">Create new role</h2>
           </div>
           <div className="m-4">Create role with specific permissions</div>
+          {loading && <div>Please wait...</div>}
+          {message && <Alert type={"success"}>{message}</Alert>}
+          {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
           <form onSubmit={handleRoleSubmit} method="post">
             <div className="m-4">
               <input
@@ -95,7 +112,7 @@ export default function Index({
                 required
               />
             </div>
-            <div className="m-4 w-1/3">
+            <div className="m-4">
               <Select
                 name="permission_ids"
                 required
