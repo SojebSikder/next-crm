@@ -3,20 +3,24 @@ import { useRouter } from "next/router";
 import React from "react";
 import { BsGearFill, BsMailbox, BsPerson, BsCircle } from "react-icons/bs";
 import { FaLockOpen } from "react-icons/fa";
+import { CookieHelper } from "../../helper/cookie.helper";
 
 export default function Sidebar() {
   const router = useRouter();
   const { workspace_id } = router.query;
 
   const handler = () => {
-    alert("Hello world");
+    if (confirm("Are you want to logout?")) {
+      CookieHelper.destroy({ key: "token" });
+      router.replace("/");
+    }
   };
 
   return (
     <>
       <div
         className="fixed top-0 left-0 h-screen w-16 flex flex-col
-    bg-[#ededed] dark:bg-gray-900 shadow-lg"
+      bg-[#ededed] dark:bg-gray-900 shadow-lg"
       >
         <SideBarItem text="My new workspace" icon={<BsCircle size="28" />} />
         <SideBarItem
