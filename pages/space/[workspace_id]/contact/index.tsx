@@ -190,17 +190,17 @@ export default function Contact({
                 </div>
               </div>
               <div className="m-4">
-                <button type="submit" className="btn-primary w-full">
+                <button type="submit" className="btn primary w-full">
                   Add
                 </button>
               </div>
             </form>
           </Dialog>
-          <button onClick={handleContactDialog} className="m-4 btn-primary">
+          <button onClick={handleContactDialog} className="m-4 btn primary">
             Add Contact
           </button>
-          <button className="m-4 btn-primary">Import Contacts</button>
-          <button onClick={handleExportContact} className="m-4 btn-primary">
+          <button className="m-4 btn primary">Import Contacts</button>
+          <button onClick={handleExportContact} className="m-4 btn primary">
             Export Contacts
           </button>
           <table className="overflow-x-scroll w-full text-sm text-left text-gray-500 dark:text-gray-400">

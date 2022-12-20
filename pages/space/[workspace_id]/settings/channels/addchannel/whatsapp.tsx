@@ -87,7 +87,7 @@ export default function Index({ workspace_id }: { workspace_id: string }) {
               />
             </div>
             <div className="m-4">
-              <button className="btn-primary">Submit</button>
+              <button className="btn primary">Submit</button>
             </div>
           </form>
         </div>

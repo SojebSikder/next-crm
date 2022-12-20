@@ -8,6 +8,8 @@ import CustomImage from "../../../../../components/reusable/CustomImage";
 import Link from "next/link";
 import { WorkspaceChannelService } from "../../../../../service/space/WorkspaceChannelService";
 import { RoleService } from "../../../../../service/space/RoleService";
+import { Alert } from "../../../../../components/alert/Alert";
+import { useRouter } from "next/navigation";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -37,30 +39,75 @@ export default function Index({
   roles: [];
 }) {
   const [showDialog, setShowDialog] = useState(false);
-  const handleChannelDialog = () => {
-    setShowDialog(true);
-  };
-  const handleChannel = () => {
-    setShowDialog(true);
+  const router = useRouter();
+
+  const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleRoleDelete = async (id: number) => {
+    if (confirm("Are you sure, want to delete this role?")) {
+      try {
+        const roleService = await RoleService.remove(id, workspace_id);
+        const resRole = roleService.data;
+
+        if (resRole.error) {
+          setErrorMessage(resRole.message);
+          setLoading(false);
+        } else {
+          setMessage(resRole.message);
+          setLoading(false);
+          router.refresh();
+        }
+      } catch (error: any) {
+        // return custom error message from API if any
+        if (error.response && error.response.data.message) {
+          setErrorMessage(error.response.data.message);
+          setLoading(false);
+          console.log(error.response.data.message);
+        } else {
+          setErrorMessage(error.message);
+          setLoading(false);
+          console.log(error.message);
+        }
+      }
+    }
   };
 
   return (
     <div>
-      <Meta title={`Channels | Settigs - ${AppConfig().app.name}`} />
+      <Meta title={`Roles | Settigs - ${AppConfig().app.name}`} />
       <Sidebar />
       <SettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
-          <Link href={`/space/${workspace_id}/settings/roles/create`}>
-            <div className="m-4 w-[20%] btn-primary">Create role</div>
-          </Link>
+          <div>
+            <Link href={`/space/${workspace_id}/settings/roles/create`}>
+              <div className="m-4 w-[20%] btn primary">Create role</div>
+            </Link>
+          </div>
+
+          {loading && <div>Please wait...</div>}
+          {message && <Alert type={"success"}>{message}</Alert>}
+          {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
+
           {roles.map((role: any) => {
             return (
               <div
                 key={role.id}
-                className="m-4 p-4 border-solid shadow-sm border-[1px] border-b-slate-500"
+                className="flex justify-between m-4 p-4 border-solid shadow-sm border-[1px] border-b-slate-500"
               >
-                <div>{role.title}</div>
+                <div>
+                  <div>{role.title}</div>
+                </div>
+                <div>
+                  <button
+                    onClick={() => handleRoleDelete(role.id)}
+                    className="btn danger"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             );
           })}

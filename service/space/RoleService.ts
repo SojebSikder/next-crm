@@ -47,4 +47,17 @@ export const RoleService = {
 
     return await Fetch.post(`/space/${workspace_id}/role`, data, _config);
   },
+
+  remove: async (id: number, workspace_id: string, context: any = null) => {
+    const userToken = CookieHelper.get({ key: "token", context });
+
+    const _config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + userToken,
+      },
+    };
+
+    return await Fetch.delete(`/space/${workspace_id}/role/${id}`, _config);
+  },
 };

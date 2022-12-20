@@ -232,7 +232,7 @@ export default function Message({
                   <div>
                     <button
                       onClick={handleCloseConversation}
-                      className="mb-4 btn-primary"
+                      className="mb-4 btn primary"
                     >
                       Close Conversation
                     </button>
@@ -298,7 +298,7 @@ export default function Message({
                       />
                     </div>
                     <div className="m-4">
-                      <button type="submit" className="btn-primary">
+                      <button type="submit" className="btn primary">
                         Send
                       </button>
                     </div>

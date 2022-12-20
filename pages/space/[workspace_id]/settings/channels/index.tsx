@@ -77,7 +77,7 @@ export default function Index({
               </div>
             </form>
           </Dialog>
-          <button onClick={handleChannelDialog} className="m-4 btn-primary">
+          <button onClick={handleChannelDialog} className="m-4 btn primary">
             Add Channel
           </button>
           {workspace_channels.map((channel: any) => {

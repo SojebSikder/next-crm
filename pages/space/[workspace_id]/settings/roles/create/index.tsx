@@ -117,6 +117,7 @@ export default function Index({
                 name="permission_ids"
                 required
                 isMulti
+                closeMenuOnSelect={false}
                 onChange={handlePermissionChange}
                 options={permissions.map((permission: any) => {
                   return {
@@ -127,7 +128,7 @@ export default function Index({
               />
             </div>
             <div className="m-4">
-              <button className="btn-primary">Save</button>
+              <button className="btn primary">Save</button>
             </div>
           </form>
         </div>
