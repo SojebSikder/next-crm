@@ -100,6 +100,11 @@ a:hover {
     hover:bg-blue-700
     focus:ring-blue-400;
   }
+  .warning {
+    @apply bg-yellow-500 text-white
+    hover:bg-yellow-700
+    focus:ring-yellow-400;
+  }
   .danger {
     @apply bg-red-500 text-white
     hover:bg-red-700

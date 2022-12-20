@@ -100,7 +100,14 @@ export default function Index({
                 <div>
                   <div>{role.title}</div>
                 </div>
+
                 <div>
+                  <Link
+                    href={`/space/${workspace_id}/settings/roles/${role.id}/edit`}
+                    className="btn warning mr-2"
+                  >
+                    Edit
+                  </Link>
                   <button
                     onClick={() => handleRoleDelete(role.id)}
                     className="btn danger"

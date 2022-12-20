@@ -8,7 +8,7 @@ const config = {
 };
 
 export const PermissionService = {
-  findAll: async (context: any = null) => {
+  findAll: async (workspace_id: string, context: any = null) => {
     const userToken = CookieHelper.get({ key: "token", context });
 
     const _config = {
@@ -18,6 +18,6 @@ export const PermissionService = {
       },
     };
 
-    return await Fetch.get(`/permission`, _config);
+    return await Fetch.get(`/space/${workspace_id}/permission`, _config);
   },
 };

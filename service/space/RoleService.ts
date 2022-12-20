@@ -21,6 +21,19 @@ export const RoleService = {
     return await Fetch.get(`/space/${workspace_id}/role`, _config);
   },
 
+  findOne: async (id: number, workspace_id: string, context: any = null) => {
+    const userToken = CookieHelper.get({ key: "token", context });
+
+    const _config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + userToken,
+      },
+    };
+
+    return await Fetch.get(`/space/${workspace_id}/role/${id}`, _config);
+  },
+
   create: async (
     workspace_id: string,
     {
@@ -46,6 +59,38 @@ export const RoleService = {
     };
 
     return await Fetch.post(`/space/${workspace_id}/role`, data, _config);
+  },
+
+  update: async (
+    id: string,
+    workspace_id: string,
+    {
+      title,
+      permission_ids,
+    }: {
+      title: string;
+      permission_ids: number[];
+    },
+    context: any = null
+  ) => {
+    const userToken = CookieHelper.get({ key: "token", context });
+
+    const _config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + userToken,
+      },
+    };
+    const data = {
+      title: title,
+      permission_ids: permission_ids,
+    };
+
+    return await Fetch.patch(
+      `/space/${workspace_id}/role/${id}`,
+      data,
+      _config
+    );
   },
 
   remove: async (id: number, workspace_id: string, context: any = null) => {
