@@ -19,7 +19,7 @@ export const getServerSideProps = async (context: {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
 
-  const res_permission = await PermissionService.findAll(context);
+  const res_permission = await PermissionService.findAll(workspace_id, context);
   const permissions = res_permission.data.data;
 
   return {
