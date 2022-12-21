@@ -10,7 +10,9 @@ export default function SettingSidebar() {
       className="fixed top-0 left-[64px] h-screen w-[230px] flex flex-col
     bg-[#f1f1f1] dark:bg-gray-900"
     >
-      <Caption text={"Workspace Settings"} />
+      {/* <Caption text={"Organization"} />
+      <Caption text={"General"} /> */}
+      <Caption text={"Workspace"} />
       <SideBarItem
         href={`/space/${workspace_id}/settings/general`}
         text="General"
@@ -19,6 +21,7 @@ export default function SettingSidebar() {
         href={`/space/${workspace_id}/settings/channels`}
         text="Channels"
       />
+      <SideBarItem href={`/space/${workspace_id}/settings/users`} text="User" />
       <SideBarItem href={`/space/${workspace_id}/settings/roles`} text="Role" />
     </div>
   );

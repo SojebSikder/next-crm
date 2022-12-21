@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { Alert } from "../../../../../../components/alert/Alert";
 import Meta from "../../../../../../components/header/Meta";
 import SettingSidebar from "../../../../../../components/sidebar/SettingSidebar";
 import Sidebar from "../../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../../config/app.config";
+import { PermissionService } from "../../../../../../service/permission/permission.service";
 import { WorkspaceChannelService } from "../../../../../../service/space/WorkspaceChannelService";
+import Select from "react-select";
+import { RoleService } from "../../../../../../service/space/RoleService";
+import { Alert } from "../../../../../../components/alert/Alert";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -16,47 +19,59 @@ export const getServerSideProps = async (context: {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
 
+  const res_permission = await PermissionService.findAll(workspace_id, context);
+  const permissions = res_permission.data.data;
+
   return {
     props: {
       workspace_id: workspace_id,
+      permissions: permissions,
     },
   };
 };
-export default function Index({ workspace_id }: { workspace_id: string }) {
+export default function Index({
+  workspace_id,
+  permissions,
+}: {
+  workspace_id: string;
+  permissions: any;
+}) {
   const [showDialog, setShowDialog] = useState(false);
+  const handleChannelDialog = () => {
+    setShowDialog(true);
+  };
 
   const [message, setMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleChannelDialog = () => {
-    setShowDialog(true);
+  const [permissionIds, setPermissionIds] = useState<number[]>([]);
+
+  const handlePermissionChange = (e: any) => {
+    const ids = e.map((option: any) => {
+      return option.value;
+    });
+    setPermissionIds(ids);
   };
-  const handleChannel = async (e: any) => {
+
+  const handleRoleSubmit = async (e: any) => {
     e.preventDefault();
-    const phone_number = e.target.phone_number.value;
-    const access_token = e.target.access_token.value;
-    const account_id = e.target.account_id.value;
+    const title = e.target.title.value;
+    const permission_ids = permissionIds;
 
     const data = {
-      phone_number: phone_number,
-      access_token: access_token,
-      account_id: account_id,
+      title: title,
+      permission_ids: permission_ids,
     };
-    setMessage(null);
-    setErrorMessage(null);
-    setLoading(true);
     try {
-      const workspaceChannelService = await WorkspaceChannelService.create(
-        workspace_id,
-        data
-      );
-      const res_workspaceChannel = workspaceChannelService.data;
-      if (res_workspaceChannel.error) {
-        setErrorMessage(res_workspaceChannel.message);
+      const roleService = await RoleService.create(workspace_id, data);
+      const resRole = roleService.data;
+
+      if (resRole.error) {
+        setErrorMessage(resRole.message);
         setLoading(false);
-      } else if (res_workspaceChannel.authorization) {
-        setMessage(res_workspaceChannel.message);
+      } else {
+        setMessage(resRole.message);
         setLoading(false);
       }
     } catch (error: any) {
@@ -75,52 +90,45 @@ export default function Index({ workspace_id }: { workspace_id: string }) {
 
   return (
     <div>
-      <Meta title={`Channels | Settigs - ${AppConfig().app.name}`} />
+      <Meta title={`Create Role | Settigs - ${AppConfig().app.name}`} />
       <Sidebar />
       <SettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <div className="m-4">
-            <h2 className="font-bold text-[1.5rem]">WhatsApp API Setup</h2>
+            <h2 className="font-bold text-[1.5rem]">Create new role</h2>
           </div>
-          <div className="m-4">
-            WhatsApp API access will allow you to manage customer support, send
-            promotional broadcasts, and send abandoned cart and other template
-            messages using your WhatsApp API approved phone number.
-          </div>
+          <div className="m-4">Create role with specific permissions</div>
           {loading && <div>Please wait...</div>}
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
-          <form onSubmit={handleChannel} method="post">
+          <form onSubmit={handleRoleSubmit} method="post">
             <div className="m-4">
               <input
                 type="text"
-                name="phone_number"
+                name="title"
                 className="w-1/3 input"
-                placeholder="Phone number"
+                placeholder="Title"
                 required
               />
             </div>
             <div className="m-4">
-              <input
-                type="text"
-                name="access_token"
-                className="w-1/3 input"
-                placeholder="Access token"
+              <Select
+                name="permission_ids"
                 required
+                isMulti
+                closeMenuOnSelect={false}
+                onChange={handlePermissionChange}
+                options={permissions.map((permission: any) => {
+                  return {
+                    value: permission.permission.id,
+                    label: permission.permission.title,
+                  };
+                })}
               />
             </div>
             <div className="m-4">
-              <input
-                type="text"
-                name="account_id"
-                className="w-1/3 input"
-                placeholder="Account id"
-                required
-              />
-            </div>
-            <div className="m-4">
-              <button className="btn primary">Submit</button>
+              <button className="btn primary">Save</button>
             </div>
           </form>
         </div>

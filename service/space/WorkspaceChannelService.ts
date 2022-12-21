@@ -23,7 +23,11 @@ export const WorkspaceChannelService = {
 
   create: async (
     workspace_id: string,
-    { access_token, account_id }: { access_token: string; account_id: string },
+    {
+      phone_number,
+      access_token,
+      account_id,
+    }: { phone_number: string; access_token: string; account_id: string },
     context: any = null
   ) => {
     const userToken = CookieHelper.get({ key: "token", context });
@@ -36,6 +40,7 @@ export const WorkspaceChannelService = {
     };
 
     const data = {
+      phone_number: phone_number,
       access_token: access_token,
       account_id: account_id,
     };
