@@ -32,6 +32,7 @@ export default function Index({ workspace_id }: { workspace_id: string }) {
   const handleChannelDialog = () => {
     setShowDialog(true);
   };
+
   const handleChannel = async (e: any) => {
     e.preventDefault();
     const phone_number = e.target.phone_number.value;
@@ -55,7 +56,7 @@ export default function Index({ workspace_id }: { workspace_id: string }) {
       if (res_workspaceChannel.error) {
         setErrorMessage(res_workspaceChannel.message);
         setLoading(false);
-      } else if (res_workspaceChannel.authorization) {
+      } else {
         setMessage(res_workspaceChannel.message);
         setLoading(false);
       }
