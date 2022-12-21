@@ -1,13 +1,19 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { BsGearFill, BsMailbox, BsPerson, BsCircle } from "react-icons/bs";
+import {
+  BsGearFill,
+  BsGearWideConnected,
+  BsMailbox,
+  BsPerson,
+  BsCircle,
+} from "react-icons/bs";
 import { FaLockOpen } from "react-icons/fa";
 import { CookieHelper } from "../../helper/cookie.helper";
 
 export default function Sidebar() {
   const router = useRouter();
-  const { workspace_id } = router.query;
+  const { workspace_id, organization_id } = router.query;
 
   const handler = () => {
     if (confirm("Are you want to logout?")) {
@@ -24,18 +30,23 @@ export default function Sidebar() {
       >
         <SideBarItem text="My new workspace" icon={<BsCircle size="28" />} />
         <SideBarItem
-          href={`/space/${workspace_id}/message`}
+          href={`/organization/${organization_id}/space/${workspace_id}/message`}
           text="Messages"
           icon={<BsMailbox size="32" />}
         />
         <SideBarItem
-          href={`/space/${workspace_id}/contact`}
+          href={`/organization/${organization_id}/space/${workspace_id}/contact`}
           text="Contacts"
           icon={<BsPerson size="32" />}
         />
         {/* <Divider /> */}
         <SideBarItem
-          href={`/space/${workspace_id}/settings/channels`}
+          href={`/organization/${organization_id}/space/${workspace_id}/settings/channels`}
+          text="Workspace Settings"
+          icon={<BsGearWideConnected size="22" />}
+        />
+        <SideBarItem
+          href={`/organization/${organization_id}/settings`}
           text="Settings"
           icon={<BsGearFill size="22" />}
         />

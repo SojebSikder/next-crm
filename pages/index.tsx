@@ -1,5 +1,6 @@
 import Footer from "../components/footer/Footer";
-import Header from "../components/header/Header";
+import Header from "../components/header/home/Header";
+
 import Meta from "../components/header/Meta";
 
 export default function Home() {
