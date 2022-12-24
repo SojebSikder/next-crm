@@ -23,6 +23,7 @@ export const getServerSideProps = async (context: {
 }) => {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
+  const organization_id = query.organization_id;
   const conversation_id = query.conversation_id;
 
   // get conversation
@@ -48,6 +49,7 @@ export const getServerSideProps = async (context: {
   return {
     props: {
       workspace_id: workspace_id,
+      organization_id: organization_id,
       conversation_id: conversation_id,
       conversationDatas: conversations,
       messageDatas: messageDatas,
@@ -59,12 +61,14 @@ export const getServerSideProps = async (context: {
 const socket = io(AppConfig().app.url);
 export default function Message({
   workspace_id,
+  organization_id,
   conversation_id,
   conversationDatas,
   messageDatas,
   workspace_channels,
 }: {
   workspace_id: string;
+  organization_id: string;
   conversation_id: string;
   conversationDatas: any;
   messageDatas: any;
@@ -195,7 +199,7 @@ export default function Message({
               return (
                 <Link
                   key={conversation.id}
-                  href={`/space/${workspace_id}/message/${conversation.id}`}
+                  href={`/organization/${organization_id}/space/${workspace_id}/message/${conversation.id}`}
                 >
                   <div
                     className={`cursor-pointer bg-[#eeeeee] transition-all 
