@@ -1,26 +1,36 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { AppConfig } from "../config/app.config";
-
+// TODO implement fetch
 const config = {
   headers: {
     "Content-Type": "application/json",
   },
 };
 
+type AdapterOption = "fetch" | "axios";
 /**
  * Custom fetch class
  */
 export class Fetch {
   private static _baseUrl = `${AppConfig().app.apiUrl}`;
+  private static _adapter: AdapterOption = "axios";
 
+  static setAdapter(adapter: AdapterOption) {
+    this._adapter = adapter;
+  }
   /**
    * get request
    * @param url
    * @param header
    * @returns
    */
-  static async get(url: string, header?: AxiosRequestConfig) {
-    return await axios.get(`${this._baseUrl}${url}`, header);
+  static async get(url: string, header?: any) {
+    if (this._adapter == "axios") {
+      return await axios.get(`${this._baseUrl}${url}`, header);
+    } else {
+      const res = await fetch(`${this._baseUrl}${url}`, header);
+      return await res.json();
+    }
   }
 
   /**

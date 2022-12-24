@@ -2,11 +2,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
+import AppHeader from "../../../../../../components/header/app/Header";
 import Meta from "../../../../../../components/header/Meta";
 import Dialog from "../../../../../../components/reusable/Dialog";
 import Sidebar from "../../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../../config/app.config";
 import { DateHelper } from "../../../../../../helper/date.helper";
+import { getUser } from "../../../../../../hooks/useUser";
 import { CountryService } from "../../../../../../service/country/country.service";
 import { ContactService } from "../../../../../../service/space/ContactService";
 import { ConversationService } from "../../../../../../service/space/ConversationService";
@@ -14,18 +16,14 @@ import { MessageService } from "../../../../../../service/space/MessageService";
 import { WorkspaceChannelService } from "../../../../../../service/space/WorkspaceChannelService";
 import { WorkspaceUserService } from "../../../../../../service/space/WorkspaceUserService";
 
-export const getServerSideProps = async (context: {
-  query: any;
-  req?: any;
-  res?: any;
-  asPath?: any;
-  pathname?: any;
-}) => {
+export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
   const organization_id = query.organization_id;
   const conversation_id = query.conversation_id;
 
+  // get user details
+  const userDetails = await getUser(context);
   // get conversation
   const res_conversations = await ConversationService.findAll(
     workspace_id,
@@ -54,6 +52,7 @@ export const getServerSideProps = async (context: {
       conversationDatas: conversations,
       messageDatas: messageDatas,
       workspace_channels: workspace_channels,
+      userDetails: userDetails,
     },
   };
 };
@@ -66,6 +65,7 @@ export default function Message({
   conversationDatas,
   messageDatas,
   workspace_channels,
+  userDetails,
 }: {
   workspace_id: string;
   organization_id: string;
@@ -73,6 +73,7 @@ export default function Message({
   conversationDatas: any;
   messageDatas: any;
   workspace_channels: any;
+  userDetails: any;
 }) {
   const router = useRouter();
 
@@ -189,130 +190,133 @@ export default function Message({
   }, [conversation_id]);
 
   return (
-    <div className="flex">
-      <Meta title={`Message - ${AppConfig().app.name}`} />
-      <Sidebar />
-      <main className="mt-5 ml-[80px] flex justify-center">
-        <div className="flex">
-          <div className="w-[220px] border-solid border-[1px]">
-            {conversations.map((conversation: any) => {
-              return (
-                <Link
-                  key={conversation.id}
-                  href={`/organization/${organization_id}/space/${workspace_id}/message/${conversation.id}`}
-                >
-                  <div
-                    className={`cursor-pointer bg-[#eeeeee] transition-all 
+    <>
+      <AppHeader customer_trial_end_at={userDetails.tenant.trial_end_at} />
+      <div className="flex">
+        <Meta title={`Message - ${AppConfig().app.name}`} />
+        <Sidebar />
+        <main className="mt-5 ml-[80px] flex justify-center">
+          <div className="flex">
+            <div className="w-[220px] border-solid border-[1px]">
+              {conversations.map((conversation: any) => {
+                return (
+                  <Link
+                    key={conversation.id}
+                    href={`/organization/${organization_id}/space/${workspace_id}/message/${conversation.id}`}
+                  >
+                    <div
+                      className={`cursor-pointer bg-[#eeeeee] transition-all 
                     ease-linear hover:bg-[#a19e9e] ${
                       conversation_id == conversation.id && "bg-[#a19e9e]"
                     } h-[80px]`}
-                  >
-                    <div className="flex justify-between">
-                      <div>
-                        <h5 className="m-4 font-[500]">
-                          {conversation.contact.fname}{" "}
-                          {conversation.contact.lname}
-                        </h5>
-                      </div>
-                      <div>
-                        <p className="text-right msg_time m-4 font-[500]">
-                          {DateHelper.format(
-                            conversation.updated_at,
-                            "MMMM-DD"
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-          <div className="ml-[150px] w-[430px] border-solid border-[1px]">
-            <div className="flex flex-col">
-              <div className="m-4 h-[38rem]">
-                <div className="border-b-gray-200 border-b-[1px] flex justify-between">
-                  <div>Select agent</div>
-                  <div>
-                    <button
-                      onClick={handleCloseConversation}
-                      className="mb-4 btn primary"
                     >
-                      Close Conversation
-                    </button>
-                  </div>
-                </div>
-                <div className="flex flex-col h-[95%] overflow-y-scroll border-b-gray-200 border-b-[1px]">
-                  {messages.map((msg: any) => {
-                    if (msg.message_from_workspace) {
-                      return (
-                        <div
-                          key={msg.message_id}
-                          data-time={DateHelper.formatDate(msg.created_at)}
-                          className="msg sent text-right m-2 p-3 rounded-md w-auto inline bg-gray-200"
-                        >
-                          {msg.body_text}
-                          <p className="msg_time">
-                            {DateHelper.format(msg.created_at)}
+                      <div className="flex justify-between">
+                        <div>
+                          <h5 className="m-4 font-[500]">
+                            {conversation.contact.fname}{" "}
+                            {conversation.contact.lname}
+                          </h5>
+                        </div>
+                        <div>
+                          <p className="text-right msg_time m-4 font-[500]">
+                            {DateHelper.format(
+                              conversation.updated_at,
+                              "MMMM-DD"
+                            )}
                           </p>
                         </div>
-                      );
-                    } else {
-                      return (
-                        <div
-                          key={msg.message_id}
-                          data-time={DateHelper.formatDate(msg.created_at)}
-                          className="msg rcvd m-2 p-3 rounded-md w-auto inline bg-gray-400"
-                        >
-                          {msg.body_text}
-                          <p className="msg_time">
-                            {DateHelper.format(msg.created_at).toString()}
-                          </p>
-                        </div>
-                      );
-                    }
-                  })}
-                  <div ref={messagesEndRef} />
-                </div>
-              </div>
-              <div>
-                <div className="m-4">
-                  <select
-                    onChange={handleWorkspaceChannelIdChange}
-                    className="input"
-                    name="workspace_channel_id"
-                  >
-                    {workspace_channels.map((channel: any) => {
-                      return (
-                        <option key={channel.id} value={channel.id}>
-                          {channel.channel_name}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-                <form onSubmit={handleSendMessage} method="post">
-                  <div className="flex flex-row">
-                    <div className="m-4 w-full">
-                      <input
-                        className="input"
-                        type="text"
-                        name="body_text"
-                        placeholder="Message sojebsikder"
-                      />
+                      </div>
                     </div>
-                    <div className="m-4">
-                      <button type="submit" className="btn primary">
-                        Send
+                  </Link>
+                );
+              })}
+            </div>
+            <div className="ml-[150px] w-[430px] border-solid border-[1px]">
+              <div className="flex flex-col">
+                <div className="m-4 h-[38rem]">
+                  <div className="border-b-gray-200 border-b-[1px] flex justify-between">
+                    <div>Select agent</div>
+                    <div>
+                      <button
+                        onClick={handleCloseConversation}
+                        className="mb-4 btn primary"
+                      >
+                        Close Conversation
                       </button>
                     </div>
                   </div>
-                </form>
+                  <div className="flex flex-col h-[95%] overflow-y-scroll border-b-gray-200 border-b-[1px]">
+                    {messages.map((msg: any) => {
+                      if (msg.message_from_workspace) {
+                        return (
+                          <div
+                            key={msg.message_id}
+                            data-time={DateHelper.formatDate(msg.created_at)}
+                            className="msg sent text-right m-2 p-3 rounded-md w-auto inline bg-gray-200"
+                          >
+                            {msg.body_text}
+                            <p className="msg_time">
+                              {DateHelper.format(msg.created_at)}
+                            </p>
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div
+                            key={msg.message_id}
+                            data-time={DateHelper.formatDate(msg.created_at)}
+                            className="msg rcvd m-2 p-3 rounded-md w-auto inline bg-gray-400"
+                          >
+                            {msg.body_text}
+                            <p className="msg_time">
+                              {DateHelper.format(msg.created_at).toString()}
+                            </p>
+                          </div>
+                        );
+                      }
+                    })}
+                    <div ref={messagesEndRef} />
+                  </div>
+                </div>
+                <div>
+                  <div className="m-4">
+                    <select
+                      onChange={handleWorkspaceChannelIdChange}
+                      className="input"
+                      name="workspace_channel_id"
+                    >
+                      {workspace_channels.map((channel: any) => {
+                        return (
+                          <option key={channel.id} value={channel.id}>
+                            {channel.channel_name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                  <form onSubmit={handleSendMessage} method="post">
+                    <div className="flex flex-row">
+                      <div className="m-4 w-full">
+                        <input
+                          className="input"
+                          type="text"
+                          name="body_text"
+                          placeholder="Message sojebsikder"
+                        />
+                      </div>
+                      <div className="m-4">
+                        <button type="submit" className="btn primary">
+                          Send
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
