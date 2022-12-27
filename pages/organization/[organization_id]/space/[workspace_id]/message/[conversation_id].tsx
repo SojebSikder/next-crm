@@ -24,12 +24,15 @@ export const getServerSideProps = async (context: any) => {
 
   // get user details
   const userDetails = await getUser(context);
+  const workspace_users = userDetails.workspace_users;
+
   // get conversation
   const res_conversations = await ConversationService.findAll(
     workspace_id,
     context
   );
   const conversations = res_conversations.data.data;
+
   // get messages
   const res_messages = await MessageService.findAll(
     workspace_id,
@@ -37,6 +40,7 @@ export const getServerSideProps = async (context: any) => {
     context
   );
   const messageDatas = res_messages.data.data;
+
   // get workspace channel
   const res_workspace_channels = await WorkspaceChannelService.findAll(
     workspace_id,
@@ -46,37 +50,42 @@ export const getServerSideProps = async (context: any) => {
 
   return {
     props: {
-      workspace_id: workspace_id,
+      workspaceId: workspace_id,
       organization_id: organization_id,
-      conversation_id: conversation_id,
+      conversationId: conversation_id,
       conversationDatas: conversations,
       messageDatas: messageDatas,
       workspace_channels: workspace_channels,
       userDetails: userDetails,
+      workspace_users: workspace_users,
     },
   };
 };
 
 const socket = io(AppConfig().app.url);
 export default function Message({
-  workspace_id,
+  workspaceId,
   organization_id,
-  conversation_id,
+  conversationId,
   conversationDatas,
   messageDatas,
   workspace_channels,
   userDetails,
+  workspace_users,
 }: {
-  workspace_id: string;
+  workspaceId: string;
   organization_id: string;
-  conversation_id: string;
+  conversationId: string;
   conversationDatas: any;
   messageDatas: any;
   workspace_channels: any;
   userDetails: any;
+  workspace_users: any;
 }) {
   const router = useRouter();
 
+  const [workspace_id, setWorkspace_id] = useState(workspaceId)
+  const [conversation_id, setConversation_id] = useState(conversationId);
   const messagesEndRef = useRef<HTMLInputElement>(null);
   const [messages, setMessages] = useState(messageDatas);
   const [conversations, setConversations] = useState(conversationDatas);
@@ -197,6 +206,34 @@ export default function Message({
         <Sidebar />
         <main className="mt-5 ml-[80px] flex justify-center">
           <div className="flex">
+            {/* channels */}
+            <div className="w-[165px] border-solid border-[1px]">
+              {workspace_users.map((workspace_user: any) => {
+                return (
+                  <Link
+                    key={workspace_user.id}
+                    href={`/organization/${organization_id}/space/${workspace_id}/message/${workspace_user.id}`}
+                  >
+                    <div
+                      className={`cursor-pointer bg-[#eeeeee] transition-all 
+                      ease-linear hover:bg-[#a19e9e] ${
+                        workspace_id == workspace_user.workspace.id &&
+                        "bg-[#a19e9e]"
+                      } h-[80px]`}
+                    >
+                      <div className="flex justify-between">
+                        <div>
+                          <h5 className="m-4 font-[500]">
+                            {workspace_user.workspace.name}
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+            {/* conversations list */}
             <div className="w-[220px] border-solid border-[1px]">
               {conversations.map((conversation: any) => {
                 return (
