@@ -130,6 +130,7 @@ export default function Message({
 
     // reset message box
     e.target.body_text.value = "";
+    setMessageBox("");
 
     const data = {
       body_text: body_text,
