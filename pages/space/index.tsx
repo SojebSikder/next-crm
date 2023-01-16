@@ -1,6 +1,6 @@
 import React from "react";
 
-import Meta from "../../../../components/header/Meta";
+import Meta from "../../components/header/Meta";
 
 export default function index() {
   return (

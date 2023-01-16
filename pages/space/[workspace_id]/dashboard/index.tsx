@@ -1,8 +1,8 @@
 import React from "react";
-import AppHeader from "../../../../../../components/header/app/Header";
-import Meta from "../../../../../../components/header/Meta";
-import Sidebar from "../../../../../../components/sidebar/Sidebar";
-import { getUser } from "../../../../../../hooks/useUser";
+import AppHeader from "../../../../components/header/app/Header";
+import Meta from "../../../../components/header/Meta";
+import Sidebar from "../../../../components/sidebar/Sidebar";
+import { getUser } from "../../../../hooks/useUser";
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;

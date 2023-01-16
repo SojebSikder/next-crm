@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import Meta from "../../../../../../../components/header/Meta";
-import Dialog from "../../../../../../../components/reusable/Dialog";
-import SettingSidebar from "../../../../../../../components/sidebar/SettingSidebar";
-import Sidebar from "../../../../../../../components/sidebar/Sidebar";
-import { AppConfig } from "../../../../../../../config/app.config";
-import CustomImage from "../../../../../../../components/reusable/CustomImage";
+import Meta from "../../../../../components/header/Meta";
+import Dialog from "../../../../../components/reusable/Dialog";
+import SettingSidebar from "../../../../../components/sidebar/SettingSidebar";
+import Sidebar from "../../../../../components/sidebar/Sidebar";
+import { AppConfig } from "../../../../../config/app.config";
+import CustomImage from "../../../../../components/reusable/CustomImage";
 import Link from "next/link";
-import { WorkspaceChannelService } from "../../../../../../../service/space/WorkspaceChannelService";
+import { WorkspaceChannelService } from "../../../../../service/space/WorkspaceChannelService";
 import { useRouter } from "next/navigation";
-import { Alert } from "../../../../../../../components/alert/Alert";
+import { Alert } from "../../../../../components/alert/Alert";
 
 export const getServerSideProps = async (context: {
   query: any;

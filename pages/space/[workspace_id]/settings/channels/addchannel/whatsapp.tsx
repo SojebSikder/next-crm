@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Alert } from "../../../../../../../../components/alert/Alert";
-import Meta from "../../../../../../../../components/header/Meta";
-import SettingSidebar from "../../../../../../../../components/sidebar/SettingSidebar";
-import Sidebar from "../../../../../../../../components/sidebar/Sidebar";
-import { AppConfig } from "../../../../../../../../config/app.config";
-import { WorkspaceChannelService } from "../../../../../../../../service/space/WorkspaceChannelService";
+import { Alert } from "../../../../../../components/alert/Alert";
+import Meta from "../../../../../../components/header/Meta";
+import SettingSidebar from "../../../../../../components/sidebar/SettingSidebar";
+import Sidebar from "../../../../../../components/sidebar/Sidebar";
+import { AppConfig } from "../../../../../../config/app.config";
+import { WorkspaceChannelService } from "../../../../../../service/space/WorkspaceChannelService";
 
 export const getServerSideProps = async (context: {
   query: any;

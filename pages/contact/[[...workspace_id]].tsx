@@ -128,7 +128,13 @@ export default function Contact({
             return (
               <div key={workspace_user.workspace.id}>
                 <Link href={`/contact/${workspace_user.workspace.id}`}>
-                  <div className="p-4 hover:text-white hover:bg-[var(--primary-hover-color)]">
+                  <div
+                    className={`p-4 hover:text-white ${
+                      workspace_id == workspace_user.workspace.id
+                        ? "text-white bg-[var(--primary-hover-color)]"
+                        : ""
+                    } hover:bg-[var(--primary-hover-color)]`}
+                  >
                     {workspace_user.workspace.name}
                   </div>
                 </Link>

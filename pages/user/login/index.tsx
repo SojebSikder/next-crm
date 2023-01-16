@@ -16,7 +16,7 @@ export const getServerSideProps = async (context: any) => {
     const organization_id = userDetails.tenant_id;
     return {
       redirect: {
-        destination: `/organization/${organization_id}/space/${workspace_id}/dashboard`,
+        destination: `/space/${workspace_id}/dashboard`,
         permanent: false,
       },
     };

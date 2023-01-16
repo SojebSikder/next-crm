@@ -41,12 +41,12 @@ export default function Sidebar() {
         />
         {/* <Divider /> */}
         <SideBarItem
-          href={`/organization/${organization_id}/space/${workspace_id}/settings/channels`}
+          href={`/space/${workspace_id}/settings/channels`}
           text="Workspace Settings"
           icon={<BsGearWideConnected size="22" />}
         />
         <SideBarItem
-          href={`/organization/${organization_id}/settings`}
+          href={`/settings`}
           text="Settings"
           icon={<BsGearFill size="22" />}
         />
