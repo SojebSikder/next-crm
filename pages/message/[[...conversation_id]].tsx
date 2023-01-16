@@ -37,7 +37,6 @@ export const getServerSideProps = async (context: any) => {
   const conversations = workspace_users[0].workspace.conversations;
 
   const workspace_id = workspace_users[0].workspace.id;
-  const organization_id = conversations[0].id;
   // get messages
   let res_messages;
   let messageDatas = [];
@@ -62,7 +61,6 @@ export const getServerSideProps = async (context: any) => {
   return {
     props: {
       workspaceId: workspace_id,
-      organization_id: organization_id,
       conversationId: conversation_id,
       conversationDatas: conversations,
       messageDatas: messageDatas,
@@ -173,8 +171,12 @@ export default function Message({
     }
   };
 
-  const handleConversationSelect = (id: string) => {
-    setWorkspace_id(id);
+  const handleConversationSelect = (
+    _workspace_id: string,
+    _conversation_id: string
+  ) => {
+    setWorkspace_id(_workspace_id);
+    setConversation_id(_conversation_id);
   };
 
   const scrollToBottom = () => {
@@ -275,7 +277,8 @@ export default function Message({
                             <Link
                               onClick={() =>
                                 handleConversationSelect(
-                                  workspace_user.workspace.id
+                                  workspace_user.workspace.id,
+                                  conversation.id
                                 )
                               }
                               href={`/message/${conversation.id}`}
