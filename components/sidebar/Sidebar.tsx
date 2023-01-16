@@ -30,7 +30,7 @@ export default function Sidebar() {
       >
         <SideBarItem text="My new workspace" icon={<BsCircle size="28" />} />
         <SideBarItem
-          href={`/organization/${organization_id}/space/${workspace_id}/message`}
+          href={`/message`}
           text="Messages"
           icon={<BsMailbox size="32" />}
         />

@@ -2,50 +2,55 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
-import AppHeader from "../../../../../../components/header/app/Header";
-import Meta from "../../../../../../components/header/Meta";
-import Dialog from "../../../../../../components/reusable/Dialog";
-import Sidebar from "../../../../../../components/sidebar/Sidebar";
-import { AppConfig } from "../../../../../../config/app.config";
-import { DateHelper } from "../../../../../../helper/date.helper";
-import { getUser } from "../../../../../../hooks/useUser";
-import { CountryService } from "../../../../../../service/country/country.service";
-import { ContactService } from "../../../../../../service/space/ContactService";
-import { ConversationService } from "../../../../../../service/space/ConversationService";
-import { MessageService } from "../../../../../../service/space/MessageService";
-import { WorkspaceChannelService } from "../../../../../../service/space/WorkspaceChannelService";
-import { WorkspaceUserService } from "../../../../../../service/space/WorkspaceUserService";
-import {
-  PopupMenu,
-  PopupMenuItem,
-} from "../../../../../../components/reusable/PopupMenu";
-import Accordion from "../../../../../../components/reusable/Accordion";
+import AppHeader from "../../components/header/app/Header";
+import Meta from "../../components/header/Meta";
+import Dialog from "../../components/reusable/Dialog";
+import Sidebar from "../../components/sidebar/Sidebar";
+import { AppConfig } from "../../config/app.config";
+import { DateHelper } from "../../helper/date.helper";
+import { getUser } from "../../hooks/useUser";
+import { CountryService } from "../../service/country/country.service";
+import { ContactService } from "../../service/space/ContactService";
+import { ConversationService } from "../../service/space/ConversationService";
+import { MessageService } from "../../service/space/MessageService";
+import { WorkspaceChannelService } from "../../service/space/WorkspaceChannelService";
+import { WorkspaceUserService } from "../../service/space/WorkspaceUserService";
+import { PopupMenu, PopupMenuItem } from "../../components/reusable/PopupMenu";
+import Accordion from "../../components/reusable/Accordion";
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
-  const workspace_id = query.workspace_id;
-  const organization_id = query.organization_id;
-  const conversation_id = query.conversation_id;
+  // const workspace_id = query.workspace_id;
+  // const organization_id = query.organization_id;
+  let conversation_id = query.conversation_id ? query.conversation_id : null;
 
   // get user details
   const userDetails = await getUser(context);
   const workspace_users = userDetails.workspace_users;
-  console.log(workspace_users);
 
   // get conversation
-  const res_conversations = await ConversationService.findAll(
-    workspace_id,
-    context
-  );
-  const conversations = res_conversations.data.data;
+  // const res_conversations = await ConversationService.findAll(
+  //   workspace_id,
+  //   context
+  // );
+  // const conversations = res_conversations.data.data;
+  const conversations = workspace_users[0].workspace.conversations;
 
+  const workspace_id = workspace_users[0].workspace.id;
+  const organization_id = conversations[0].id;
   // get messages
-  const res_messages = await MessageService.findAll(
-    workspace_id,
-    conversation_id,
-    context
-  );
-  const messageDatas = res_messages.data.data;
+  let res_messages;
+  let messageDatas = [];
+  if (conversation_id) {
+    res_messages = await MessageService.findAll(
+      workspace_id,
+      conversation_id,
+      context
+    );
+  }
+  if (res_messages) {
+    messageDatas = res_messages.data.data;
+  }
 
   // get workspace channel
   const res_workspace_channels = await WorkspaceChannelService.findAll(
@@ -99,9 +104,12 @@ export default function Message({
   const router = useRouter();
 
   const [workspace_id, setWorkspace_id] = useState(workspaceId);
-  const [conversation_id, setConversation_id] = useState(conversationId);
+  const [conversation_id, setConversation_id] = useState(
+    conversationId ? conversationId : null
+  );
   const messagesEndRef = useRef<HTMLInputElement>(null);
   const [messages, setMessages] = useState(messageDatas);
+
   const [conversations, setConversations] = useState(conversationDatas);
   const [workspaceChannelId, setWorkspaceChannelId] = useState(
     workspace_channels.length > 0 ? workspace_channels[0].id : 0
@@ -127,6 +135,11 @@ export default function Message({
 
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
+
+    if (!conversation_id) {
+      return alert("Please select a conversation");
+    }
+
     const body_text = e.target.body_text.value;
     const workspace_channel_id = workspaceChannelId;
 
@@ -160,11 +173,19 @@ export default function Message({
     }
   };
 
+  const handleConversationSelect = (id: string) => {
+    setWorkspace_id(id);
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleCloseConversation = async () => {
+    if (!conversation_id) {
+      return alert("Please select a conversation");
+    }
+
     const data = {
       is_open: false,
       workspace_id: workspace_id,
@@ -198,6 +219,10 @@ export default function Message({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    setConversation_id(conversationId);
+  }, [conversationId]);
 
   useEffect(() => {
     // set message
@@ -237,7 +262,7 @@ export default function Message({
               {workspace_users.map((workspace_user: any) => {
                 return (
                   <Accordion
-                    key={workspace_user.id}
+                    key={workspace_user.id + 1}
                     label={workspace_user.workspace.name}
                     active={
                       workspace_id == workspace_user.workspace.id ? true : false
@@ -248,8 +273,12 @@ export default function Message({
                         return (
                           <div key={conversation.id}>
                             <Link
-                              key={conversation.id}
-                              href={`/organization/${organization_id}/space/${workspace_id}/message/${conversation.id}`}
+                              onClick={() =>
+                                handleConversationSelect(
+                                  workspace_user.workspace.id
+                                )
+                              }
+                              href={`/message/${conversation.id}`}
                             >
                               {conversation.contact.fname}{" "}
                               {conversation.contact.lname}
@@ -263,105 +292,111 @@ export default function Message({
               })}
             </div>
             <div className="ml-[150px] w-[430px] border-solid border-[1px]">
-              <div className="flex flex-col">
-                <div className="m-4 h-[38rem]">
-                  <div className="border-b-gray-200 border-b-[1px] flex justify-between">
-                    <div>Select agent</div>
-                    <div>
-                      <button
-                        onClick={handleCloseConversation}
-                        className="mb-4 btn primary"
-                      >
-                        Close Conversation
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex flex-col h-[95%] overflow-y-scroll border-b-gray-200 border-b-[1px]">
-                    {messages.map((msg: any) => {
-                      if (msg.message_from_workspace) {
-                        return (
-                          <div
-                            key={msg.message_id}
-                            data-time={DateHelper.formatDate(msg.created_at)}
-                            className="msg sent text-right m-2 p-3 rounded-md w-auto inline bg-gray-200"
-                          >
-                            {msg.body_text}
-                            <p className="msg_time">
-                              {DateHelper.format(msg.created_at)}
-                            </p>
-                          </div>
-                        );
-                      } else {
-                        return (
-                          <div
-                            key={msg.message_id}
-                            data-time={DateHelper.formatDate(msg.created_at)}
-                            className="msg rcvd m-2 p-3 rounded-md w-auto inline bg-gray-400"
-                          >
-                            {msg.body_text}
-                            <p className="msg_time">
-                              {DateHelper.format(msg.created_at).toString()}
-                            </p>
-                          </div>
-                        );
-                      }
-                    })}
-                    <div ref={messagesEndRef} />
-                  </div>
-                </div>
-                <div>
-                  <div className="m-4">
-                    <select
-                      onChange={handleWorkspaceChannelIdChange}
-                      className="input"
-                      name="workspace_channel_id"
-                    >
-                      {workspace_channels.map((channel: any) => {
-                        return (
-                          <option key={channel.id} value={channel.id}>
-                            {channel.channel_name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-                  <form onSubmit={handleSendMessage} method="post">
-                    <div className="flex flex-row">
-                      <div className="ml-4 mr-1 mb-2 w-full">
-                        <input
-                          onChange={handleMessageBox}
-                          value={messageBox}
-                          className="input"
-                          type="text"
-                          name="body_text"
-                          placeholder={`Message`}
-                        />
-                      </div>
-                      <div className="mr-4">
-                        <button type="submit" className="btn primary">
-                          Send
+              {conversation_id ? (
+                <div className="flex flex-col">
+                  <div className="m-4 h-[38rem]">
+                    <div className="border-b-gray-200 border-b-[1px] flex justify-between">
+                      <div>Select agent</div>
+                      <div>
+                        <button
+                          onClick={handleCloseConversation}
+                          className="mb-4 btn primary"
+                        >
+                          Close Conversation
                         </button>
                       </div>
                     </div>
-                  </form>
-                  <div>
-                    <div className="ml-4">
-                      <PopupMenu label="Variables">
-                        {dynamic_variables_list.map((variable, i) => {
+                    <div className="flex flex-col h-[95%] overflow-y-scroll border-b-gray-200 border-b-[1px]">
+                      {messages.map((msg: any) => {
+                        if (msg.message_from_workspace) {
                           return (
-                            <PopupMenuItem
-                              onClick={() => handleVariable(variable)}
-                              key={i}
+                            <div
+                              key={msg.message_id}
+                              data-time={DateHelper.formatDate(msg.created_at)}
+                              className="msg sent text-right m-2 p-3 rounded-md w-auto inline bg-gray-200"
                             >
-                              {variable}
-                            </PopupMenuItem>
+                              {msg.body_text}
+                              <p className="msg_time">
+                                {DateHelper.format(msg.created_at)}
+                              </p>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div
+                              key={msg.message_id}
+                              data-time={DateHelper.formatDate(msg.created_at)}
+                              className="msg rcvd m-2 p-3 rounded-md w-auto inline bg-gray-400"
+                            >
+                              {msg.body_text}
+                              <p className="msg_time">
+                                {DateHelper.format(msg.created_at).toString()}
+                              </p>
+                            </div>
+                          );
+                        }
+                      })}
+                      <div ref={messagesEndRef} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="m-4">
+                      <select
+                        onChange={handleWorkspaceChannelIdChange}
+                        className="input"
+                        name="workspace_channel_id"
+                      >
+                        {workspace_channels.map((channel: any) => {
+                          return (
+                            <option key={channel.id} value={channel.id}>
+                              {channel.channel_name}
+                            </option>
                           );
                         })}
-                      </PopupMenu>
+                      </select>
+                    </div>
+                    <form onSubmit={handleSendMessage} method="post">
+                      <div className="flex flex-row">
+                        <div className="ml-4 mr-1 mb-2 w-full">
+                          <input
+                            onChange={handleMessageBox}
+                            value={messageBox}
+                            className="input"
+                            type="text"
+                            name="body_text"
+                            placeholder={`Message`}
+                          />
+                        </div>
+                        <div className="mr-4">
+                          <button type="submit" className="btn primary">
+                            Send
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                    <div>
+                      <div className="ml-4">
+                        <PopupMenu label="Variables">
+                          {dynamic_variables_list.map((variable, i) => {
+                            return (
+                              <PopupMenuItem
+                                key={i}
+                                onClick={() => handleVariable(variable)}
+                              >
+                                {variable}
+                              </PopupMenuItem>
+                            );
+                          })}
+                        </PopupMenu>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="m-4 flex justify-center">
+                  Select a conversation
+                </div>
+              )}
             </div>
           </div>
         </main>
