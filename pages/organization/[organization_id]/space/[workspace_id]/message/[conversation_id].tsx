@@ -15,6 +15,10 @@ import { ConversationService } from "../../../../../../service/space/Conversatio
 import { MessageService } from "../../../../../../service/space/MessageService";
 import { WorkspaceChannelService } from "../../../../../../service/space/WorkspaceChannelService";
 import { WorkspaceUserService } from "../../../../../../service/space/WorkspaceUserService";
+import {
+  PopupMenu,
+  PopupMenuItem,
+} from "../../../../../../components/reusable/PopupMenu";
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
@@ -63,6 +67,14 @@ export const getServerSideProps = async (context: any) => {
 };
 
 const socket = io(AppConfig().app.url);
+const dynamic_variables_list = [
+  "${contact.name}",
+  "${contact.fname}",
+  "${contact.lname}",
+  "${contact.email}",
+  "${contact.phone_number}",
+  "${contact.country}",
+];
 export default function Message({
   workspaceId,
   organization_id,
@@ -84,7 +96,7 @@ export default function Message({
 }) {
   const router = useRouter();
 
-  const [workspace_id, setWorkspace_id] = useState(workspaceId)
+  const [workspace_id, setWorkspace_id] = useState(workspaceId);
   const [conversation_id, setConversation_id] = useState(conversationId);
   const messagesEndRef = useRef<HTMLInputElement>(null);
   const [messages, setMessages] = useState(messageDatas);
@@ -93,13 +105,22 @@ export default function Message({
     workspace_channels.length > 0 ? workspace_channels[0].id : 0
   );
   const [showDialog, setShowDialog] = useState(false);
+  const [messageBox, setMessageBox] = useState("");
 
   const handleWorkspaceChannelIdChange = (e: any) => {
     setWorkspaceChannelId(e.target.value);
   };
 
+  const handleMessageBox = (e: any) => {
+    setMessageBox(e.target.value);
+  };
+
   const handleDialog = () => {
     setShowDialog(true);
+  };
+
+  const handleVariable = (variable: string) => {
+    setMessageBox((prev) => prev + " " + variable);
   };
 
   const handleSendMessage = async (e: any) => {
@@ -107,12 +128,16 @@ export default function Message({
     const body_text = e.target.body_text.value;
     const workspace_channel_id = workspaceChannelId;
 
+    // reset message box
+    e.target.body_text.value = "";
+
     const data = {
       body_text: body_text,
       workspace_channel_id: workspace_channel_id,
       conversation_id: conversation_id,
       workspace_id: workspace_id,
     };
+
     try {
       const messageService = await MessageService.create(data);
 
@@ -130,8 +155,6 @@ export default function Message({
         console.log(error.message);
       }
     }
-    // reset message box
-    e.target.body_text.value = "";
   };
 
   const scrollToBottom = () => {
@@ -333,21 +356,39 @@ export default function Message({
                   </div>
                   <form onSubmit={handleSendMessage} method="post">
                     <div className="flex flex-row">
-                      <div className="m-4 w-full">
+                      <div className="ml-4 mr-1 mb-2 w-full">
                         <input
+                          onChange={handleMessageBox}
+                          value={messageBox}
                           className="input"
                           type="text"
                           name="body_text"
-                          placeholder="Message sojebsikder"
+                          placeholder={`Message`}
                         />
                       </div>
-                      <div className="m-4">
+                      <div className="mr-4">
                         <button type="submit" className="btn primary">
                           Send
                         </button>
                       </div>
                     </div>
                   </form>
+                  <div>
+                    <div className="ml-4">
+                      <PopupMenu label="Variables">
+                        {dynamic_variables_list.map((variable, i) => {
+                          return (
+                            <PopupMenuItem
+                              onClick={() => handleVariable(variable)}
+                              key={i}
+                            >
+                              {variable}
+                            </PopupMenuItem>
+                          );
+                        })}
+                      </PopupMenu>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
