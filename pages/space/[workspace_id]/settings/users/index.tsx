@@ -46,7 +46,7 @@ export default function Index({
   const [loading, setLoading] = useState(false);
 
   const handleRoleDelete = async (id: number) => {
-    if (confirm("Are you sure, want to delete this role?")) {
+    if (confirm("Are you sure, want to delete this user?")) {
       try {
         const roleService = await RoleService.remove(id, workspace_id);
         const resRole = roleService.data;
@@ -76,7 +76,7 @@ export default function Index({
 
   return (
     <div>
-      <Meta title={`Roles | Settigs - ${AppConfig().app.name}`} />
+      <Meta title={`Users | Settings - ${AppConfig().app.name}`} />
       <Sidebar />
       <WorkspaceSettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
@@ -103,7 +103,7 @@ export default function Index({
 
                 <div>
                   <Link
-                    href={`/space/${workspace_id}/settings/roles/${role.id}/edit`}
+                    href={`/space/${workspace_id}/settings/users/${role.id}/edit`}
                     className="btn warning mr-2"
                   >
                     Edit

@@ -1,8 +1,8 @@
 import React from "react";
-import Meta from "../../../../../../../components/header/Meta";
-import SettingSidebar from "../../../../../../../components/sidebar/SettingSidebar";
-import Sidebar from "../../../../../../../components/sidebar/Sidebar";
-import { AppConfig } from "../../../../../../../config/app.config";
+import Meta from "../../../../../components/header/Meta";
+import WorkspaceSettingSidebar from "../../../../../components/sidebar/WorkspaceSettingSidebar";
+import Sidebar from "../../../../../components/sidebar/Sidebar";
+import { AppConfig } from "../../../../../config/app.config";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -25,7 +25,7 @@ export default function index({ workspace_id }: { workspace_id: string }) {
     <div>
       <Meta title={`Channels | Settigs - ${AppConfig().app.name}`} />
       <Sidebar />
-      <SettingSidebar />
+      <WorkspaceSettingSidebar />
       <main className="flex justify-center h-screen">
         <h1>Hello world</h1>
       </main>
