@@ -19,6 +19,7 @@ import {
   PopupMenu,
   PopupMenuItem,
 } from "../../../../../../components/reusable/PopupMenu";
+import Accordion from "../../../../../../components/reusable/Accordion";
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
@@ -29,6 +30,7 @@ export const getServerSideProps = async (context: any) => {
   // get user details
   const userDetails = await getUser(context);
   const workspace_users = userDetails.workspace_users;
+  console.log(workspace_users);
 
   // get conversation
   const res_conversations = await ConversationService.findAll(
@@ -234,61 +236,29 @@ export default function Message({
             <div className="w-[165px] border-solid border-[1px]">
               {workspace_users.map((workspace_user: any) => {
                 return (
-                  <Link
+                  <Accordion
                     key={workspace_user.id}
-                    href={`/organization/${organization_id}/space/${workspace_id}/message/${workspace_user.id}`}
+                    label={workspace_user.workspace.name}
+                    active={
+                      workspace_id == workspace_user.workspace.id ? true : false
+                    }
                   >
-                    <div
-                      className={`cursor-pointer bg-[#eeeeee] transition-all 
-                      ease-linear hover:bg-[#a19e9e] ${
-                        workspace_id == workspace_user.workspace.id &&
-                        "bg-[#a19e9e]"
-                      } h-[80px]`}
-                    >
-                      <div className="flex justify-between">
-                        <div>
-                          <h5 className="m-4 font-[500]">
-                            {workspace_user.workspace.name}
-                          </h5>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-            {/* conversations list */}
-            <div className="w-[220px] border-solid border-[1px]">
-              {conversations.map((conversation: any) => {
-                return (
-                  <Link
-                    key={conversation.id}
-                    href={`/organization/${organization_id}/space/${workspace_id}/message/${conversation.id}`}
-                  >
-                    <div
-                      className={`cursor-pointer bg-[#eeeeee] transition-all 
-                    ease-linear hover:bg-[#a19e9e] ${
-                      conversation_id == conversation.id && "bg-[#a19e9e]"
-                    } h-[80px]`}
-                    >
-                      <div className="flex justify-between">
-                        <div>
-                          <h5 className="m-4 font-[500]">
-                            {conversation.contact.fname}{" "}
-                            {conversation.contact.lname}
-                          </h5>
-                        </div>
-                        <div>
-                          <p className="text-right msg_time m-4 font-[500]">
-                            {DateHelper.format(
-                              conversation.updated_at,
-                              "MMMM-DD"
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
+                    {workspace_user.workspace.conversations.map(
+                      (conversation: any) => {
+                        return (
+                          <div key={conversation.id}>
+                            <Link
+                              key={conversation.id}
+                              href={`/organization/${organization_id}/space/${workspace_id}/message/${conversation.id}`}
+                            >
+                              {conversation.contact.fname}{" "}
+                              {conversation.contact.lname}
+                            </Link>
+                          </div>
+                        );
+                      }
+                    )}
+                  </Accordion>
                 );
               })}
             </div>
