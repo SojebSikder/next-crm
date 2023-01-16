@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Meta from "../../components/header/Meta";
@@ -12,12 +13,14 @@ import { WorkspaceUserService } from "../../service/space/WorkspaceUserService";
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
-  // const workspace_id = query.workspace_id;
+  let workspace_id = query.workspace_id ? query.workspace_id : null;
 
   // get user details
   const userDetails = await getUser(context);
-  const _workspace_users = userDetails.workspace_users;
-  const workspace_id = _workspace_users[0].workspace.id;
+  if (!workspace_id) {
+    const _workspace_users = userDetails.workspace_users;
+    workspace_id = _workspace_users[0].workspace.id;
+  }
 
   // contact
   const res_contacts = await ContactService.findAll(workspace_id, context);
@@ -34,7 +37,7 @@ export const getServerSideProps = async (context: any) => {
 
   return {
     props: {
-      workspace_id: workspace_id,
+      workspaceId: workspace_id,
       workspace_users: workspace_users,
       contacts: contacts,
       countries: countries,
@@ -43,17 +46,20 @@ export const getServerSideProps = async (context: any) => {
 };
 
 export default function Contact({
-  workspace_id,
+  workspaceId,
   workspace_users,
   contacts,
   countries,
 }: {
-  workspace_id: string;
+  workspaceId: string;
   contacts: [];
   workspace_users: [];
   countries: [];
 }) {
   const router = useRouter();
+
+  const [workspace_id, setWorkspace_id] = useState(workspaceId);
+
   const [showDialog, setShowDialog] = useState(false);
   const handleContactDialog = () => {
     setShowDialog(true);
@@ -117,6 +123,19 @@ export default function Contact({
       <Meta title={`Contacts - ${AppConfig().app.name}`} />
       <Sidebar />
       <main className="mt-5 ml-[80px] flex justify-center h-screen">
+        <div className="w-[165px] border-solid border-[1px]">
+          {workspace_users.map((workspace_user: any) => {
+            return (
+              <div key={workspace_user.workspace.id}>
+                <Link href={`/contact/${workspace_user.workspace.id}`}>
+                  <div className="p-4 hover:text-white hover:bg-[var(--primary-hover-color)]">
+                    {workspace_user.workspace.name}
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
         <div className="w-full shadow-md sm:rounded-lg">
           <Dialog handle={setShowDialog} show={showDialog}>
             <div className="m-4 text-left font-semibold text-xl">
@@ -246,33 +265,6 @@ export default function Contact({
               </tr>
             </thead>
             <tbody>
-              {/* <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th
-                  scope="row"
-                  className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  Apple MacBook Pro 17{'"'}
-                </th>
-                <td className="py-4 px-6">sojebsikder</td>
-                <td className="py-4 px-6">Whatsapp</td>
-                <td className="py-4 px-6">sojebsikder@gmail.com</td>
-                <td className="py-4 px-6">8801833962595</td>
-                <td className="py-4 px-6">BD</td>
-                <td className="py-4 px-6">Bangla</td>
-                <td className="py-4 px-6">Open</td>
-                <td className="py-4 px-6">N/A</td>
-                <td className="py-4 px-6">Dec 06, 2022 10:31 AM</td>
-                <td className="py-4 px-6">Dec 06, 2022 10:31 AM</td>
-
-                <td className="py-4 px-6 text-right">
-                  <a
-                    href="#"
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                  >
-                    Edit
-                  </a>
-                </td>
-              </tr> */}
               {contacts.map((contact: any) => {
                 return (
                   <tr
