@@ -12,11 +12,9 @@ export const getServerSideProps = async (context: any) => {
   const userDetails = await getUser(context);
 
   if (userDetails) {
-    const workspace_id = userDetails.workspace_users[0].workspace_id;
-    const organization_id = userDetails.tenant_id;
     return {
       redirect: {
-        destination: `/space/${workspace_id}/dashboard`,
+        destination: `/message`,
         permanent: false,
       },
     };

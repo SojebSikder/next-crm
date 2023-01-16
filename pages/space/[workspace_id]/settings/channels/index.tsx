@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Meta from "../../../../../components/header/Meta";
 import Dialog from "../../../../../components/reusable/Dialog";
-import SettingSidebar from "../../../../../components/sidebar/SettingSidebar";
+import WorkspaceSettingSidebar from "../../../../../components/sidebar/WorkspaceSettingSidebar";
 import Sidebar from "../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../config/app.config";
 import CustomImage from "../../../../../components/reusable/CustomImage";
@@ -89,7 +89,7 @@ export default function Index({
     <div>
       <Meta title={`Channels | Settigs - ${AppConfig().app.name}`} />
       <Sidebar />
-      <SettingSidebar />
+      <WorkspaceSettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center">
         <div className="w-full shadow-md sm:rounded-lg">
           <Dialog handle={setShowDialog} show={showDialog}>

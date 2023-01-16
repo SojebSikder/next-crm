@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import { Caption, SideBarItem } from "./Sidebar";
 
-export default function SettingSidebar() {
+export default function WorkspaceSettingSidebar() {
   const router = useRouter();
   const { workspace_id } = router.query;
   return (

@@ -28,7 +28,7 @@ export default function Sidebar() {
         className="fixed top-0 left-0 h-screen w-16 flex flex-col
       bg-[#ededed] dark:bg-gray-900 shadow-lg"
       >
-        <SideBarItem text="My new workspace" icon={<BsCircle size="28" />} />
+        <SideBarItem text="My organization" icon={<BsCircle size="28" />} />
         <SideBarItem
           href={`/message`}
           text="Messages"
@@ -41,7 +41,7 @@ export default function Sidebar() {
         />
         {/* <Divider /> */}
         <SideBarItem
-          href={`/space/${workspace_id}/settings/channels`}
+          href={`/space`}
           text="Workspace Settings"
           icon={<BsGearWideConnected size="22" />}
         />
