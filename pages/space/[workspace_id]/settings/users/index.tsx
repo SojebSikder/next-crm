@@ -10,6 +10,7 @@ import { WorkspaceChannelService } from "../../../../../service/space/WorkspaceC
 import { RoleService } from "../../../../../service/space/RoleService";
 import { Alert } from "../../../../../components/alert/Alert";
 import { useRouter } from "next/navigation";
+import { WorkspaceUserService } from "../../../../../service/space/WorkspaceUserService";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -21,22 +22,25 @@ export const getServerSideProps = async (context: {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
 
-  const res_roles = await RoleService.findAll(workspace_id, context);
-  const roles = res_roles.data.data;
+  const res_workspace_users = await WorkspaceUserService.findAll(
+    workspace_id,
+    context
+  );
+  const workspace_users = res_workspace_users.data.data;
 
   return {
     props: {
       workspace_id: workspace_id,
-      roles: roles,
+      workspace_users: workspace_users,
     },
   };
 };
 export default function Index({
   workspace_id,
-  roles,
+  workspace_users,
 }: {
   workspace_id: string;
-  roles: [];
+  workspace_users: any;
 }) {
   const [showDialog, setShowDialog] = useState(false);
   const router = useRouter();
@@ -45,7 +49,7 @@ export default function Index({
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleRoleDelete = async (id: number) => {
+  const handleUserDelete = async (id: number) => {
     if (confirm("Are you sure, want to delete this user?")) {
       try {
         const roleService = await RoleService.remove(id, workspace_id);
@@ -82,8 +86,8 @@ export default function Index({
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <div>
-            <Link href={`/space/${workspace_id}/settings/roles/create`}>
-              <div className="m-4 w-[20%] btn primary">Create role</div>
+            <Link href={`/space/${workspace_id}/settings/users/create`}>
+              <div className="m-4 w-[20%] btn primary">Create user</div>
             </Link>
           </div>
 
@@ -91,25 +95,27 @@ export default function Index({
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
 
-          {roles.map((role: any) => {
+          {workspace_users.map((workspace_user: any) => {
             return (
               <div
-                key={role.id}
+                key={workspace_user.user.id}
                 className="flex justify-between m-4 p-4 border-solid shadow-sm border-[1px] border-b-slate-500"
               >
                 <div>
-                  <div>{role.title}</div>
+                  <div>
+                    {workspace_user.user.fname} {workspace_user.user.lname}
+                  </div>
                 </div>
 
                 <div>
                   <Link
-                    href={`/space/${workspace_id}/settings/users/${role.id}/edit`}
+                    href={`/space/${workspace_id}/settings/users/${workspace_user.user.id}/edit`}
                     className="btn warning mr-2"
                   >
                     Edit
                   </Link>
                   <button
-                    onClick={() => handleRoleDelete(role.id)}
+                    onClick={() => handleUserDelete(workspace_user.user.id)}
                     className="btn danger"
                   >
                     Remove
