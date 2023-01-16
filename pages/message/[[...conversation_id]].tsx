@@ -259,7 +259,7 @@ export default function Message({
         <Sidebar />
         <main className="mt-5 ml-[80px] flex justify-center">
           <div className="flex">
-            {/* channels */}
+            {/* workspaces */}
             <div className="w-[165px] border-solid border-[1px]">
               {workspace_users.map((workspace_user: any) => {
                 return (
@@ -283,8 +283,10 @@ export default function Message({
                               }
                               href={`/message/${conversation.id}`}
                             >
-                              {conversation.contact.fname}{" "}
-                              {conversation.contact.lname}
+                              <div className="p-4 hover:text-white hover:bg-[var(--primary-hover-color)]">
+                                {conversation.contact.fname}{" "}
+                                {conversation.contact.lname}
+                              </div>
                             </Link>
                           </div>
                         );

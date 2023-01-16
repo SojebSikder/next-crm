@@ -35,7 +35,7 @@ export default function Sidebar() {
           icon={<BsMailbox size="32" />}
         />
         <SideBarItem
-          href={`/organization/${organization_id}/space/${workspace_id}/contact`}
+          href={`/contact`}
           text="Contacts"
           icon={<BsPerson size="32" />}
         />
