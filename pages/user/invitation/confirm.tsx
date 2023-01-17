@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import Select from "react-select";
-import Meta from "../../../../../../components/header/Meta";
-import WorkspaceSettingSidebar from "../../../../../../components/sidebar/WorkspaceSettingSidebar";
-import Sidebar from "../../../../../../components/sidebar/Sidebar";
-import { AppConfig } from "../../../../../../config/app.config";
-import { RoleService } from "../../../../../../service/space/role.service";
-import { Alert } from "../../../../../../components/alert/Alert";
-import { WorkspaceUserService } from "../../../../../../service/space/workspaceUser.service";
-import { UserService } from "../../../../../../service/user/user.service";
+import Meta from "../../../components/header/Meta";
+import WorkspaceSettingSidebar from "../../../components/sidebar/WorkspaceSettingSidebar";
+import Sidebar from "../../../components/sidebar/Sidebar";
+import { AppConfig } from "../../../config/app.config";
+import { RoleService } from "../../../service/space/role.service";
+import { Alert } from "../../../components/alert/Alert";
+import { WorkspaceUserService } from "../../../service/space/workspaceUser.service";
+import { UserService } from "../../../service/user/user.service";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -17,25 +17,12 @@ export const getServerSideProps = async (context: {
   pathname?: any;
 }) => {
   const { req, query, res, asPath, pathname } = context;
-  const workspace_id = query.workspace_id;
-
-  const res_role = await RoleService.findAll(workspace_id, context);
-  const roles = res_role.data.data;
 
   return {
-    props: {
-      workspace_id: workspace_id,
-      roles: roles,
-    },
+    props: {},
   };
 };
-export default function Index({
-  workspace_id,
-  roles,
-}: {
-  workspace_id: string;
-  roles: any;
-}) {
+export default function Index({}: {}) {
   const [showDialog, setShowDialog] = useState(false);
   const handleChannelDialog = () => {
     setShowDialog(true);
@@ -101,70 +88,37 @@ export default function Index({
 
   return (
     <div>
-      <Meta title={`Add user | Settings - ${AppConfig().app.name}`} />
-      <Sidebar />
-      <WorkspaceSettingSidebar />
-      <main className="mt-5 ml-[300px] flex justify-center h-screen">
-        <div className="w-full shadow-md sm:rounded-lg">
+      <Meta title={`${AppConfig().app.name}`} />
+      <main className="mt-5 flex justify-center ">
+        <div className="w-1/3 shadow-md sm:rounded-lg">
           <div className="m-4">
-            <h2 className="font-bold text-[1.5rem]">Invite team member</h2>
+            <h2 className="font-bold text-[1.5rem]">Setup</h2>
           </div>
-          <div className="m-4">Invite team member</div>
+          <div className="m-4">Setup your account</div>
           {loading && <div>Please wait...</div>}
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
           <form onSubmit={handleUserSubmit} method="post">
             <div className="m-4">
               <input
-                type="text"
-                name="fname"
-                className="w-1/3 input"
-                placeholder="First name"
-                required
-              />
-            </div>
-            <div className="m-4">
-              <input
-                type="text"
-                name="lname"
-                className="w-1/3 input"
-                placeholder="Last name"
-                required
-              />
-            </div>
-            <div className="m-4">
-              <input
-                type="text"
-                name="username"
-                className="w-1/3 input"
-                placeholder="Username"
-                required
-              />
-            </div>
-            <div className="m-4">
-              <input
+                disabled
                 type="email"
                 name="email"
-                className="w-1/3 input"
+                className="input"
                 placeholder="Email"
                 required
               />
             </div>
             <div className="m-4">
-              <Select
-                className="w-1/3"
-                name="role_id"
+              <input
+                type="text"
+                name="password"
+                className="input"
+                placeholder="Minimum 8 characters"
                 required
-                closeMenuOnSelect={false}
-                onChange={handleRoleChange}
-                options={roles.map((role: any) => {
-                  return {
-                    value: role.id,
-                    label: role.title,
-                  };
-                })}
               />
             </div>
+
             <div className="m-4">
               <button className="btn primary">Save</button>
             </div>

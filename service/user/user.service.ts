@@ -53,10 +53,14 @@ export const UserService = {
   //
   create: async (
     {
+      fname,
+      lname,
       username,
       email,
       role_id,
     }: {
+      fname: string;
+      lname: string;
       username: string;
       email: string;
       role_id: number;
@@ -72,6 +76,8 @@ export const UserService = {
       },
     };
     const data = {
+      fname: fname,
+      lname: lname,
       username: username,
       email: email,
       role_id: role_id,
@@ -79,4 +85,7 @@ export const UserService = {
 
     return await Fetch.post(`/user`, data, _config);
   },
+
+  // TODO
+  confirm: async () => {},
 };
