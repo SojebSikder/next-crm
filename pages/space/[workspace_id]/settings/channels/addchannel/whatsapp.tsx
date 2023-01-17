@@ -4,7 +4,7 @@ import Meta from "../../../../../../components/header/Meta";
 import WorkspaceSettingSidebar from "../../../../../../components/sidebar/WorkspaceSettingSidebar";
 import Sidebar from "../../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../../config/app.config";
-import { WorkspaceChannelService } from "../../../../../../service/space/WorkspaceChannelService";
+import { WorkspaceChannelService } from "../../../../../../service/space/workspaceChannel.service";
 
 export const getServerSideProps = async (context: {
   query: any;

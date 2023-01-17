@@ -49,4 +49,34 @@ export const UserService = {
 
     return await Fetch.get(`/user/me`, _config);
   },
+
+  //
+  create: async (
+    {
+      username,
+      email,
+      role_id,
+    }: {
+      username: string;
+      email: string;
+      role_id: number;
+    },
+    context: any = null
+  ) => {
+    const userToken = CookieHelper.get({ key: "token", context });
+
+    const _config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + userToken,
+      },
+    };
+    const data = {
+      username: username,
+      email: email,
+      role_id: role_id,
+    };
+
+    return await Fetch.post(`/user`, data, _config);
+  },
 };

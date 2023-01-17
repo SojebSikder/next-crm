@@ -8,8 +8,8 @@ import { AppConfig } from "../../config/app.config";
 import { DateHelper } from "../../helper/date.helper";
 import { getUser } from "../../hooks/useUser";
 import { CountryService } from "../../service/country/country.service";
-import { ContactService } from "../../service/space/ContactService";
-import { WorkspaceUserService } from "../../service/space/WorkspaceUserService";
+import { ContactService } from "../../service/space/contact.service";
+import { WorkspaceUserService } from "../../service/space/workspaceUser.service";
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;

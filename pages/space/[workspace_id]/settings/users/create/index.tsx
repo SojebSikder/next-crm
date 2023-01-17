@@ -1,13 +1,13 @@
 import React, { useState } from "react";
+import Select from "react-select";
 import Meta from "../../../../../../components/header/Meta";
 import WorkspaceSettingSidebar from "../../../../../../components/sidebar/WorkspaceSettingSidebar";
 import Sidebar from "../../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../../config/app.config";
-import { PermissionService } from "../../../../../../service/permission/permission.service";
-import { WorkspaceChannelService } from "../../../../../../service/space/WorkspaceChannelService";
-import Select from "react-select";
-import { RoleService } from "../../../../../../service/space/RoleService";
+import { RoleService } from "../../../../../../service/space/role.service";
 import { Alert } from "../../../../../../components/alert/Alert";
+import { WorkspaceUserService } from "../../../../../../service/space/workspaceUser.service";
+import { UserService } from "../../../../../../service/user/user.service";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -19,22 +19,22 @@ export const getServerSideProps = async (context: {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
 
-  const res_permission = await PermissionService.findAll(workspace_id, context);
-  const permissions = res_permission.data.data;
+  const res_role = await RoleService.findAll(workspace_id, context);
+  const roles = res_role.data.data;
 
   return {
     props: {
       workspace_id: workspace_id,
-      permissions: permissions,
+      roles: roles,
     },
   };
 };
 export default function Index({
   workspace_id,
-  permissions,
+  roles,
 }: {
   workspace_id: string;
-  permissions: any;
+  roles: any;
 }) {
   const [showDialog, setShowDialog] = useState(false);
   const handleChannelDialog = () => {
@@ -45,33 +45,38 @@ export default function Index({
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [permissionIds, setPermissionIds] = useState<number[]>([]);
+  const [roleId, setRoleId] = useState<number>(0);
 
-  const handlePermissionChange = (e: any) => {
-    const ids = e.map((option: any) => {
-      return option.value;
-    });
-    setPermissionIds(ids);
+  const handleRoleChange = (e: any) => {
+    const id = e.value;
+    setRoleId(id);
   };
 
-  const handleRoleSubmit = async (e: any) => {
+  const handleUserSubmit = async (e: any) => {
     e.preventDefault();
-    const title = e.target.title.value;
-    const permission_ids = permissionIds;
+    const username = e.target.username.value;
+    const email = e.target.email.value;
+    const role_id = roleId;
+
+    if (!role_id) {
+      return alert("Role not selected");
+    }
 
     const data = {
-      title: title,
-      permission_ids: permission_ids,
+      username: username,
+      email: email,
+      role_id: role_id,
     };
-    try {
-      const roleService = await RoleService.create(workspace_id, data);
-      const resRole = roleService.data;
 
-      if (resRole.error) {
-        setErrorMessage(resRole.message);
+    try {
+      const userService = await UserService.create(data);
+      const resUser = userService.data;
+
+      if (resUser.error) {
+        setErrorMessage(resUser.message);
         setLoading(false);
       } else {
-        setMessage(resRole.message);
+        setMessage(resUser.message);
         setLoading(false);
       }
     } catch (error: any) {
@@ -90,39 +95,48 @@ export default function Index({
 
   return (
     <div>
-      <Meta title={`Create Role | Settigs - ${AppConfig().app.name}`} />
+      <Meta title={`Add user | Settings - ${AppConfig().app.name}`} />
       <Sidebar />
       <WorkspaceSettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <div className="m-4">
-            <h2 className="font-bold text-[1.5rem]">Create new role</h2>
+            <h2 className="font-bold text-[1.5rem]">Invite team member</h2>
           </div>
-          <div className="m-4">Create role with specific permissions</div>
+          <div className="m-4">Invite team member</div>
           {loading && <div>Please wait...</div>}
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
-          <form onSubmit={handleRoleSubmit} method="post">
+          <form onSubmit={handleUserSubmit} method="post">
             <div className="m-4">
               <input
                 type="text"
-                name="title"
+                name="username"
                 className="w-1/3 input"
-                placeholder="Title"
+                placeholder="Username"
+                required
+              />
+            </div>
+            <div className="m-4">
+              <input
+                type="email"
+                name="email"
+                className="w-1/3 input"
+                placeholder="Email"
                 required
               />
             </div>
             <div className="m-4">
               <Select
-                name="permission_ids"
+                className="w-1/3"
+                name="role_id"
                 required
-                isMulti
                 closeMenuOnSelect={false}
-                onChange={handlePermissionChange}
-                options={permissions.map((permission: any) => {
+                onChange={handleRoleChange}
+                options={roles.map((role: any) => {
                   return {
-                    value: permission.permission.id,
-                    label: permission.permission.title,
+                    value: role.id,
+                    label: role.title,
                   };
                 })}
               />

@@ -20,4 +20,31 @@ export const WorkspaceUserService = {
 
     return await Fetch.get(`/space/${workspace_id}/workspace-user`, _config);
   },
+  // TODO
+  create: async (
+    workspace_id: string,
+    {
+      title,
+      role_id,
+    }: {
+      title: string;
+      role_id: number[];
+    },
+    context: any = null
+  ) => {
+    const userToken = CookieHelper.get({ key: "token", context });
+
+    const _config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + userToken,
+      },
+    };
+    const data = {
+      title: title,
+      role_id: role_id,
+    };
+
+    return await Fetch.post(`/space/${workspace_id}/workspace-user`, data, _config);
+  },
 };

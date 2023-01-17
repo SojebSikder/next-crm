@@ -6,8 +6,8 @@ import Sidebar from "../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../config/app.config";
 import CustomImage from "../../../../../components/reusable/CustomImage";
 import Link from "next/link";
-import { WorkspaceChannelService } from "../../../../../service/space/WorkspaceChannelService";
-import { RoleService } from "../../../../../service/space/RoleService";
+import { WorkspaceChannelService } from "../../../../../service/space/workspaceChannel.service";
+import { RoleService } from "../../../../../service/space/role.service";
 import { Alert } from "../../../../../components/alert/Alert";
 import { useRouter } from "next/navigation";
 

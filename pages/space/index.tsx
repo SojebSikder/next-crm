@@ -6,7 +6,7 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import { AppConfig } from "../../config/app.config";
 import CustomImage from "../../components/reusable/CustomImage";
 import Link from "next/link";
-import { WorkspaceChannelService } from "../../service/space/WorkspaceChannelService";
+import { WorkspaceChannelService } from "../../service/space/workspaceChannel.service";
 import { useRouter } from "next/navigation";
 import { Alert } from "../../components/alert/Alert";
 import { getUser } from "../../hooks/useUser";

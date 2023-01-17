@@ -10,11 +10,11 @@ import { AppConfig } from "../../config/app.config";
 import { DateHelper } from "../../helper/date.helper";
 import { getUser } from "../../hooks/useUser";
 import { CountryService } from "../../service/country/country.service";
-import { ContactService } from "../../service/space/ContactService";
-import { ConversationService } from "../../service/space/ConversationService";
-import { MessageService } from "../../service/space/MessageService";
-import { WorkspaceChannelService } from "../../service/space/WorkspaceChannelService";
-import { WorkspaceUserService } from "../../service/space/WorkspaceUserService";
+import { ContactService } from "../../service/space/contact.service";
+import { ConversationService } from "../../service/space/conversation.service";
+import { MessageService } from "../../service/space/message.service";
+import { WorkspaceChannelService } from "../../service/space/workspaceChannel.service";
+import { WorkspaceUserService } from "../../service/space/workspaceUser.service";
 import { PopupMenu, PopupMenuItem } from "../../components/reusable/PopupMenu";
 import Accordion from "../../components/reusable/Accordion";
 

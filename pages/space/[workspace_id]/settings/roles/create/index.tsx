@@ -4,9 +4,9 @@ import WorkspaceSettingSidebar from "../../../../../../components/sidebar/Worksp
 import Sidebar from "../../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../../config/app.config";
 import { PermissionService } from "../../../../../../service/permission/permission.service";
-import { WorkspaceChannelService } from "../../../../../../service/space/WorkspaceChannelService";
+import { WorkspaceChannelService } from "../../../../../../service/space/workspaceChannel.service";
 import Select from "react-select";
-import { RoleService } from "../../../../../../service/space/RoleService";
+import { RoleService } from "../../../../../../service/space/role.service";
 import { Alert } from "../../../../../../components/alert/Alert";
 
 export const getServerSideProps = async (context: {
@@ -114,6 +114,7 @@ export default function Index({
             </div>
             <div className="m-4">
               <Select
+                className="w-1/3"
                 name="permission_ids"
                 required
                 isMulti
