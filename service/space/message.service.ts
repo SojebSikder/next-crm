@@ -9,7 +9,7 @@ const config = {
 
 export const MessageService = {
   findAll: async (
-    workspace_id: string,
+    workspace_id: number,
     conversation_id: string,
     context: any = null
   ) => {

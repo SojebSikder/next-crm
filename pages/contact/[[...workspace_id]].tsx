@@ -15,25 +15,31 @@ export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
   let workspace_id = query.workspace_id ? query.workspace_id : null;
 
+  let workspace_users = [];
+  let contacts = [];
+  let countries = [];
   // get user details
   const userDetails = await getUser(context);
-  if (!workspace_id) {
-    const _workspace_users = userDetails.workspace_users;
-    workspace_id = _workspace_users[0].workspace.id;
-  }
+  const _workspace_users = userDetails.workspace_users;
 
-  // contact
-  const res_contacts = await ContactService.findAll(workspace_id, context);
-  const contacts = res_contacts.data.data;
-  // workspace user
-  const res_workspace_users = await WorkspaceUserService.findAll(
-    workspace_id,
-    context
-  );
-  const workspace_users = res_workspace_users.data.data;
-  // country
-  const res_countries = await CountryService.findAll(context);
-  const countries = res_countries.data.data;
+  if (_workspace_users.length > 0) {
+    if (!workspace_id) {
+      workspace_id = _workspace_users[0].workspace.id;
+    }
+
+    // contact
+    const res_contacts = await ContactService.findAll(workspace_id, context);
+    contacts = res_contacts.data.data;
+    // workspace user
+    const res_workspace_users = await WorkspaceUserService.findAll(
+      workspace_id,
+      context
+    );
+    workspace_users = res_workspace_users.data.data;
+    // country
+    const res_countries = await CountryService.findAll(context);
+    countries = res_countries.data.data;
+  }
 
   return {
     props: {

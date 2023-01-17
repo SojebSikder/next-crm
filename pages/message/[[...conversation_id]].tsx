@@ -26,7 +26,10 @@ export const getServerSideProps = async (context: any) => {
 
   // get user details
   const userDetails = await getUser(context);
-  const workspace_users = userDetails.workspace_users;
+  let workspace_users = [];
+  if (userDetails) {
+    workspace_users = userDetails.workspace_users;
+  }
 
   // get conversation
   // const res_conversations = await ConversationService.findAll(
@@ -34,29 +37,35 @@ export const getServerSideProps = async (context: any) => {
   //   context
   // );
   // const conversations = res_conversations.data.data;
-  const conversations = workspace_users[0].workspace.conversations;
-
-  const workspace_id = workspace_users[0].workspace.id;
-  // get messages
-  let res_messages;
+  let conversations = [];
+  let workspace_id = null;
   let messageDatas = [];
-  if (conversation_id) {
-    res_messages = await MessageService.findAll(
+  let workspace_channels = [];
+
+  if (workspace_users.length > 0) {
+    conversations = workspace_users[0].workspace.conversations;
+    workspace_id = workspace_users[0].workspace.id;
+
+    // get messages
+    let res_messages;
+    if (conversation_id) {
+      res_messages = await MessageService.findAll(
+        workspace_id,
+        conversation_id,
+        context
+      );
+    }
+    if (res_messages) {
+      messageDatas = res_messages.data.data;
+    }
+
+    // get workspace channel
+    const res_workspace_channels = await WorkspaceChannelService.findAll(
       workspace_id,
-      conversation_id,
       context
     );
+    workspace_channels = res_workspace_channels.data.data;
   }
-  if (res_messages) {
-    messageDatas = res_messages.data.data;
-  }
-
-  // get workspace channel
-  const res_workspace_channels = await WorkspaceChannelService.findAll(
-    workspace_id,
-    context
-  );
-  const workspace_channels = res_workspace_channels.data.data;
 
   return {
     props: {

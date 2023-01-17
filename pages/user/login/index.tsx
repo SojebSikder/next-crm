@@ -14,7 +14,7 @@ export const getServerSideProps = async (context: any) => {
   if (userDetails) {
     return {
       redirect: {
-        destination: `/message`,
+        destination: `/dashboard`,
         permanent: false,
       },
     };
@@ -57,10 +57,8 @@ export default function Login() {
         });
         setMessage(resLoginData.message);
         setLoading(false);
-        const userDetails = await getUser();
-        const workspace_id = userDetails.workspace_users[0].workspace.id;
 
-        router.push(`/space/${workspace_id}/dashboard`);
+        router.push(`/dashboard`);
       }
     } catch (error: any) {
       // return custom error message from API if any
