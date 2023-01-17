@@ -61,6 +61,8 @@ export default function Index({
     if (!role_id) {
       return alert("Role not selected");
     }
+    setMessage(null);
+    setErrorMessage(null);
 
     const data = {
       username: username,
