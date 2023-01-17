@@ -50,8 +50,8 @@ export const ContactService = {
       lname: string;
       email: string;
       phone_number: string;
-      country_id: string;
-      assignee_id: string;
+      country_id: number;
+      assignee_id: number;
     },
     context: any = null
   ) => {
