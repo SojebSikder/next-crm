@@ -87,5 +87,31 @@ export const UserService = {
   },
 
   // TODO
-  confirm: async () => {},
+  confirm: async (
+    {
+      id,
+      token,
+      email,
+      password,
+    }: { id: number; token: string; email: string; password: string },
+    context: any = null
+  ) => {
+    const userToken = CookieHelper.get({ key: "token", context });
+
+    const _config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + userToken,
+      },
+    };
+
+    const data = {
+      id: id,
+      token: token,
+      email: email,
+      password: password,
+    };
+
+    return await Fetch.patch(`/user/${id}/password`, data, _config);
+  },
 };

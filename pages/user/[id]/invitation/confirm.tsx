@@ -1,68 +1,63 @@
 import React, { useState } from "react";
 import Select from "react-select";
-import Meta from "../../../components/header/Meta";
-import WorkspaceSettingSidebar from "../../../components/sidebar/WorkspaceSettingSidebar";
-import Sidebar from "../../../components/sidebar/Sidebar";
-import { AppConfig } from "../../../config/app.config";
-import { RoleService } from "../../../service/space/role.service";
-import { Alert } from "../../../components/alert/Alert";
-import { WorkspaceUserService } from "../../../service/space/workspaceUser.service";
-import { UserService } from "../../../service/user/user.service";
+import Meta from "../../../../components/header/Meta";
+import WorkspaceSettingSidebar from "../../../../components/sidebar/WorkspaceSettingSidebar";
+import Sidebar from "../../../../components/sidebar/Sidebar";
+import { AppConfig } from "../../../../config/app.config";
+import { RoleService } from "../../../../service/space/role.service";
+import { Alert } from "../../../../components/alert/Alert";
+import { WorkspaceUserService } from "../../../../service/space/workspaceUser.service";
+import { UserService } from "../../../../service/user/user.service";
+import Link from "next/link";
 
-export const getServerSideProps = async (context: {
-  query: any;
-  req?: any;
-  res?: any;
-  asPath?: any;
-  pathname?: any;
-}) => {
-  const { req, query, res, asPath, pathname } = context;
+export const getServerSideProps = async (context: any) => {
+  const { req, query, params, res, asPath, pathname } = context;
+
+  const id = query.id;
+  const email = query.email ? query.email : null;
+  const token = query.token ? query.token : null;
 
   return {
-    props: {},
+    props: {
+      id: id,
+      email: email,
+      token: token,
+    },
   };
 };
-export default function Index({}: {}) {
-  const [showDialog, setShowDialog] = useState(false);
-  const handleChannelDialog = () => {
-    setShowDialog(true);
-  };
-
+export default function Index({
+  id,
+  email,
+  token,
+}: {
+  id: number;
+  email: string;
+  token: string;
+}) {
   const [message, setMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [roleId, setRoleId] = useState<number>(0);
-
-  const handleRoleChange = (e: any) => {
-    const id = e.value;
-    setRoleId(id);
-  };
-
   const handleUserSubmit = async (e: any) => {
     e.preventDefault();
-    const fname = e.target.fname.value;
-    const lname = e.target.lname.value;
-    const username = e.target.username.value;
-    const email = e.target.email.value;
-    const role_id = roleId;
 
-    if (!role_id) {
-      return alert("Role not selected");
+    const password = e.target.password.value;
+
+    if (!password) {
+      return alert("Enter your password");
     }
     setMessage(null);
     setErrorMessage(null);
 
     const data = {
-      fname: fname,
-      lname: lname,
-      username: username,
+      id: id,
+      token: token,
       email: email,
-      role_id: role_id,
+      password: password,
     };
 
     try {
-      const userService = await UserService.create(data);
+      const userService = await UserService.confirm(data);
       const resUser = userService.data;
 
       if (resUser.error) {
@@ -96,7 +91,13 @@ export default function Index({}: {}) {
           </div>
           <div className="m-4">Setup your account</div>
           {loading && <div>Please wait...</div>}
-          {message && <Alert type={"success"}>{message}</Alert>}
+          {message && (
+            <Alert type={"success"}>
+              {message}
+              <br />
+              <Link href={"/user/login"}>You can login from here.</Link>
+            </Alert>
+          )}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
           <form onSubmit={handleUserSubmit} method="post">
             <div className="m-4">
@@ -104,6 +105,7 @@ export default function Index({}: {}) {
                 disabled
                 type="email"
                 name="email"
+                defaultValue={email}
                 className="input"
                 placeholder="Email"
                 required
@@ -114,7 +116,7 @@ export default function Index({}: {}) {
                 type="text"
                 name="password"
                 className="input"
-                placeholder="Minimum 8 characters"
+                placeholder="Minimum 6 characters"
                 required
               />
             </div>
