@@ -58,13 +58,34 @@ export default function Contact({
   countries,
 }: {
   workspaceId: string;
-  contacts: [];
-  workspace_users: [];
-  countries: [];
+  contacts: any[];
+  workspace_users: any[];
+  countries: any[];
 }) {
   const router = useRouter();
 
   const [workspace_id, setWorkspace_id] = useState(workspaceId);
+
+  const [countryIdInputControl, setCountryIdInputControl] = useState(
+    countries[0].dial_code
+  );
+
+  const [phoneNumberInputControl, setPhoneNumberInputControl] = useState(
+    countries[0].dial_code
+  );
+
+  const handleCountryIdInputControl = (e: any) => {
+    const val = e.target.options[e.target.selectedIndex].value;
+    const country = countries.find((country) => country.id == val);
+    if (country) {
+      setCountryIdInputControl(val);
+      setPhoneNumberInputControl(country.dial_code);
+    }
+  };
+
+  const handlePhoneNumberInputControl = (e: any) => {
+    setPhoneNumberInputControl(e.target.value);
+  };
 
   const [showDialog, setShowDialog] = useState(false);
   const handleContactDialog = () => {
@@ -178,26 +199,12 @@ export default function Contact({
 
               <div className="flex flex-row justify-center">
                 <div className="m-4 w-full">
-                  <input
+                  <select
+                    onChange={handleCountryIdInputControl}
+                    value={countryIdInputControl}
                     className="input"
-                    type="tel"
-                    name="phone_number"
-                    placeholder="Phone Number"
-                  />
-                </div>
-                <div className="m-4 w-full">
-                  <input
-                    className="input"
-                    type="email"
-                    name="email"
-                    placeholder="Add email address"
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-row justify-center">
-                <div className="m-4 w-full">
-                  <select className="input" name="country_id">
+                    name="country_id"
+                  >
                     {countries.map((country: any) => {
                       return (
                         <option key={country.id} value={country.id}>
@@ -206,6 +213,27 @@ export default function Contact({
                       );
                     })}
                   </select>
+                </div>
+                <div className="m-4 w-full">
+                  <input
+                    onChange={handlePhoneNumberInputControl}
+                    value={phoneNumberInputControl}
+                    className="input"
+                    type="tel"
+                    name="phone_number"
+                    placeholder="Phone Number"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-row justify-center">
+                <div className="m-4 w-full">
+                  <input
+                    className="input"
+                    type="email"
+                    name="email"
+                    placeholder="Add email address"
+                  />
                 </div>
                 <div className="m-4 w-full">
                   <select className="input" name="assignee_id">
