@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { Alert } from "../../components/alert/Alert";
 import Meta from "../../components/header/Meta";
 import Dialog from "../../components/reusable/Dialog";
 import Sidebar from "../../components/sidebar/Sidebar";
@@ -66,13 +67,15 @@ export default function Contact({
 
   const [workspace_id, setWorkspace_id] = useState(workspaceId);
 
-  const [countryIdInputControl, setCountryIdInputControl] = useState(
-    countries[0].dial_code
-  );
+  const [countryIdInputControl, setCountryIdInputControl] = useState();
 
   const [phoneNumberInputControl, setPhoneNumberInputControl] = useState(
     countries[0].dial_code
   );
+
+  const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleCountryIdInputControl = (e: any) => {
     const val = e.target.options[e.target.selectedIndex].value;
@@ -101,6 +104,10 @@ export default function Contact({
     const country_id = e.target.country_id.value;
     const assignee_id = e.target.assignee_id.value;
 
+    setMessage(null);
+    setErrorMessage(null);
+    setLoading(true);
+
     const data = {
       fname: fname,
       lname: lname,
@@ -111,6 +118,14 @@ export default function Contact({
     };
     try {
       const contactService = await ContactService.create(workspace_id, data);
+      const resContactData = contactService.data;
+      if (resContactData.error) {
+        setErrorMessage(resContactData.message);
+        setLoading(false);
+      } else {
+        setMessage(resContactData.message);
+        setLoading(false);
+      }
       // router.refresh();
     } catch (error: any) {
       // return custom error message from API if any
@@ -177,6 +192,9 @@ export default function Contact({
             <div className="m-4 text-left">
               Fill up the required information to create a contact.
             </div>
+            {loading && <div>Please wait...</div>}
+            {message && <Alert type={"success"}>{message}</Alert>}
+            {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
             <form onSubmit={handleContact} method="post">
               <div className="flex flex-row justify-center">
                 <div className="m-4 w-full">
