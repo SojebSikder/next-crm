@@ -11,36 +11,34 @@ import { RoleService } from "../../../../../service/space/role.service";
 import { Alert } from "../../../../../components/alert/Alert";
 import { useRouter } from "next/navigation";
 import { WorkspaceUserService } from "../../../../../service/space/workspaceUser.service";
+import { UserService } from "../../../../../service/user/user.service";
 
-export const getServerSideProps = async (context: {
-  query: any;
-  req?: any;
-  res?: any;
-  asPath?: any;
-  pathname?: any;
-}) => {
+export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
 
-  const res_workspace_users = await WorkspaceUserService.findAll(
-    workspace_id,
-    context
-  );
-  const workspace_users = res_workspace_users.data.data;
+  const res_users = await UserService.findAll(context);
+  const users = res_users.data.data;
+
+  // const res_users = await WorkspaceUserService.findAll(
+  //   workspace_id,
+  //   context
+  // );
+  // const users = res_users.data.data;
 
   return {
     props: {
       workspace_id: workspace_id,
-      workspace_users: workspace_users,
+      users: users,
     },
   };
 };
 export default function Index({
   workspace_id,
-  workspace_users,
+  users,
 }: {
   workspace_id: string;
-  workspace_users: any;
+  users: any;
 }) {
   const [showDialog, setShowDialog] = useState(false);
   const router = useRouter();
@@ -95,27 +93,27 @@ export default function Index({
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
 
-          {workspace_users.map((workspace_user: any) => {
+          {users.map((user: any) => {
             return (
               <div
-                key={workspace_user.user.id}
+                key={user.id}
                 className="flex justify-between m-4 p-4 border-solid shadow-sm border-[1px] border-b-slate-500"
               >
                 <div>
                   <div>
-                    {workspace_user.user.fname} {workspace_user.user.lname}
+                    {user.fname} {user.lname}
                   </div>
                 </div>
 
                 <div>
                   <Link
-                    href={`/space/${workspace_id}/settings/users/${workspace_user.user.id}/edit`}
+                    href={`/space/${workspace_id}/settings/users/${user.id}/edit`}
                     className="btn warning mr-2"
                   >
                     Edit
                   </Link>
                   <button
-                    onClick={() => handleUserDelete(workspace_user.user.id)}
+                    onClick={() => handleUserDelete(user.id)}
                     className="btn danger"
                   >
                     Remove

@@ -50,6 +50,69 @@ export const UserService = {
     return await Fetch.get(`/user/me`, _config);
   },
 
+  findAll: async (context = null) => {
+    const userToken = CookieHelper.get({ key: "token", context });
+
+    const _config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + userToken,
+      },
+    };
+
+    return await Fetch.get(`/user`, _config);
+  },
+
+  findOne: async (id: number, context = null) => {
+    const userToken = CookieHelper.get({ key: "token", context });
+
+    const _config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + userToken,
+      },
+    };
+
+    return await Fetch.get(`/user/${id}`, _config);
+  },
+
+  update: async (
+    id: number,
+    {
+      fname,
+      lname,
+      username,
+      email,
+      role_id,
+    }: {
+      fname: string;
+      lname: string;
+      username: string;
+      email: string;
+      role_id: number;
+    },
+    context = null
+  ) => {
+    const userToken = CookieHelper.get({ key: "token", context });
+
+    const _config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + userToken,
+      },
+    };
+
+    const data = {
+      fname,
+      lname,
+      username,
+      email,
+      role_id,
+    };
+
+    return await Fetch.patch(`/user/${id}`, data, _config);
+  },
+
   //
   create: async (
     {
