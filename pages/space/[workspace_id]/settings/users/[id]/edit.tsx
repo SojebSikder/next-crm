@@ -157,7 +157,7 @@ export default function Index({
                 defaultValue={user.role_users.map((role: any) => {
                   return {
                     value: role.role_id,
-                    label: role.role.name,
+                    label: role.role.title,
                   };
                 })}
                 required
