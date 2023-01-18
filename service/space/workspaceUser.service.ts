@@ -20,15 +20,13 @@ export const WorkspaceUserService = {
 
     return await Fetch.get(`/space/${workspace_id}/workspace-user`, _config);
   },
-  // TODO
+
   create: async (
-    workspace_id: string,
+    workspace_id: number,
     {
-      title,
-      role_id,
+      user_id,
     }: {
-      title: string;
-      role_id: number[];
+      user_id: number;
     },
     context: any = null
   ) => {
@@ -41,10 +39,13 @@ export const WorkspaceUserService = {
       },
     };
     const data = {
-      title: title,
-      role_id: role_id,
+      user_id: user_id,
     };
 
-    return await Fetch.post(`/space/${workspace_id}/workspace-user`, data, _config);
+    return await Fetch.post(
+      `/space/${workspace_id}/workspace-user`,
+      data,
+      _config
+    );
   },
 };
