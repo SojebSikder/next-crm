@@ -114,7 +114,7 @@ export default function Index({
             </div>
             <div className="m-4">
               <Select
-                className="w-1/3"
+                // className="w-1/3"
                 name="permission_ids"
                 required
                 isMulti
