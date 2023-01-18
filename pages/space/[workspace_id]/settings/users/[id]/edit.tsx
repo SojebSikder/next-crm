@@ -12,12 +12,12 @@ import { UserService } from "../../../../../../service/user/user.service";
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
-  const id = query.id;
+  const user_id = query.id;
 
   const res_role = await RoleService.findAll(workspace_id, context);
   const roles = res_role.data.data;
 
-  const res_user = await UserService.findOne(id, context);
+  const res_user = await UserService.findOne(user_id, context);
   const user = res_user.data.data;
 
   return {
@@ -25,6 +25,7 @@ export const getServerSideProps = async (context: any) => {
       workspace_id: workspace_id,
       roles: roles,
       user: user,
+      user_id: user_id,
     },
   };
 };
@@ -32,21 +33,16 @@ export default function Index({
   workspace_id,
   roles,
   user,
+  user_id,
 }: {
   workspace_id: string;
   roles: any;
   user: any;
+  user_id: number;
 }) {
   const [message, setMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const [roleId, setRoleId] = useState<number>(0);
-
-  const handleRoleChange = (e: any) => {
-    const id = e.value;
-    setRoleId(id);
-  };
 
   const handleUserSubmit = async (e: any) => {
     e.preventDefault();
@@ -54,7 +50,7 @@ export default function Index({
     const lname = e.target.lname.value;
     const username = e.target.username.value;
     const email = e.target.email.value;
-    const role_id = roleId;
+    const role_id = e.target.role_id.value;
 
     if (!role_id) {
       return alert("Role not selected");
@@ -71,7 +67,7 @@ export default function Index({
     };
 
     try {
-      const userService = await UserService.create(data);
+      const userService = await UserService.update(user_id, data);
       const resUser = userService.data;
 
       if (resUser.error) {
@@ -162,7 +158,6 @@ export default function Index({
                 })}
                 required
                 closeMenuOnSelect={false}
-                onChange={handleRoleChange}
                 options={roles.map((role: any) => {
                   return {
                     value: role.id,
