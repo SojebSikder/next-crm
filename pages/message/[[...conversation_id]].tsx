@@ -22,7 +22,11 @@ export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
   // const workspace_id = query.workspace_id;
   // const organization_id = query.organization_id;
-  let conversation_id = query.conversation_id ? query.conversation_id : null;
+
+  let queries = query.conversation_id ? query.conversation_id : null;
+  let workspace_id = queries && queries[0] ? queries[0] : null;
+  let workspace_channel_id = queries && queries[1] ? queries[1] : null;
+  let conversation_id = queries && queries[2] ? queries[2] : null;
 
   // get user details
   const userDetails = await getUser(context);
@@ -38,33 +42,43 @@ export const getServerSideProps = async (context: any) => {
   // );
   // const conversations = res_conversations.data.data;
   let conversations = [];
-  let workspace_id = null;
   let messageDatas = [];
   let workspace_channels = [];
 
   if (workspace_users.length > 0) {
-    conversations = workspace_users[0].workspace.conversations;
-    workspace_id = workspace_users[0].workspace.id;
+    if (workspace_channel_id) {
+      // get conversation
+      const resConversations = await ConversationService.findAll(
+        workspace_channel_id,
+        workspace_id,
+        context
+      );
+      conversations = resConversations.data;
+    }
+
+    // conversations = workspace_users[0].workspace.conversations;
+    // workspace_id = workspace_users[0].workspace.id;
 
     // get messages
     let res_messages;
     if (conversation_id) {
-      res_messages = await MessageService.findAll(
+      res_messages = await MessageService.findAll({
         workspace_id,
+        workspace_channel_id,
         conversation_id,
-        context
-      );
+        context,
+      });
     }
     if (res_messages) {
       messageDatas = res_messages.data.data;
     }
 
     // get workspace channel
-    const res_workspace_channels = await WorkspaceChannelService.findAll(
-      workspace_id,
-      context
-    );
-    workspace_channels = res_workspace_channels.data.data;
+    // const res_workspace_channels = await WorkspaceChannelService.findAll(
+    //   workspace_id,
+    //   context
+    // );
+    // workspace_channels = res_workspace_channels.data.data;
   }
 
   return {
@@ -73,9 +87,10 @@ export const getServerSideProps = async (context: any) => {
       conversationId: conversation_id,
       conversationDatas: conversations,
       messageDatas: messageDatas,
-      workspace_channels: workspace_channels,
+      // workspace_channels: workspace_channels,
+      workspace_channel_id: workspace_channel_id,
       userDetails: userDetails,
-      workspace_users: workspace_users,
+      workspaceUsers: workspace_users,
     },
   };
 };
@@ -95,18 +110,20 @@ export default function Message({
   conversationId,
   conversationDatas,
   messageDatas,
-  workspace_channels,
+  // workspace_channels,
+  workspace_channel_id,
   userDetails,
-  workspace_users,
+  workspaceUsers,
 }: {
-  workspaceId: string;
-  organization_id: string;
-  conversationId: string;
+  workspaceId: number;
+  organization_id: number;
+  conversationId: number;
   conversationDatas: any;
   messageDatas: any;
-  workspace_channels: any;
+  // workspace_channels: any;
+  workspace_channel_id: number;
   userDetails: any;
-  workspace_users: any;
+  workspaceUsers: any;
 }) {
   const router = useRouter();
 
@@ -117,10 +134,14 @@ export default function Message({
   const messagesEndRef = useRef<HTMLInputElement>(null);
   const [messages, setMessages] = useState(messageDatas);
 
+  const [workspace_users, setWorkspace_users] = useState(workspaceUsers);
+
   const [conversations, setConversations] = useState(conversationDatas);
-  const [workspaceChannelId, setWorkspaceChannelId] = useState(
-    workspace_channels.length > 0 ? workspace_channels[0].id : 0
-  );
+  // const [workspaceChannelId, setWorkspaceChannelId] = useState(
+  //   workspace_channels.length > 0 ? workspace_channels[0].id : 0
+  // );
+  const [workspaceChannelId, setWorkspaceChannelId] =
+    useState(workspace_channel_id);
   const [showDialog, setShowDialog] = useState(false);
   const [messageBox, setMessageBox] = useState("");
 
@@ -180,9 +201,13 @@ export default function Message({
     }
   };
 
+  const handleWorkspaceChannelSelect = (_workspace_channel_id: string) => {
+    // setWorkspaceChannelId(_workspace_channel_id);
+  };
+
   const handleConversationSelect = (
-    _workspace_id: string,
-    _conversation_id: string
+    _workspace_id: number,
+    _conversation_id: number
   ) => {
     setWorkspace_id(_workspace_id);
     setConversation_id(_conversation_id);
@@ -250,7 +275,12 @@ export default function Message({
     });
     socket.on("conversation", ({ conversation, workspace }) => {
       if (workspace.id == workspace_id) {
-        setConversations((state: any) => [conversation, ...state]);
+        // TODO push to conversation
+        // setConversations((state: any) => [conversation, ...state]);
+        setWorkspace_users((state: any[]) => {
+          // state.filter()
+          return [conversation, ...state];
+        });
       }
     });
     return () => {
@@ -279,22 +309,20 @@ export default function Message({
                       workspace_id == workspace_user.workspace.id ? true : false
                     }
                   >
-                    {workspace_user.workspace.conversations.map(
-                      (conversation: any) => {
+                    {workspace_user.workspace.workspace_channels.map(
+                      (workspace_channel: any) => {
                         return (
-                          <div key={conversation.id}>
+                          <div key={workspace_channel.id}>
                             <Link
                               onClick={() =>
-                                handleConversationSelect(
-                                  workspace_user.workspace.id,
-                                  conversation.id
+                                handleWorkspaceChannelSelect(
+                                  workspace_channel.id
                                 )
                               }
-                              href={`/message/${conversation.id}`}
+                              href={`/message/${workspace_user.workspace.id}/${workspace_channel.id}`}
                             >
                               <div className="p-4 hover:text-white hover:bg-[var(--primary-hover-color)]">
-                                {conversation.contact.fname}{" "}
-                                {conversation.contact.lname}
+                                {workspace_channel.channel_name}
                               </div>
                             </Link>
                           </div>
@@ -305,7 +333,36 @@ export default function Message({
                 );
               })}
             </div>
-            <div className="ml-[150px] w-[430px] border-solid border-[1px]">
+            {/* conversations */}
+            <div className="ml-[10px] w-[165px] border-solid border-[1px]">
+              {conversations.map((conversation: any) => {
+                return (
+                  <div key={conversation.id}>
+                    <Link
+                      // onClick={() =>
+                      //   handleConversationSelect(
+                      //     workspace_user.workspace.id,
+                      //     conversation.id
+                      //   )
+                      // }
+                      href={`/message/${workspace_id}/${workspace_channel_id}/${conversation.id}`}
+                    >
+                      <div
+                        className={`p-4 hover:text-white hover:bg-[var(--primary-hover-color)] ${
+                          (conversation_id == conversation.id) == true
+                            ? "bg-slate-400"
+                            : "bg-white"
+                        }`}
+                      >
+                        {conversation.contact.fname}{" "}
+                        {conversation.contact.lname}
+                      </div>
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="ml-[50px] w-[430px] border-solid border-[1px]">
               {conversation_id ? (
                 <div className="flex flex-col">
                   <div className="m-4 h-[38rem]">
@@ -355,7 +412,7 @@ export default function Message({
                   </div>
                   <div>
                     <div className="m-4">
-                      <select
+                      {/* <select
                         onChange={handleWorkspaceChannelIdChange}
                         className="input"
                         name="workspace_channel_id"
@@ -367,7 +424,7 @@ export default function Message({
                             </option>
                           );
                         })}
-                      </select>
+                      </select> */}
                     </div>
                     <form onSubmit={handleSendMessage} method="post">
                       <div className="flex flex-row">

@@ -24,7 +24,7 @@ export class Fetch {
   static setAdapter(adapter: AdapterOption) {
     this._adapter = adapter;
   }
-  
+
   /**
    * get request
    * @param url

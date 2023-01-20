@@ -8,11 +8,17 @@ const config = {
 };
 
 export const MessageService = {
-  findAll: async (
-    workspace_id: number,
-    conversation_id: string,
-    context: any = null
-  ) => {
+  findAll: async ({
+    workspace_id,
+    workspace_channel_id,
+    conversation_id,
+    context = null,
+  }: {
+    workspace_id: number;
+    workspace_channel_id: number;
+    conversation_id: string;
+    context: any;
+  }) => {
     const userToken = CookieHelper.get({ key: "token", context });
 
     const _config = {
@@ -23,7 +29,7 @@ export const MessageService = {
     };
 
     return await Fetch.get(
-      `/space/${workspace_id}/message/${conversation_id}`,
+      `/space/${workspace_id}/message/${conversation_id}?workspace_channel_id=${workspace_channel_id}`,
       _config
     );
   },
@@ -36,9 +42,9 @@ export const MessageService = {
     context = null,
   }: {
     body_text: string;
-    workspace_channel_id: string;
-    workspace_id: string;
-    conversation_id: string;
+    workspace_channel_id: number;
+    workspace_id: number;
+    conversation_id: number;
     context?: any;
   }) => {
     const userToken = CookieHelper.get({ key: "token", context });
