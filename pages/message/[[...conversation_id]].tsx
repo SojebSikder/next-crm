@@ -133,9 +133,7 @@ export default function Message({
   );
   const messagesEndRef = useRef<HTMLInputElement>(null);
   const [messages, setMessages] = useState(messageDatas);
-
   const [workspace_users, setWorkspace_users] = useState(workspaceUsers);
-
   const [conversations, setConversations] = useState(conversationDatas);
   // const [workspaceChannelId, setWorkspaceChannelId] = useState(
   //   workspace_channels.length > 0 ? workspace_channels[0].id : 0
@@ -148,19 +146,15 @@ export default function Message({
   const handleWorkspaceChannelIdChange = (e: any) => {
     setWorkspaceChannelId(e.target.value);
   };
-
   const handleMessageBox = (e: any) => {
     setMessageBox(e.target.value);
   };
-
   const handleDialog = () => {
     setShowDialog(true);
   };
-
   const handleVariable = (variable: string) => {
     setMessageBox((prev) => prev + " " + variable);
   };
-
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
 
@@ -169,7 +163,8 @@ export default function Message({
     }
 
     const body_text = e.target.body_text.value;
-    const workspace_channel_id = workspaceChannelId;
+    // const workspace_channel_id = workspaceChannelId;
+    const _workspace_channel_id = workspace_channel_id;
 
     // reset message box
     e.target.body_text.value = "";
@@ -177,7 +172,7 @@ export default function Message({
 
     const data = {
       body_text: body_text,
-      workspace_channel_id: workspace_channel_id,
+      workspace_channel_id: _workspace_channel_id,
       conversation_id: conversation_id,
       workspace_id: workspace_id,
     };
@@ -200,21 +195,15 @@ export default function Message({
       }
     }
   };
-
   const handleWorkspaceChannelSelect = (_workspace_channel_id: string) => {
     // setWorkspaceChannelId(_workspace_channel_id);
   };
-
   const handleConversationSelect = (
     _workspace_id: number,
     _conversation_id: number
   ) => {
     setWorkspace_id(_workspace_id);
     setConversation_id(_conversation_id);
-  };
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleCloseConversation = async () => {
@@ -252,6 +241,10 @@ export default function Message({
     }
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -259,6 +252,11 @@ export default function Message({
   useEffect(() => {
     setConversation_id(conversationId);
   }, [conversationId]);
+
+  useEffect(() => {
+    setWorkspaceChannelId(workspace_channel_id);
+    setConversations(conversationDatas);
+  }, [workspace_channel_id]);
 
   useEffect(() => {
     // set message
@@ -314,11 +312,11 @@ export default function Message({
                         return (
                           <div key={workspace_channel.id}>
                             <Link
-                              onClick={() =>
-                                handleWorkspaceChannelSelect(
-                                  workspace_channel.id
-                                )
-                              }
+                              // onClick={() =>
+                              //   handleWorkspaceChannelSelect(
+                              //     workspace_channel.id
+                              //   )
+                              // }
                               href={`/message/${workspace_user.workspace.id}/${workspace_channel.id}`}
                             >
                               <div className="p-4 hover:text-white hover:bg-[var(--primary-hover-color)]">
@@ -339,13 +337,7 @@ export default function Message({
                 return (
                   <div key={conversation.id}>
                     <Link
-                      // onClick={() =>
-                      //   handleConversationSelect(
-                      //     workspace_user.workspace.id,
-                      //     conversation.id
-                      //   )
-                      // }
-                      href={`/message/${workspace_id}/${workspace_channel_id}/${conversation.id}`}
+                      href={`/message/${conversation.workspace_id}/${workspace_channel_id}/${conversation.id}`}
                     >
                       <div
                         className={`p-4 hover:text-white hover:bg-[var(--primary-hover-color)] ${
