@@ -106,7 +106,6 @@ const dynamic_variables_list = [
 ];
 export default function Message({
   workspaceId,
-  organization_id,
   conversationId,
   conversationDatas,
   messageDatas,
@@ -116,7 +115,6 @@ export default function Message({
   workspaceUsers,
 }: {
   workspaceId: number;
-  organization_id: number;
   conversationId: number;
   conversationDatas: any;
   messageDatas: any;
@@ -140,7 +138,6 @@ export default function Message({
   // );
   const [workspaceChannelId, setWorkspaceChannelId] =
     useState(workspace_channel_id);
-  const [showDialog, setShowDialog] = useState(false);
   const [messageBox, setMessageBox] = useState("");
 
   const handleWorkspaceChannelIdChange = (e: any) => {
@@ -148,9 +145,6 @@ export default function Message({
   };
   const handleMessageBox = (e: any) => {
     setMessageBox(e.target.value);
-  };
-  const handleDialog = () => {
-    setShowDialog(true);
   };
   const handleVariable = (variable: string) => {
     setMessageBox((prev) => prev + " " + variable);
@@ -194,16 +188,6 @@ export default function Message({
         console.log(error.message);
       }
     }
-  };
-  const handleWorkspaceChannelSelect = (_workspace_channel_id: string) => {
-    // setWorkspaceChannelId(_workspace_channel_id);
-  };
-  const handleConversationSelect = (
-    _workspace_id: number,
-    _conversation_id: number
-  ) => {
-    setWorkspace_id(_workspace_id);
-    setConversation_id(_conversation_id);
   };
 
   const handleCloseConversation = async () => {
@@ -254,9 +238,25 @@ export default function Message({
   }, [conversationId]);
 
   useEffect(() => {
+    setWorkspace_id(workspaceId);
+  }, [workspaceId]);
+
+  useEffect(() => {
     setWorkspaceChannelId(workspace_channel_id);
     setConversations(conversationDatas);
   }, [workspace_channel_id]);
+
+  useEffect(() => {
+    socket.on("conversation", ({ conversation, workspace }) => {
+      console.log("workspace", workspace_id);
+      if (workspace.id == workspace_id) {
+        setConversations((state: any) => [conversation, ...state]);
+      }
+    });
+    return () => {
+      socket.off("conversation");
+    };
+  }, [workspace_id]);
 
   useEffect(() => {
     // set message
@@ -271,20 +271,9 @@ export default function Message({
         setMessages((state: any) => [...state, message]);
       }
     });
-    socket.on("conversation", ({ conversation, workspace }) => {
-      if (workspace.id == workspace_id) {
-        // TODO push to conversation
-        // setConversations((state: any) => [conversation, ...state]);
-        setWorkspace_users((state: any[]) => {
-          // state.filter()
-          return [conversation, ...state];
-        });
-      }
-    });
     return () => {
       socket.off("connect");
       socket.off("message");
-      socket.off("conversation");
     };
   }, [conversation_id]);
 
@@ -312,11 +301,6 @@ export default function Message({
                         return (
                           <div key={workspace_channel.id}>
                             <Link
-                              // onClick={() =>
-                              //   handleWorkspaceChannelSelect(
-                              //     workspace_channel.id
-                              //   )
-                              // }
                               href={`/message/${workspace_user.workspace.id}/${workspace_channel.id}`}
                             >
                               <div className="p-4 hover:text-white hover:bg-[var(--primary-hover-color)]">
