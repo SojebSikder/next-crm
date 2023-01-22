@@ -30,7 +30,7 @@ export default function Sidebar() {
       >
         <SideBarItem
           href={`/dashboard`}
-          text="My organization"
+          text="Dashboard"
           icon={<BsCircle size="28" />}
         />
         <SideBarItem

@@ -16,13 +16,12 @@ export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
   let workspace_id = query.workspace_id ? query.workspace_id : null;
 
-  let workspace_users = [];
+  let contact_workspace_users = [];
   let contacts = [];
   let countries = [];
   // get user details
   const userDetails = await getUser(context);
   const _workspace_users = userDetails.workspace_users;
-
   if (_workspace_users.length > 0) {
     if (!workspace_id) {
       workspace_id = _workspace_users[0].workspace.id;
@@ -36,7 +35,7 @@ export const getServerSideProps = async (context: any) => {
       workspace_id,
       context
     );
-    workspace_users = res_workspace_users.data.data;
+    contact_workspace_users = res_workspace_users.data.data;
     // country
     const res_countries = await CountryService.findAll(context);
     countries = res_countries.data.data;
@@ -45,7 +44,8 @@ export const getServerSideProps = async (context: any) => {
   return {
     props: {
       workspaceId: workspace_id,
-      workspace_users: workspace_users,
+      workspace_users: _workspace_users,
+      contact_workspace_users: contact_workspace_users,
       contacts: contacts,
       countries: countries,
     },
@@ -55,12 +55,14 @@ export const getServerSideProps = async (context: any) => {
 export default function Contact({
   workspaceId,
   workspace_users,
+  contact_workspace_users,
   contacts,
   countries,
 }: {
   workspaceId: string;
   contacts: any[];
   workspace_users: any[];
+  contact_workspace_users: any[];
   countries: any[];
 }) {
   const router = useRouter();
@@ -256,7 +258,7 @@ export default function Contact({
                 <div className="m-4 w-full">
                   <select className="input" name="assignee_id">
                     <option value={0}>Unassign</option>
-                    {workspace_users.map((user: any) => {
+                    {contact_workspace_users.map((user: any) => {
                       return (
                         <option key={user.user.id} value={user.user.id}>
                           {user.user.fname} {user.user.lname}

@@ -36,7 +36,8 @@ export default function Index({ workspace_users }: { workspace_users: any }) {
       <Sidebar />
       <main className="mt-5 flex justify-center">
         <div className="shadow-md sm:rounded-lg">
-          <div className="w-[165px] border-solid border-[1px]">
+          <div className="p-4 text-3xl">Choose workspace</div>
+          <div className="border-solid border-[1px]">
             {workspace_users.map((workspace_user: any) => {
               return (
                 <div key={workspace_user.workspace.id}>
@@ -49,6 +50,7 @@ export default function Index({ workspace_users }: { workspace_users: any }) {
                       {workspace_user.workspace.name}
                     </div>
                   </Link>
+                  <hr />
                 </div>
               );
             })}
