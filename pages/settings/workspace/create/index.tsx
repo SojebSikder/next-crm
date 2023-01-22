@@ -20,25 +20,11 @@ export const getServerSideProps = async (context: {
   };
 };
 export default function Index({}: {}) {
-  const [showDialog, setShowDialog] = useState(false);
-  const handleChannelDialog = () => {
-    setShowDialog(true);
-  };
-
   const [message, setMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [permissionIds, setPermissionIds] = useState<number[]>([]);
-
-  const handlePermissionChange = (e: any) => {
-    const ids = e.map((option: any) => {
-      return option.value;
-    });
-    setPermissionIds(ids);
-  };
-
-  const handleRoleSubmit = async (e: any) => {
+  const handleWorkspaceSubmit = async (e: any) => {
     e.preventDefault();
 
     setMessage(null);
@@ -89,7 +75,7 @@ export default function Index({}: {}) {
           {loading && <div>Please wait...</div>}
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
-          <form onSubmit={handleRoleSubmit} method="post">
+          <form onSubmit={handleWorkspaceSubmit} method="post">
             <div className="m-4">
               <input
                 type="text"

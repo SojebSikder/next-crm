@@ -7,6 +7,7 @@ import Select from "react-select";
 import { RoleService } from "../../../../service/space/role.service";
 import { Alert } from "../../../../components/alert/Alert";
 import OrgSettingSidebar from "../../../../components/sidebar/OrgSettingSidebar";
+import { WorkspaceService } from "../../../../service/space/workspace.service";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -17,70 +18,52 @@ export const getServerSideProps = async (context: {
 }) => {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
-  const role_id = query.role_id;
 
-  const res_permission = await PermissionService.findAll(workspace_id, context);
-  const permissions = res_permission.data.data;
-
-  const res_role = await RoleService.findOne(role_id, workspace_id, context);
-  const role = res_role.data.data;
+  const resWorkspace = await WorkspaceService.findOne(workspace_id, context);
+  const workspace = resWorkspace.data;
 
   return {
     props: {
       workspace_id: workspace_id,
-      permissions: permissions,
-      role_id: role_id,
-      role: role,
+      workspace: workspace,
     },
   };
 };
 export default function Index({
   workspace_id,
-  permissions,
-  role_id,
-  role,
+  workspace,
 }: {
   workspace_id: string;
-  permissions: any;
-  role_id: string;
-  role: any;
+  workspace: any;
 }) {
-  const [showDialog, setShowDialog] = useState(false);
-  const handleChannelDialog = () => {
-    setShowDialog(true);
-  };
-
   const [message, setMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [permissionIds, setPermissionIds] = useState<number[]>([]);
-
-  const handlePermissionChange = (e: any) => {
-    const ids = e.map((option: any) => {
-      return option.value;
-    });
-    setPermissionIds(ids);
-  };
-
-  const handleRoleSubmit = async (e: any) => {
+  const handleWorkspaceSubmit = async (e: any) => {
     e.preventDefault();
-    const title = e.target.title.value;
-    const permission_ids = permissionIds;
+
+    setMessage(null);
+    setErrorMessage(null);
+    setLoading(true);
+
+    const name = e.target.name.value;
 
     const data = {
-      title: title,
-      permission_ids: permission_ids,
+      name: name,
     };
     try {
-      const roleService = await RoleService.update(role_id, workspace_id, data);
-      const resRole = roleService.data;
+      const workspaceService = await WorkspaceService.update(
+        workspace_id,
+        data
+      );
+      const resWorkspace = workspaceService.data;
 
-      if (resRole.error) {
-        setErrorMessage(resRole.message);
+      if (resWorkspace.error) {
+        setErrorMessage(resWorkspace.message);
         setLoading(false);
       } else {
-        setMessage(resRole.message);
+        setMessage(resWorkspace.message);
         setLoading(false);
       }
     } catch (error: any) {
@@ -88,11 +71,9 @@ export default function Index({
       if (error.response && error.response.data.message) {
         setErrorMessage(error.response.data.message);
         setLoading(false);
-        console.log(error.response.data.message);
       } else {
         setErrorMessage(error.message);
         setLoading(false);
-        console.log(error.message);
       }
     }
   };
@@ -111,37 +92,15 @@ export default function Index({
           {loading && <div>Please wait...</div>}
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
-          <form onSubmit={handleRoleSubmit} method="post">
+          <form onSubmit={handleWorkspaceSubmit} method="post">
             <div className="m-4">
               <input
                 type="text"
-                name="title"
+                name="name"
                 className="w-1/3 input"
-                placeholder="Title"
-                defaultValue={role.title}
+                placeholder="Name"
+                defaultValue={workspace.name}
                 required
-              />
-            </div>
-            <div className="m-4">
-              <Select
-                // className="w-1/3"
-                name="permission_ids"
-                defaultValue={role.permission_roles.map((permission: any) => {
-                  return {
-                    value: permission.permission.id,
-                    label: permission.permission.title,
-                  };
-                })}
-                required
-                isMulti
-                closeMenuOnSelect={false}
-                onChange={handlePermissionChange}
-                options={permissions.map((permission: any) => {
-                  return {
-                    value: permission.permission.id,
-                    label: permission.permission.title,
-                  };
-                })}
               />
             </div>
             <div className="m-4">
