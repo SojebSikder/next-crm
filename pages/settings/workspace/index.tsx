@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import Meta from "../../../../../components/header/Meta";
-import Dialog from "../../../../../components/reusable/Dialog";
-import WorkspaceSettingSidebar from "../../../../../components/sidebar/WorkspaceSettingSidebar";
-import Sidebar from "../../../../../components/sidebar/Sidebar";
-import { AppConfig } from "../../../../../config/app.config";
-import CustomImage from "../../../../../components/reusable/CustomImage";
+import Meta from "../../../components/header/Meta";
+import Dialog from "../../../components/reusable/Dialog";
+import WorkspaceSettingSidebar from "../../../components/sidebar/WorkspaceSettingSidebar";
+import Sidebar from "../../../components/sidebar/Sidebar";
+import { AppConfig } from "../../../config/app.config";
+import CustomImage from "../../../components/reusable/CustomImage";
 import Link from "next/link";
-import { WorkspaceChannelService } from "../../../../../service/space/workspaceChannel.service";
-import { RoleService } from "../../../../../service/space/role.service";
-import { Alert } from "../../../../../components/alert/Alert";
+import { WorkspaceChannelService } from "../../../service/space/workspaceChannel.service";
+import { RoleService } from "../../../service/space/role.service";
+import { Alert } from "../../../components/alert/Alert";
 import { useRouter } from "next/navigation";
+import { WorkspaceService } from "../../../service/space/workspace.service";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -19,25 +20,17 @@ export const getServerSideProps = async (context: {
   pathname?: any;
 }) => {
   const { req, query, res, asPath, pathname } = context;
-  const workspace_id = query.workspace_id;
 
-  const res_roles = await RoleService.findAll(workspace_id, context);
-  const roles = res_roles.data.data;
+  const resWorkspaces = await WorkspaceService.findAll(context);
+  const workspaces = resWorkspaces.data;
 
   return {
     props: {
-      workspace_id: workspace_id,
-      roles: roles,
+      workspaces: workspaces,
     },
   };
 };
-export default function Index({
-  workspace_id,
-  roles,
-}: {
-  workspace_id: string;
-  roles: [];
-}) {
+export default function Index({ workspaces }: { workspaces: any[] }) {
   const [showDialog, setShowDialog] = useState(false);
   const router = useRouter();
 
@@ -46,20 +39,16 @@ export default function Index({
   const [loading, setLoading] = useState(false);
 
   const handleRoleDelete = async (id: number) => {
-    if (confirm("Are you sure, want to delete this role?")) {
-      setMessage(null);
-      setErrorMessage(null);
-      setLoading(true);
-
+    if (confirm("Are you sure, want to delete?")) {
       try {
-        const roleService = await RoleService.remove(id, workspace_id);
-        const resRole = roleService.data;
+        const workspaceService = await WorkspaceService.remove(id);
+        const resWorkspace = workspaceService;
 
-        if (resRole.error) {
-          setErrorMessage(resRole.message);
+        if (resWorkspace.error) {
+          setErrorMessage(resWorkspace.message);
           setLoading(false);
         } else {
-          setMessage(resRole.message);
+          setMessage(resWorkspace.message);
           setLoading(false);
           router.refresh();
         }
@@ -80,14 +69,14 @@ export default function Index({
 
   return (
     <div>
-      <Meta title={`Roles | Settings - ${AppConfig().app.name}`} />
+      <Meta title={`Workspaces | Settigs - ${AppConfig().app.name}`} />
       <Sidebar />
       <WorkspaceSettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <div>
-            <Link href={`/space/${workspace_id}/settings/roles/create`}>
-              <div className="m-4 w-[20%] btn primary">Create role</div>
+            <Link href={`/settings/workspace/create`}>
+              <div className="m-4 w-[20%] btn primary">Create workspace</div>
             </Link>
           </div>
 
@@ -95,25 +84,25 @@ export default function Index({
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
 
-          {roles.map((role: any) => {
+          {workspaces.map((workspace) => {
             return (
               <div
-                key={role.id}
+                key={workspace.id}
                 className="flex justify-between m-4 p-4 border-solid shadow-sm border-[1px] border-b-slate-500"
               >
                 <div>
-                  <div>{role.title}</div>
+                  <div>{workspace.name}</div>
                 </div>
 
                 <div>
                   <Link
-                    href={`/space/${workspace_id}/settings/roles/${role.id}/edit`}
+                    href={`/settings/workspace/${workspace.id}/edit`}
                     className="btn warning mr-2"
                   >
                     Edit
                   </Link>
                   <button
-                    onClick={() => handleRoleDelete(role.id)}
+                    onClick={() => handleRoleDelete(workspace.id)}
                     className="btn danger"
                   >
                     Remove

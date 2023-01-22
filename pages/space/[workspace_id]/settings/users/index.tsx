@@ -49,6 +49,10 @@ export default function Index({
 
   const handleUserDelete = async (id: number) => {
     if (confirm("Are you sure, want to delete this user?")) {
+      setMessage(null);
+      setErrorMessage(null);
+      setLoading(true);
+
       try {
         const roleService = await RoleService.remove(id, workspace_id);
         const resRole = roleService.data;

@@ -28,7 +28,11 @@ export default function Sidebar() {
         className="fixed top-0 left-0 h-screen w-16 flex flex-col
       bg-[#ededed] dark:bg-gray-900 shadow-lg"
       >
-        <SideBarItem text="My organization" icon={<BsCircle size="28" />} />
+        <SideBarItem
+          href={`/dashboard`}
+          text="My organization"
+          icon={<BsCircle size="28" />}
+        />
         <SideBarItem
           href={`/message`}
           text="Messages"

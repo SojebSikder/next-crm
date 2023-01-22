@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import Meta from "../../../../../../components/header/Meta";
-import WorkspaceSettingSidebar from "../../../../../../components/sidebar/WorkspaceSettingSidebar";
-import Sidebar from "../../../../../../components/sidebar/Sidebar";
-import { AppConfig } from "../../../../../../config/app.config";
-import { PermissionService } from "../../../../../../service/permission/permission.service";
-import { WorkspaceChannelService } from "../../../../../../service/space/workspaceChannel.service";
+import Meta from "../../../../components/header/Meta";
+import WorkspaceSettingSidebar from "../../../../components/sidebar/WorkspaceSettingSidebar";
+import Sidebar from "../../../../components/sidebar/Sidebar";
+import { AppConfig } from "../../../../config/app.config";
+import { PermissionService } from "../../../../service/permission/permission.service";
+import { WorkspaceChannelService } from "../../../../service/space/workspaceChannel.service";
 import Select from "react-select";
-import { RoleService } from "../../../../../../service/space/role.service";
-import { Alert } from "../../../../../../components/alert/Alert";
+import { RoleService } from "../../../../service/space/role.service";
+import { Alert } from "../../../../components/alert/Alert";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -100,7 +100,7 @@ export default function Index({
 
   return (
     <div>
-      <Meta title={`Edit Role | Settings - ${AppConfig().app.name}`} />
+      <Meta title={`Edit Role | Settigs - ${AppConfig().app.name}`} />
       <Sidebar />
       <WorkspaceSettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">

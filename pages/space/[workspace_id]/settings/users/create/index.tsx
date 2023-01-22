@@ -65,6 +65,7 @@ export default function Index({
     }
     setMessage(null);
     setErrorMessage(null);
+    setLoading(true);
 
     const data = {
       fname: fname,
