@@ -1,16 +1,12 @@
 import React, { useState } from "react";
+import Link from "next/link";
 import Meta from "../../../components/header/Meta";
-import Dialog from "../../../components/reusable/Dialog";
-import WorkspaceSettingSidebar from "../../../components/sidebar/WorkspaceSettingSidebar";
 import Sidebar from "../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../config/app.config";
-import CustomImage from "../../../components/reusable/CustomImage";
-import Link from "next/link";
-import { WorkspaceChannelService } from "../../../service/space/workspaceChannel.service";
-import { RoleService } from "../../../service/space/role.service";
 import { Alert } from "../../../components/alert/Alert";
 import { useRouter } from "next/navigation";
 import { WorkspaceService } from "../../../service/space/workspace.service";
+import OrgSettingSidebar from "../../../components/sidebar/OrgSettingSidebar";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -71,7 +67,7 @@ export default function Index({ workspaces }: { workspaces: any[] }) {
     <div>
       <Meta title={`Workspaces | Settigs - ${AppConfig().app.name}`} />
       <Sidebar />
-      <WorkspaceSettingSidebar />
+      <OrgSettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <div>
