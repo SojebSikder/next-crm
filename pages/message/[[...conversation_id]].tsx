@@ -248,7 +248,6 @@ export default function Message({
 
   useEffect(() => {
     socket.on("conversation", ({ conversation, workspace }) => {
-      console.log("workspace", workspace_id);
       if (workspace.id == workspace_id) {
         setConversations((state: any) => [conversation, ...state]);
       }
@@ -290,26 +289,33 @@ export default function Message({
               {workspace_users.map((workspace_user: any) => {
                 return (
                   <Accordion
-                    key={workspace_user.id + 1}
+                    id={`workspace-${workspace_user.workspace.id}`}
+                    key={workspace_user.workspace.id}
                     label={workspace_user.workspace.name}
                     active={
                       workspace_id == workspace_user.workspace.id ? true : false
                     }
                   >
-                    {workspace_user.workspace.workspace_channels.map(
-                      (workspace_channel: any) => {
-                        return (
-                          <div key={workspace_channel.id}>
-                            <Link
-                              href={`/message/${workspace_user.workspace.id}/${workspace_channel.id}`}
-                            >
-                              <div className="p-4 hover:text-white hover:bg-[var(--primary-hover-color)]">
-                                {workspace_channel.channel_name}
-                              </div>
-                            </Link>
-                          </div>
-                        );
-                      }
+                    {workspace_user.workspace.workspace_channels.length > 0 ? (
+                      workspace_user.workspace.workspace_channels.map(
+                        (workspace_channel: any) => {
+                          return (
+                            <div key={workspace_channel.id}>
+                              <Link
+                                href={`/message/${workspace_user.workspace.id}/${workspace_channel.id}`}
+                              >
+                                <div className="p-4 hover:text-white hover:bg-[var(--primary-hover-color)]">
+                                  {workspace_channel.channel_name}
+                                </div>
+                              </Link>
+                            </div>
+                          );
+                        }
+                      )
+                    ) : (
+                      <>
+                        <div className="p-4">No channels</div>
+                      </>
                     )}
                   </Accordion>
                 );
@@ -326,7 +332,7 @@ export default function Message({
                       <div
                         className={`p-4 hover:text-white hover:bg-[var(--primary-hover-color)] ${
                           (conversation_id == conversation.id) == true
-                            ? "bg-slate-400"
+                            ? "bg-slate-400 text-white"
                             : "bg-white"
                         }`}
                       >

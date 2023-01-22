@@ -1,11 +1,13 @@
 import React from "react";
 
 export default function Accordion({
+  id = "collapseOne",
   label,
   active = false,
   children,
   ...props
 }: {
+  id?: string;
   label: string;
   active?: boolean;
   children?: any;
@@ -18,14 +20,12 @@ export default function Accordion({
             <button
               className={`
                 accordion-button
-                relative
                 flex
                 items-center
                 w-full
                 py-4
                 px-5
                 text-base text-gray-800 text-left
-                ${active == true ? "bg-slate-400" : "bg-white"}
                 border-0
                 rounded-none
                 transition
@@ -33,15 +33,15 @@ export default function Accordion({
               `}
               type="button"
               data-bs-toggle="collapse"
-              data-bs-target="#collapseOne"
+              data-bs-target={`#${id}`}
               aria-expanded="true"
-              aria-controls="collapseOne"
+              aria-controls={`${id}`}
             >
               {label}
             </button>
           </h2>
           <div
-            id="collapseOne"
+            id={`${id}`}
             // className="accordion-collapse collapse show"
             className={`accordion-collapse collapse ${
               active == true ? "show" : ""
