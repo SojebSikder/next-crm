@@ -162,6 +162,10 @@ export default function Contact({
     }
   };
 
+  useEffect(() => {
+    setWorkspace_id(workspaceId);
+  }, [workspaceId]);
+
   return (
     <div className="flex">
       <Meta title={`Contacts - ${AppConfig().app.name}`} />
