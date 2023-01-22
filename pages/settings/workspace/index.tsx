@@ -65,7 +65,7 @@ export default function Index({ workspaces }: { workspaces: any[] }) {
 
   return (
     <div>
-      <Meta title={`Workspaces | Settigs - ${AppConfig().app.name}`} />
+      <Meta title={`Workspaces | Settings - ${AppConfig().app.name}`} />
       <Sidebar />
       <OrgSettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">

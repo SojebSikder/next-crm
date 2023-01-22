@@ -57,7 +57,7 @@ export default function Index({
         workspace_id,
         data
       );
-      const resWorkspace = workspaceService.data;
+      const resWorkspace = workspaceService;
 
       if (resWorkspace.error) {
         setErrorMessage(resWorkspace.message);
@@ -80,15 +80,15 @@ export default function Index({
 
   return (
     <div>
-      <Meta title={`Edit Role | Settigs - ${AppConfig().app.name}`} />
+      <Meta title={`Edit workspace | Settings - ${AppConfig().app.name}`} />
       <Sidebar />
       <OrgSettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <div className="m-4">
-            <h2 className="font-bold text-[1.5rem]">Edit role</h2>
+            <h2 className="font-bold text-[1.5rem]">Edit workspace</h2>
           </div>
-          <div className="m-4">Edit role with specific permissions</div>
+          <div className="m-4">Edit workspace</div>
           {loading && <div>Please wait...</div>}
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
