@@ -1,7 +1,7 @@
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 import AppHeader from "../../components/header/app/Header";
 import Meta from "../../components/header/Meta";
 import Sidebar from "../../components/sidebar/Sidebar";
@@ -97,11 +97,11 @@ export default function Message({
   workspaceId: number;
   conversationId: number;
   conversationDatas: any[];
-  messageDatas: any;
+  messageDatas: any[];
   // workspace_channels: any;
   workspace_channel_id: number;
   userDetails: any;
-  workspaceUsers: any;
+  workspaceUsers: any[];
   open: string;
 }) {
   const router = useRouter();
@@ -114,6 +114,12 @@ export default function Message({
   const [messages, setMessages] = useState(messageDatas);
   const [workspace_users, setWorkspace_users] = useState(workspaceUsers);
   const [conversations, setConversations] = useState(conversationDatas);
+  const [currentConversation, setCurrentConversation] = useState(
+    conversationDatas.length > 0
+      ? conversationDatas.find((con) => con.id == conversation_id)
+      : {}
+  );
+
   // const [workspaceChannelId, setWorkspaceChannelId] = useState(
   //   workspace_channels.length > 0 ? workspace_channels[0].id : 0
   // );
@@ -304,16 +310,16 @@ export default function Message({
             <div className="ml-[10px] w-[200px] border-solid border-[1px]">
               <div className="m-4">
                 {workspace_id && workspace_channel_id ? (
-                  <PopupMenu label="Open">
+                  <PopupMenu label={`${open == "true" ? "Open" : "Close"}`}>
                     <PopupMenuItem
                       href={`${workspace_id}/${workspace_channel_id}/?open=true`}
                     >
-                      Opened
+                      Open
                     </PopupMenuItem>
                     <PopupMenuItem
                       href={`${workspace_id}/${workspace_channel_id}/?open=false`}
                     >
-                      Closed
+                      Close
                     </PopupMenuItem>
                   </PopupMenu>
                 ) : (
