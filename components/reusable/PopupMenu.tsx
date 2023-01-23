@@ -1,10 +1,14 @@
 import React from "react";
 
+type VariantOption = "primary" | "seondary" | (string & {});
+
 export function PopupMenu({
   label,
   children,
+  variant = "primary",
 }: {
   label: string;
+  variant?: VariantOption;
   children?: any;
 }) {
   return (
@@ -13,11 +17,11 @@ export function PopupMenu({
         <div>
           <div className="dropdown relative">
             <button
-              className="
+              className={`
                 dropdown-toggle
                 px-6
                 py-2.5
-                bg-blue-600
+                primary
                 text-white
                 font-medium
                 text-xs
@@ -25,16 +29,14 @@ export function PopupMenu({
             
                 rounded
                 shadow-md
-                hover:bg-blue-700 hover:shadow-lg
-                focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
-                active:bg-blue-800 active:shadow-lg active:text-white
+                ${variant}
                 transition
                 duration-150
                 ease-in-out
                 flex
                 items-center
                 whitespace-nowrap
-              "
+              `}
               type="button"
               id="dropdownMenuButton1"
               data-bs-toggle="dropdown"
@@ -59,24 +61,24 @@ export function PopupMenu({
             </button>
             <ul
               className="
-          dropdown-menu
-          min-w-max
-          absolute
-          hidden
-          bg-white
-          text-base
-          z-50
-          float-left
-          py-2
-          list-none
-          text-left
-          rounded-lg
-          shadow-lg
-          mt-1
-          m-0
-          bg-clip-padding
-          border-none
-        "
+              dropdown-menu
+              min-w-max
+              absolute
+              hidden
+              bg-white
+              text-base
+              z-50
+              float-left
+              py-2
+              list-none
+              text-left
+              rounded-lg
+              shadow-lg
+              mt-1
+              m-0
+              bg-clip-padding
+              border-none
+              "
               aria-labelledby="dropdownMenuButton1"
             >
               {children}

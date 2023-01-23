@@ -98,7 +98,10 @@ a:hover {
   .primary {
     @apply bg-blue-500 text-white
     hover:bg-blue-700
-    focus:ring-blue-400;
+    focus:ring-blue-400
+    
+    active:bg-blue-800
+    active:shadow-lg active:text-white;
   }
   .warning {
     @apply bg-yellow-500 text-white

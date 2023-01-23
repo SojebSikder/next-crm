@@ -4,24 +4,17 @@ import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import AppHeader from "../../components/header/app/Header";
 import Meta from "../../components/header/Meta";
-import Dialog from "../../components/reusable/Dialog";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { AppConfig } from "../../config/app.config";
 import { DateHelper } from "../../helper/date.helper";
 import { getUser } from "../../hooks/useUser";
-import { CountryService } from "../../service/country/country.service";
-import { ContactService } from "../../service/space/contact.service";
 import { ConversationService } from "../../service/space/conversation.service";
 import { MessageService } from "../../service/space/message.service";
-import { WorkspaceChannelService } from "../../service/space/workspaceChannel.service";
-import { WorkspaceUserService } from "../../service/space/workspaceUser.service";
 import { PopupMenu, PopupMenuItem } from "../../components/reusable/PopupMenu";
 import Accordion from "../../components/reusable/Accordion";
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
-  // const workspace_id = query.workspace_id;
-  // const organization_id = query.organization_id;
 
   let queries = query.conversation_id ? query.conversation_id : null;
   let workspace_id = queries && queries[0] ? queries[0] : null;
@@ -35,12 +28,6 @@ export const getServerSideProps = async (context: any) => {
     workspace_users = userDetails.workspace_users;
   }
 
-  // get conversation
-  // const res_conversations = await ConversationService.findAll(
-  //   workspace_id,
-  //   context
-  // );
-  // const conversations = res_conversations.data.data;
   let conversations = [];
   let messageDatas = [];
   let workspace_channels = [];
@@ -56,9 +43,6 @@ export const getServerSideProps = async (context: any) => {
       conversations = resConversations.data;
     }
 
-    // conversations = workspace_users[0].workspace.conversations;
-    // workspace_id = workspace_users[0].workspace.id;
-
     // get messages
     let res_messages;
     if (conversation_id) {
@@ -72,13 +56,6 @@ export const getServerSideProps = async (context: any) => {
     if (res_messages) {
       messageDatas = res_messages.data.data;
     }
-
-    // get workspace channel
-    // const res_workspace_channels = await WorkspaceChannelService.findAll(
-    //   workspace_id,
-    //   context
-    // );
-    // workspace_channels = res_workspace_channels.data.data;
   }
 
   return {
@@ -322,7 +299,14 @@ export default function Message({
               })}
             </div>
             {/* conversations */}
-            <div className="ml-[10px] w-[165px] border-solid border-[1px]">
+            <div className="ml-[10px] w-[200px] border-solid border-[1px]">
+              <div className="m-4">
+                <PopupMenu label="Open">
+                  <PopupMenuItem>Opened</PopupMenuItem>
+                  <PopupMenuItem>Closed</PopupMenuItem>
+                </PopupMenu>
+              </div>
+
               {conversations.map((conversation: any) => {
                 return (
                   <div key={conversation.id}>
@@ -336,10 +320,23 @@ export default function Message({
                             : "bg-white"
                         }`}
                       >
-                        {conversation.contact.fname}{" "}
-                        {conversation.contact.lname}
+                        <div className="flex justify-between">
+                          <div>
+                            {conversation.contact.fname}{" "}
+                            {conversation.contact.lname}
+                          </div>
+                          <div>
+                            <span className="text-[10px]">
+                              {DateHelper.format(
+                                conversation.updated_at,
+                                "MMM DD"
+                              )}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </Link>
+                    <hr />
                   </div>
                 );
               })}
