@@ -177,13 +177,13 @@ export default function Message({
     }
   };
 
-  const handleCloseConversation = async () => {
+  const handleCloseConversation = async (isOpen: number) => {
     if (!conversation_id) {
       return alert("Please select a conversation");
     }
 
     const data = {
-      is_open: false,
+      is_open: isOpen ? true : false,
       workspace_id: workspace_id,
     };
     try {
@@ -193,10 +193,12 @@ export default function Message({
       );
       if (conversationService.data.success == true) {
         // TODO remove conversation from side panel
-        const data = conversations.filter((con: any) => {
-          return [con.id != conversation_id];
-        });
-        setConversations((state: any) => [data]);
+        if (isOpen == 0) {
+          const data = conversations.filter((con: any) => {
+            return [con.id != conversation_id];
+          });
+          setConversations((state: any) => [data]);
+        }
       }
     } catch (error: any) {
       // return custom error message from API if any
@@ -331,7 +333,11 @@ export default function Message({
                 return (
                   <div key={conversation.id}>
                     <Link
-                      href={`/message/${conversation.workspace_id}/${workspace_channel_id}/${conversation.id}`}
+                      href={`/message/${
+                        conversation.workspace_id
+                      }/${workspace_channel_id}/${conversation.id}${
+                        open == "false" ? "?open=false" : ""
+                      }`}
                     >
                       <div
                         className={`p-4 hover:text-white hover:bg-[var(--primary-hover-color)] ${
@@ -369,12 +375,21 @@ export default function Message({
                     <div className="border-b-gray-200 border-b-[1px] flex justify-between">
                       <div>Select agent </div>
                       <div>
-                        <button
-                          onClick={handleCloseConversation}
-                          className="mb-4 btn primary"
-                        >
-                          Close Conversation
-                        </button>
+                        {currentConversation.is_open ? (
+                          <button
+                            onClick={() => handleCloseConversation(0)}
+                            className={`mb-4 btn danger`}
+                          >
+                            Close Conversation
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleCloseConversation(1)}
+                            className={`mb-4 btn primary`}
+                          >
+                            Open Conversation
+                          </button>
+                        )}
                       </div>
                     </div>
                     <div className="flex flex-col h-[95%] overflow-y-scroll border-b-gray-200 border-b-[1px]">
