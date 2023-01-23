@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 type VariantOption = "primary" | "seondary" | (string & {});
@@ -92,9 +93,11 @@ export function PopupMenu({
 
 export function PopupMenuItem({
   onClick,
+  href,
   children,
 }: {
   onClick?: Function;
+  href?: string;
   children?: any;
 }) {
   const handleClick = () => {
@@ -105,9 +108,10 @@ export function PopupMenuItem({
   return (
     <>
       <li>
-        <a
-          onClick={handleClick}
-          className="
+        {href ? (
+          <Link
+            href={href}
+            className="
               dropdown-item
               text-sm
               py-2
@@ -120,9 +124,29 @@ export function PopupMenuItem({
               text-gray-700
               hover:bg-gray-100
             "
-        >
-          {children}
-        </a>
+          >
+            {children}
+          </Link>
+        ) : (
+          <div
+            onClick={handleClick}
+            className="
+              dropdown-item
+              text-sm
+              py-2
+              px-4
+              font-normal
+              block
+              w-full
+              whitespace-nowrap
+              bg-transparent
+              text-gray-700
+              hover:bg-gray-100
+            "
+          >
+            {children}
+          </div>
+        )}
       </li>
     </>
   );

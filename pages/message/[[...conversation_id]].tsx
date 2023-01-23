@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import AppHeader from "../../components/header/app/Header";
 import Meta from "../../components/header/Meta";
 import Sidebar from "../../components/sidebar/Sidebar";
@@ -15,6 +15,7 @@ import Accordion from "../../components/reusable/Accordion";
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
+  const open = query.open ? query.open : true;
 
   let queries = query.conversation_id ? query.conversation_id : null;
   let workspace_id = queries && queries[0] ? queries[0] : null;
@@ -35,11 +36,12 @@ export const getServerSideProps = async (context: any) => {
   if (workspace_users.length > 0) {
     if (workspace_channel_id) {
       // get conversation
-      const resConversations = await ConversationService.findAll(
+      const resConversations = await ConversationService.findAll({
+        open: open,
         workspace_channel_id,
         workspace_id,
-        context
-      );
+        context,
+      });
       conversations = resConversations.data;
     }
 
@@ -64,10 +66,10 @@ export const getServerSideProps = async (context: any) => {
       conversationId: conversation_id,
       conversationDatas: conversations,
       messageDatas: messageDatas,
-      // workspace_channels: workspace_channels,
       workspace_channel_id: workspace_channel_id,
       userDetails: userDetails,
       workspaceUsers: workspace_users,
+      open: open,
     },
   };
 };
@@ -90,15 +92,17 @@ export default function Message({
   workspace_channel_id,
   userDetails,
   workspaceUsers,
+  open,
 }: {
   workspaceId: number;
   conversationId: number;
-  conversationDatas: any;
+  conversationDatas: any[];
   messageDatas: any;
   // workspace_channels: any;
   workspace_channel_id: number;
   userDetails: any;
   workspaceUsers: any;
+  open: string;
 }) {
   const router = useRouter();
 
@@ -211,19 +215,16 @@ export default function Message({
   }, [messages]);
 
   useEffect(() => {
-    setConversation_id(conversationId);
-  }, [conversationId]);
-
-  useEffect(() => {
-    setWorkspace_id(workspaceId);
-  }, [workspaceId]);
-
-  useEffect(() => {
     setWorkspaceChannelId(workspace_channel_id);
     setConversations(conversationDatas);
   }, [workspace_channel_id]);
 
   useEffect(() => {
+    setConversations(conversationDatas);
+  }, [open]);
+
+  useEffect(() => {
+    setWorkspace_id(workspaceId);
     socket.on("conversation", ({ conversation, workspace }) => {
       if (workspace.id == workspace_id) {
         setConversations((state: any) => [conversation, ...state]);
@@ -232,9 +233,10 @@ export default function Message({
     return () => {
       socket.off("conversation");
     };
-  }, [workspace_id]);
+  }, [workspaceId]);
 
   useEffect(() => {
+    setConversation_id(conversationId);
     // set message
     setMessages(messageDatas);
 
@@ -251,7 +253,7 @@ export default function Message({
       socket.off("connect");
       socket.off("message");
     };
-  }, [conversation_id]);
+  }, [conversationId]);
 
   return (
     <>
@@ -301,10 +303,22 @@ export default function Message({
             {/* conversations */}
             <div className="ml-[10px] w-[200px] border-solid border-[1px]">
               <div className="m-4">
-                <PopupMenu label="Open">
-                  <PopupMenuItem>Opened</PopupMenuItem>
-                  <PopupMenuItem>Closed</PopupMenuItem>
-                </PopupMenu>
+                {workspace_id && workspace_channel_id ? (
+                  <PopupMenu label="Open">
+                    <PopupMenuItem
+                      href={`${workspace_id}/${workspace_channel_id}/?open=true`}
+                    >
+                      Opened
+                    </PopupMenuItem>
+                    <PopupMenuItem
+                      href={`${workspace_id}/${workspace_channel_id}/?open=false`}
+                    >
+                      Closed
+                    </PopupMenuItem>
+                  </PopupMenu>
+                ) : (
+                  <></>
+                )}
               </div>
 
               {conversations.map((conversation: any) => {
@@ -341,12 +355,13 @@ export default function Message({
                 );
               })}
             </div>
+
             <div className="ml-[50px] w-[430px] border-solid border-[1px]">
               {conversation_id ? (
                 <div className="flex flex-col">
                   <div className="m-4 h-[38rem]">
                     <div className="border-b-gray-200 border-b-[1px] flex justify-between">
-                      <div>Select agent</div>
+                      <div>Select agent </div>
                       <div>
                         <button
                           onClick={handleCloseConversation}
