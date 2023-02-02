@@ -1,7 +1,7 @@
 import React from "react";
 import AppHeader from "../../components/header/app/Header";
 import Meta from "../../components/header/Meta";
-import AudioRecorder from "../../components/reusable/AudioRecorder";
+import AudioRecorder from "../../components/reusable/AudioRecorder/AudioRecorder";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { getUser } from "../../hooks/useUser";
 

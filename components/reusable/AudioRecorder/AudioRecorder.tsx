@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AudioManager } from "../../util/AudioManager/AudioManager";
+import { AudioManager } from "../../../util/AudioManager/AudioManager";
 import { BiMicrophone, BiStop, BiPause, BiPlay } from "react-icons/bi";
 
 const recorder = AudioManager.recorder();
