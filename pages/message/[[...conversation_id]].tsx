@@ -234,7 +234,7 @@ export default function Message({
   useEffect(() => {
     setWorkspace_id(workspaceId);
     socket.on("conversation", ({ conversation, workspace }) => {
-      if (workspace.id == workspace_id) {
+      if (workspace.id == workspaceId) {
         setConversations((state: any) => [conversation, ...state]);
       }
     });
@@ -253,7 +253,7 @@ export default function Message({
       console.log("connected");
     });
     socket.on("message", ({ message }) => {
-      if (message.conversation_id == conversation_id) {
+      if (message.conversation_id == conversationId) {
         setMessages((state: any) => [...state, message]);
       }
     });
