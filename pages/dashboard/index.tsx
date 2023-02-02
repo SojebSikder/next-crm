@@ -25,12 +25,18 @@ export default function Dashboard({ userDetails }: { userDetails: any }) {
       <Meta />
       <Sidebar />
       <main className="flex justify-center">
-        <h1>
-          Welcome, {userDetails.fname} {userDetails.lname}
-        </h1>
+        <div>
+          <h1>
+            Welcome, {userDetails.fname} {userDetails.lname}
+          </h1>
+        </div>
         <br />
-        <Workflow />
-        <AudioRecorder />
+        <div>
+          <AudioRecorder />
+        </div>
+        <div>
+          <Workflow />
+        </div>
       </main>
     </div>
   );
