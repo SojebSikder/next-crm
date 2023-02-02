@@ -12,6 +12,7 @@ import { ConversationService } from "../../service/space/conversation.service";
 import { MessageService } from "../../service/space/message.service";
 import { PopupMenu, PopupMenuItem } from "../../components/reusable/PopupMenu";
 import Accordion from "../../components/reusable/Accordion";
+import { DynamicVariableService } from "../../service/dynamic-variable/dynamic-variable.service";
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
@@ -33,7 +34,14 @@ export const getServerSideProps = async (context: any) => {
   let messageDatas = [];
   let workspace_channels = [];
 
+  let dynamic_variables = [];
+
   if (workspace_users.length > 0) {
+    const dynamic_variablesService = await DynamicVariableService.findAll(
+      context
+    );
+    dynamic_variables = dynamic_variablesService.data;
+
     if (workspace_channel_id) {
       // get conversation
       const resConversations = await ConversationService.findAll({
@@ -70,19 +78,20 @@ export const getServerSideProps = async (context: any) => {
       userDetails: userDetails,
       workspaceUsers: workspace_users,
       open: open,
+      dynamic_variables: dynamic_variables,
     },
   };
 };
 
 const socket = io(AppConfig().app.url);
-const dynamic_variables_list = [
-  "${contact.name}",
-  "${contact.fname}",
-  "${contact.lname}",
-  "${contact.email}",
-  "${contact.phone_number}",
-  "${contact.country}",
-];
+// const dynamic_variables_list = [
+//   "${contact.name}",
+//   "${contact.fname}",
+//   "${contact.lname}",
+//   "${contact.email}",
+//   "${contact.phone_number}",
+//   "${contact.country}",
+// ];
 export default function Message({
   workspaceId,
   conversationId,
@@ -93,6 +102,7 @@ export default function Message({
   userDetails,
   workspaceUsers,
   open,
+  dynamic_variables,
 }: {
   workspaceId: number;
   conversationId: number;
@@ -103,6 +113,7 @@ export default function Message({
   userDetails: any;
   workspaceUsers: any[];
   open: string;
+  dynamic_variables: any[];
 }) {
   const router = useRouter();
 
@@ -463,7 +474,7 @@ export default function Message({
                     <div>
                       <div className="ml-4">
                         <PopupMenu label="Variables">
-                          {dynamic_variables_list.map((variable, i) => {
+                          {dynamic_variables.map((variable, i) => {
                             return (
                               <PopupMenuItem
                                 key={i}

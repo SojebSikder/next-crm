@@ -27,6 +27,10 @@ export default function WorkspaceSettingSidebar() {
       />
       <SideBarItem href={`/space/${workspace_id}/settings/users`} text="User" />
       <SideBarItem href={`/space/${workspace_id}/settings/roles`} text="Role" />
+      <SideBarItem
+        href={`/space/${workspace_id}/settings/snippet`}
+        text="Snippet"
+      />
     </div>
   );
 }
