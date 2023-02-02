@@ -2,6 +2,7 @@ import React from "react";
 import AppHeader from "../../components/header/app/Header";
 import Meta from "../../components/header/Meta";
 import AudioRecorder from "../../components/reusable/AudioRecorder/AudioRecorder";
+import Workflow from "../../components/reusable/Workflow/Workflow";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { getUser } from "../../hooks/useUser";
 
@@ -28,6 +29,7 @@ export default function Dashboard({ userDetails }: { userDetails: any }) {
           Welcome, {userDetails.fname} {userDetails.lname}
         </h1>
         <br />
+        <Workflow />
         <AudioRecorder />
       </main>
     </div>
