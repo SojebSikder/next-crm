@@ -95,6 +95,11 @@ a:hover {
     rounded-lg shadow-md focus:outline-none focus:ring-2 
     focus:ring-opacity-75;
   }
+
+  .btn:disabled {
+    @apply cursor-not-allowed bg-gray-500 hover:bg-gray-500;
+  }
+
   .primary {
     @apply bg-blue-500 text-white
     hover:bg-blue-700
