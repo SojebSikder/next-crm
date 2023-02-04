@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { io } from "socket.io-client";
+import { EmojiClickData } from "emoji-picker-react";
 import AppHeader from "../../components/header/app/Header";
 import Meta from "../../components/header/Meta";
 import Sidebar from "../../components/sidebar/Sidebar";
@@ -14,6 +15,15 @@ import { PopupMenu, PopupMenuItem } from "../../components/reusable/PopupMenu";
 import Accordion from "../../components/reusable/Accordion";
 import { DynamicVariableService } from "../../service/dynamic-variable/dynamic-variable.service";
 import { SnippetService } from "../../service/space/snippet.service";
+import dynamic from "next/dynamic";
+
+// import in client side to avoid "document is not defined"
+const EmojiPicker = dynamic(
+  () => {
+    return import("emoji-picker-react");
+  },
+  { ssr: false }
+);
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
@@ -154,6 +164,11 @@ export default function Message({
   const handleVariable = (text: string) => {
     setMessageBox((prev) => prev + " " + text);
   };
+
+  function onEmojiClick(emojiData: EmojiClickData, event: MouseEvent) {
+    handleVariable(emojiData.emoji);
+  }
+
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
 
@@ -479,6 +494,11 @@ export default function Message({
                       </div>
                     </form>
                     <div className="flex">
+                      <div className="ml-4">
+                        <PopupMenu label="Emoji">
+                          <EmojiPicker onEmojiClick={onEmojiClick} />
+                        </PopupMenu>
+                      </div>
                       <div className="ml-4">
                         <PopupMenu label="Variables">
                           {dynamic_variables.map((variable, i) => {
