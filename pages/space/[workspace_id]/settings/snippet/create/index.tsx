@@ -8,6 +8,7 @@ import { WorkspaceChannelService } from "../../../../../../service/space/workspa
 import Select from "react-select";
 import { RoleService } from "../../../../../../service/space/role.service";
 import { Alert } from "../../../../../../components/alert/Alert";
+import { SnippetService } from "../../../../../../service/space/snippet.service";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -19,23 +20,13 @@ export const getServerSideProps = async (context: {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
 
-  const res_permission = await PermissionService.findAll(workspace_id, context);
-  const permissions = res_permission.data.data;
-
   return {
     props: {
       workspace_id: workspace_id,
-      permissions: permissions,
     },
   };
 };
-export default function Index({
-  workspace_id,
-  permissions,
-}: {
-  workspace_id: string;
-  permissions: any;
-}) {
+export default function Index({ workspace_id }: { workspace_id: string }) {
   const [showDialog, setShowDialog] = useState(false);
   const handleChannelDialog = () => {
     setShowDialog(true);
@@ -45,38 +36,29 @@ export default function Index({
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [permissionIds, setPermissionIds] = useState<number[]>([]);
-
-  const handlePermissionChange = (e: any) => {
-    const ids = e.map((option: any) => {
-      return option.value;
-    });
-    setPermissionIds(ids);
-  };
-
-  const handleRoleSubmit = async (e: any) => {
+  const handleSnippetSubmit = async (e: any) => {
     e.preventDefault();
 
     setMessage(null);
     setErrorMessage(null);
     setLoading(true);
 
-    const title = e.target.title.value;
-    const permission_ids = permissionIds;
+    const name = e.target.name.value;
+    const message = e.target.message.value;
 
     const data = {
-      title: title,
-      permission_ids: permission_ids,
+      name: name,
+      message: message,
     };
     try {
-      const roleService = await RoleService.create(workspace_id, data);
-      const resRole = roleService.data;
+      const snippetService = await SnippetService.create(workspace_id, data);
+      const resSnippet = snippetService.data;
 
-      if (resRole.error) {
-        setErrorMessage(resRole.message);
+      if (resSnippet.error) {
+        setErrorMessage(resSnippet.message);
         setLoading(false);
       } else {
-        setMessage(resRole.message);
+        setMessage(resSnippet.message);
         setLoading(false);
       }
     } catch (error: any) {
@@ -95,44 +77,38 @@ export default function Index({
 
   return (
     <div>
-      <Meta title={`Create Role | Settings - ${AppConfig().app.name}`} />
+      <Meta title={`Create Snippet | Settings - ${AppConfig().app.name}`} />
       <Sidebar />
       <WorkspaceSettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <div className="m-4">
-            <h2 className="font-bold text-[1.5rem]">Create new role</h2>
+            <h2 className="font-bold text-[1.5rem]">Create new snipet</h2>
           </div>
-          <div className="m-4">Create role with specific permissions</div>
+          <div className="m-4">Create snippet</div>
           {loading && <div>Please wait...</div>}
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
-          <form onSubmit={handleRoleSubmit} method="post">
+          <form onSubmit={handleSnippetSubmit} method="post">
             <div className="m-4">
               <input
                 type="text"
-                name="title"
+                name="name"
                 className="w-1/3 input"
-                placeholder="Title"
+                placeholder="Name"
                 required
               />
             </div>
             <div className="m-4">
-              <Select
-                // className="w-1/3"
-                name="permission_ids"
+              <textarea
+                name="message"
+                id="message"
+                className="w-1/3 input"
+                placeholder="Message"
                 required
-                isMulti
-                closeMenuOnSelect={false}
-                onChange={handlePermissionChange}
-                options={permissions.map((permission: any) => {
-                  return {
-                    value: permission.permission.id,
-                    label: permission.permission.title,
-                  };
-                })}
-              />
+              ></textarea>
             </div>
+
             <div className="m-4">
               <button className="btn primary">Save</button>
             </div>

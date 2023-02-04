@@ -4,10 +4,10 @@ import WorkspaceSettingSidebar from "../../../../../../components/sidebar/Worksp
 import Sidebar from "../../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../../config/app.config";
 import { PermissionService } from "../../../../../../service/permission/permission.service";
-import { WorkspaceChannelService } from "../../../../../../service/space/workspaceChannel.service";
 import Select from "react-select";
 import { RoleService } from "../../../../../../service/space/role.service";
 import { Alert } from "../../../../../../components/alert/Alert";
+import { SnippetService } from "../../../../../../service/space/snippet.service";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -18,33 +18,32 @@ export const getServerSideProps = async (context: {
 }) => {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
-  const role_id = query.role_id;
+  const snippet_id = query.snippet_id;
 
-  const res_permission = await PermissionService.findAll(workspace_id, context);
-  const permissions = res_permission.data.data;
-
-  const res_role = await RoleService.findOne(role_id, workspace_id, context);
-  const role = res_role.data.data;
+  const res_snippet = await SnippetService.findOne(
+    snippet_id,
+    workspace_id,
+    context
+  );
+  const snippet = res_snippet.data.data;
 
   return {
     props: {
       workspace_id: workspace_id,
-      permissions: permissions,
-      role_id: role_id,
-      role: role,
+      snippet_id: snippet_id,
+      snippet: snippet,
     },
   };
 };
 export default function Index({
   workspace_id,
-  permissions,
-  role_id,
-  role,
+  snippet_id,
+  snippet,
 }: {
   workspace_id: string;
   permissions: any;
-  role_id: string;
-  role: any;
+  snippet_id: string;
+  snippet: any;
 }) {
   const [showDialog, setShowDialog] = useState(false);
   const handleChannelDialog = () => {
@@ -55,33 +54,33 @@ export default function Index({
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [permissionIds, setPermissionIds] = useState<number[]>([]);
-
-  const handlePermissionChange = (e: any) => {
-    const ids = e.map((option: any) => {
-      return option.value;
-    });
-    setPermissionIds(ids);
-  };
-
-  const handleRoleSubmit = async (e: any) => {
+  const handleSnippetSubmit = async (e: any) => {
     e.preventDefault();
-    const title = e.target.title.value;
-    const permission_ids = permissionIds;
+
+    setMessage(null);
+    setErrorMessage(null);
+    setLoading(true);
+
+    const name = e.target.name.value;
+    const message = e.target.message.value;
 
     const data = {
-      title: title,
-      permission_ids: permission_ids,
+      name: name,
+      message: message,
     };
     try {
-      const roleService = await RoleService.update(role_id, workspace_id, data);
-      const resRole = roleService.data;
+      const snippetService = await SnippetService.update(
+        snippet_id,
+        workspace_id,
+        data
+      );
+      const resSnippet = snippetService.data;
 
-      if (resRole.error) {
-        setErrorMessage(resRole.message);
+      if (resSnippet.error) {
+        setErrorMessage(resSnippet.message);
         setLoading(false);
       } else {
-        setMessage(resRole.message);
+        setMessage(resSnippet.message);
         setLoading(false);
       }
     } catch (error: any) {
@@ -106,44 +105,32 @@ export default function Index({
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <div className="m-4">
-            <h2 className="font-bold text-[1.5rem]">Edit role</h2>
+            <h2 className="font-bold text-[1.5rem]">Edit snippet</h2>
           </div>
-          <div className="m-4">Edit role with specific permissions</div>
+          <div className="m-4">Edit snippet</div>
           {loading && <div>Please wait...</div>}
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
-          <form onSubmit={handleRoleSubmit} method="post">
+          <form onSubmit={handleSnippetSubmit} method="post">
             <div className="m-4">
               <input
                 type="text"
-                name="title"
+                name="name"
                 className="w-1/3 input"
-                placeholder="Title"
-                defaultValue={role.title}
+                placeholder="Name"
+                defaultValue={snippet.name}
                 required
               />
             </div>
             <div className="m-4">
-              <Select
-                // className="w-1/3"
-                name="permission_ids"
-                defaultValue={role.permission_roles.map((permission: any) => {
-                  return {
-                    value: permission.permission.id,
-                    label: permission.permission.title,
-                  };
-                })}
+              <textarea
+                name="message"
+                id="message"
+                className="w-1/3 input"
+                placeholder="Message"
                 required
-                isMulti
-                closeMenuOnSelect={false}
-                onChange={handlePermissionChange}
-                options={permissions.map((permission: any) => {
-                  return {
-                    value: permission.permission.id,
-                    label: permission.permission.title,
-                  };
-                })}
-              />
+                defaultValue={snippet.message}
+              ></textarea>
             </div>
             <div className="m-4">
               <button className="btn primary">Save</button>

@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import Meta from "../../../../../components/header/Meta";
-import Dialog from "../../../../../components/reusable/Dialog";
 import WorkspaceSettingSidebar from "../../../../../components/sidebar/WorkspaceSettingSidebar";
 import Sidebar from "../../../../../components/sidebar/Sidebar";
 import { AppConfig } from "../../../../../config/app.config";
 import CustomImage from "../../../../../components/reusable/CustomImage";
 import Link from "next/link";
-import { WorkspaceChannelService } from "../../../../../service/space/workspaceChannel.service";
-import { RoleService } from "../../../../../service/space/role.service";
 import { Alert } from "../../../../../components/alert/Alert";
 import { useRouter } from "next/navigation";
+import { SnippetService } from "../../../../../service/space/snippet.service";
 
 export const getServerSideProps = async (context: {
   query: any;
@@ -21,22 +19,22 @@ export const getServerSideProps = async (context: {
   const { req, query, res, asPath, pathname } = context;
   const workspace_id = query.workspace_id;
 
-  const res_roles = await RoleService.findAll(workspace_id, context);
-  const roles = res_roles.data.data;
+  const res_snippets = await SnippetService.findAll(workspace_id, context);
+  const snippets = res_snippets.data.data;
 
   return {
     props: {
       workspace_id: workspace_id,
-      roles: roles,
+      snippets: snippets,
     },
   };
 };
 export default function Index({
   workspace_id,
-  roles,
+  snippets,
 }: {
   workspace_id: string;
-  roles: [];
+  snippets: [];
 }) {
   const [showDialog, setShowDialog] = useState(false);
   const router = useRouter();
@@ -45,21 +43,21 @@ export default function Index({
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleRoleDelete = async (id: number) => {
+  const handleSnippetDelete = async (id: number) => {
     if (confirm("Are you sure, want to delete this role?")) {
       setMessage(null);
       setErrorMessage(null);
       setLoading(true);
 
       try {
-        const roleService = await RoleService.remove(id, workspace_id);
-        const resRole = roleService.data;
+        const snippetService = await SnippetService.remove(id, workspace_id);
+        const resSnippet = snippetService.data;
 
-        if (resRole.error) {
-          setErrorMessage(resRole.message);
+        if (resSnippet.error) {
+          setErrorMessage(resSnippet.message);
           setLoading(false);
         } else {
-          setMessage(resRole.message);
+          setMessage(resSnippet.message);
           setLoading(false);
           router.refresh();
         }
@@ -80,14 +78,14 @@ export default function Index({
 
   return (
     <div>
-      <Meta title={`Roles | Settings - ${AppConfig().app.name}`} />
+      <Meta title={`Snippet | Settings - ${AppConfig().app.name}`} />
       <Sidebar />
       <WorkspaceSettingSidebar />
       <main className="mt-5 ml-[300px] flex justify-center h-screen">
         <div className="w-full shadow-md sm:rounded-lg">
           <div>
-            <Link href={`/space/${workspace_id}/settings/roles/create`}>
-              <div className="m-4 w-[20%] btn primary">Create role</div>
+            <Link href={`/space/${workspace_id}/settings/snippet/create`}>
+              <div className="m-4 w-[20%] btn primary">Create snippet</div>
             </Link>
           </div>
 
@@ -95,25 +93,25 @@ export default function Index({
           {message && <Alert type={"success"}>{message}</Alert>}
           {errorMessage && <Alert type={"danger"}>{errorMessage}</Alert>}
 
-          {roles.map((role: any) => {
+          {snippets.map((snippet: any) => {
             return (
               <div
-                key={role.id}
+                key={snippet.id}
                 className="flex justify-between m-4 p-4 border-solid shadow-sm border-[1px] border-b-slate-500"
               >
                 <div>
-                  <div>{role.title}</div>
+                  <div>{snippet.name}</div>
                 </div>
 
                 <div>
                   <Link
-                    href={`/space/${workspace_id}/settings/roles/${role.id}/edit`}
+                    href={`/space/${workspace_id}/settings/snippet/${snippet.id}/edit`}
                     className="btn warning mr-2"
                   >
                     Edit
                   </Link>
                   <button
-                    onClick={() => handleRoleDelete(role.id)}
+                    onClick={() => handleSnippetDelete(snippet.id)}
                     className="btn danger"
                   >
                     Remove

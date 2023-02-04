@@ -11,11 +11,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />;
 }
 
-MyApp.getInitialProps = async (context: AppContext) => {
+MyApp.getInitialProps = async (context: any) => {
   const pageProps = await App.getInitialProps(context); // Retrieves page's `getInitialProps`
-
-  const cookies = context.req.headers.cookie;
-  console.log("cookies", context);
+  const host = context.ctx.req.cookies.token;
+  console.log("context", host);
 
   return {
     ...pageProps,
