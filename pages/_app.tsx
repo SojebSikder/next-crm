@@ -11,12 +11,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />;
 }
 
-MyApp.getInitialProps = async (context: any) => {
-  const pageProps = await App.getInitialProps(context); // Retrieves page's `getInitialProps`
-  const host = context.ctx.req.cookies.token;
-  console.log("context", host);
+// MyApp.getInitialProps = async (context: any) => {
+//   const pageProps = await App.getInitialProps(context); // Retrieves page's `getInitialProps`
+//   const host = context.ctx.req.cookies.token;
+//   console.log("context", host);
 
-  return {
-    ...pageProps,
-  };
-};
+//   return {
+//     ...pageProps,
+//   };
+// };

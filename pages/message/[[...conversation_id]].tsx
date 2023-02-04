@@ -13,6 +13,7 @@ import { MessageService } from "../../service/space/message.service";
 import { PopupMenu, PopupMenuItem } from "../../components/reusable/PopupMenu";
 import Accordion from "../../components/reusable/Accordion";
 import { DynamicVariableService } from "../../service/dynamic-variable/dynamic-variable.service";
+import { SnippetService } from "../../service/space/snippet.service";
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
@@ -35,13 +36,9 @@ export const getServerSideProps = async (context: any) => {
   let workspace_channels = [];
 
   let dynamic_variables = [];
+  let snippets = [];
 
   if (workspace_users.length > 0) {
-    const dynamic_variablesService = await DynamicVariableService.findAll(
-      context
-    );
-    dynamic_variables = dynamic_variablesService.data;
-
     if (workspace_channel_id) {
       // get conversation
       const resConversations = await ConversationService.findAll({
@@ -56,6 +53,19 @@ export const getServerSideProps = async (context: any) => {
     // get messages
     let res_messages;
     if (conversation_id) {
+      // fetch other things
+      const dynamic_variablesService = await DynamicVariableService.findAll(
+        context
+      );
+      dynamic_variables = dynamic_variablesService.data;
+      //
+      const snippetsService = await SnippetService.findAll(
+        workspace_id,
+        context
+      );
+      snippets = snippetsService.data.data;
+
+      // fetch messages
       res_messages = await MessageService.findAll({
         workspace_id,
         workspace_channel_id,
@@ -79,19 +89,14 @@ export const getServerSideProps = async (context: any) => {
       workspaceUsers: workspace_users,
       open: open,
       dynamic_variables: dynamic_variables,
+      snippets: snippets,
     },
   };
 };
 
+// initialize socket
 const socket = io(AppConfig().app.url);
-// const dynamic_variables_list = [
-//   "${contact.name}",
-//   "${contact.fname}",
-//   "${contact.lname}",
-//   "${contact.email}",
-//   "${contact.phone_number}",
-//   "${contact.country}",
-// ];
+
 export default function Message({
   workspaceId,
   conversationId,
@@ -103,6 +108,7 @@ export default function Message({
   workspaceUsers,
   open,
   dynamic_variables,
+  snippets,
 }: {
   workspaceId: number;
   conversationId: number;
@@ -114,6 +120,7 @@ export default function Message({
   workspaceUsers: any[];
   open: string;
   dynamic_variables: any[];
+  snippets: any[];
 }) {
   const router = useRouter();
 
@@ -144,8 +151,8 @@ export default function Message({
   const handleMessageBox = (e: any) => {
     setMessageBox(e.target.value);
   };
-  const handleVariable = (variable: string) => {
-    setMessageBox((prev) => prev + " " + variable);
+  const handleVariable = (text: string) => {
+    setMessageBox((prev) => prev + " " + text);
   };
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
@@ -471,7 +478,7 @@ export default function Message({
                         </div>
                       </div>
                     </form>
-                    <div>
+                    <div className="flex">
                       <div className="ml-4">
                         <PopupMenu label="Variables">
                           {dynamic_variables.map((variable, i) => {
@@ -481,6 +488,20 @@ export default function Message({
                                 onClick={() => handleVariable(variable)}
                               >
                                 {variable}
+                              </PopupMenuItem>
+                            );
+                          })}
+                        </PopupMenu>
+                      </div>
+                      <div className="ml-4">
+                        <PopupMenu label="Snippets">
+                          {snippets.map((snippet) => {
+                            return (
+                              <PopupMenuItem
+                                key={snippet.id}
+                                onClick={() => handleVariable(snippet.message)}
+                              >
+                                {snippet.name}
                               </PopupMenuItem>
                             );
                           })}

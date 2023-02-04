@@ -8,7 +8,7 @@ const config = {
 };
 
 export const SnippetService = {
-  findAll: async (workspace_id: string, context: any = null) => {
+  findAll: async (workspace_id: number, context: any = null) => {
     const userToken = CookieHelper.get({ key: "token", context });
 
     const _config = {
@@ -21,7 +21,7 @@ export const SnippetService = {
     return await Fetch.get(`/space/${workspace_id}/snippet`, _config);
   },
 
-  findOne: async (id: number, workspace_id: string, context: any = null) => {
+  findOne: async (id: number, workspace_id: number, context: any = null) => {
     const userToken = CookieHelper.get({ key: "token", context });
 
     const _config = {
@@ -35,7 +35,7 @@ export const SnippetService = {
   },
 
   create: async (
-    workspace_id: string,
+    workspace_id: number,
     {
       name,
       message,
