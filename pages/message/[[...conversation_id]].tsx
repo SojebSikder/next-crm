@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { io } from "socket.io-client";
 import { EmojiClickData } from "emoji-picker-react";
@@ -15,7 +16,7 @@ import { PopupMenu, PopupMenuItem } from "../../components/reusable/PopupMenu";
 import Accordion from "../../components/reusable/Accordion";
 import { DynamicVariableService } from "../../service/dynamic-variable/dynamic-variable.service";
 import { SnippetService } from "../../service/space/snippet.service";
-import dynamic from "next/dynamic";
+import { BsEmojiLaughing } from "react-icons/bs";
 
 // import in client side to avoid "document is not defined"
 const EmojiPicker = dynamic(
@@ -495,12 +496,15 @@ export default function Message({
                     </form>
                     <div className="flex">
                       <div className="ml-4">
-                        <PopupMenu label="Emoji">
+                        <PopupMenu
+                          element={<BsEmojiLaughing size={24} />}
+                          label={"Emoji"}
+                        >
                           <EmojiPicker onEmojiClick={onEmojiClick} />
                         </PopupMenu>
                       </div>
                       <div className="ml-4">
-                        <PopupMenu label="Variables">
+                        <PopupMenu label={"Variables"}>
                           {dynamic_variables.map((variable, i) => {
                             return (
                               <PopupMenuItem
@@ -514,7 +518,7 @@ export default function Message({
                         </PopupMenu>
                       </div>
                       <div className="ml-4">
-                        <PopupMenu label="Snippets">
+                        <PopupMenu label={"Snippets"}>
                           {snippets.map((snippet) => {
                             return (
                               <PopupMenuItem
