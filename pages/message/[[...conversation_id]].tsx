@@ -17,6 +17,7 @@ import Accordion from "../../components/reusable/Accordion";
 import { DynamicVariableService } from "../../service/dynamic-variable/dynamic-variable.service";
 import { SnippetService } from "../../service/space/snippet.service";
 import { BsEmojiLaughing } from "react-icons/bs";
+import { NotificationManager } from "../../util/NotificationManager/NotificationManager";
 
 // import in client side to avoid "document is not defined"
 const EmojiPicker = dynamic(
@@ -140,7 +141,7 @@ export default function Message({
     conversationId ? conversationId : null
   );
   const messagesEndRef = useRef<HTMLInputElement>(null);
-  const [messages, setMessages] = useState(messageDatas);
+  const [messages, setMessages] = useState(messageDatas.reverse());
   const [workspace_users, setWorkspace_users] = useState(workspaceUsers);
   const [conversations, setConversations] = useState(conversationDatas);
   const [currentConversation, setCurrentConversation] = useState(
@@ -277,6 +278,19 @@ export default function Message({
       socket.off("conversation");
     };
   }, [workspaceId]);
+
+  const notify = () => {
+    // notify using desktop notification
+    const notification = NotificationManager.desktop().notify({
+      title: "New notification",
+      body: "Click to see notifications",
+    });
+    if (notification) {
+      notification.onclick = function () {
+        console.log("notification clicked");
+      };
+    }
+  };
 
   useEffect(() => {
     setConversation_id(conversationId);
