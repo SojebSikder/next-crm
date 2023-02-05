@@ -148,6 +148,7 @@ export default function Message({
       ? conversationDatas.find((con) => con.id == conversation_id)
       : {}
   );
+  const [lastMessageId, setLastMessageId] = useState(0);
 
   // const [workspaceChannelId, setWorkspaceChannelId] = useState(
   //   workspace_channels.length > 0 ? workspace_channels[0].id : 0
@@ -288,6 +289,7 @@ export default function Message({
     });
     socket.on("message", ({ message }) => {
       if (message.conversation_id == conversationId) {
+        setLastMessageId(message.id); // set last message id
         setMessages((state: any) => [...state, message]);
       }
     });
@@ -296,6 +298,20 @@ export default function Message({
       socket.off("message");
     };
   }, [conversationId]);
+
+  const getMessage = (last_message_id: number) => {
+    console.log(last_message_id);
+
+    console.log("fetch messages");
+  };
+
+  const handleMessageContainerScroll = (e: any) => {
+    let element = e.target;
+    if (element.scrollTop === 0) {
+      //fetch messages
+      getMessage(lastMessageId);
+    }
+  };
 
   return (
     <>
@@ -426,7 +442,11 @@ export default function Message({
                         )}
                       </div>
                     </div>
-                    <div className="flex flex-col h-[95%] overflow-y-scroll border-b-gray-200 border-b-[1px]">
+                    <div
+                      id="message_container"
+                      onScroll={handleMessageContainerScroll}
+                      className="flex flex-col h-[95%] overflow-y-scroll border-b-gray-200 border-b-[1px]"
+                    >
                       {messages.map((msg: any) => {
                         if (msg.message_from_workspace) {
                           return (
