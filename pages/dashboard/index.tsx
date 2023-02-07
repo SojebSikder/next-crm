@@ -5,6 +5,11 @@ import AudioRecorder from "../../components/reusable/AudioRecorder/AudioRecorder
 import Workflow from "../../components/reusable/Workflow/Workflow";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { getUser } from "../../hooks/useUser";
+import {
+  decrement,
+  increment,
+} from "../../redux/features/counter/counterSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 export const getServerSideProps = async (context: any) => {
   const { req, query, res, asPath, pathname } = context;
@@ -19,6 +24,9 @@ export const getServerSideProps = async (context: any) => {
 };
 
 export default function Dashboard({ userDetails }: { userDetails: any }) {
+  const count = useAppSelector((state) => state.counter.value);
+  const dispatch = useAppDispatch();
+
   return (
     <div>
       <AppHeader customer_trial_end_at={userDetails.tenant.trial_end_at} />
@@ -31,6 +39,21 @@ export default function Dashboard({ userDetails }: { userDetails: any }) {
           </h1>
         </div>
         <br />
+        <div>
+          <button
+            aria-label="Increment value"
+            onClick={() => dispatch(increment())}
+          >
+            Increment
+          </button>
+          <span>{count}</span>
+          <button
+            aria-label="Decrement value"
+            onClick={() => dispatch(decrement())}
+          >
+            Decrement
+          </button>
+        </div>
         <div>
           <AudioRecorder />
         </div>

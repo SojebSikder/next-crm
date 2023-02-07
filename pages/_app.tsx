@@ -2,13 +2,19 @@ import "../styles/globals.css";
 import type { AppContext, AppProps } from "next/app";
 import { useEffect } from "react";
 import App from "next/app";
+import { Provider } from "react-redux";
+import { store } from "../redux/store";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     require("tw-elements");
   }, []);
 
-  return <Component {...pageProps} />;
+  return (
+    <Provider store={store}>
+      <Component {...pageProps} />
+    </Provider>
+  );
 }
 
 // MyApp.getInitialProps = async (context: any) => {

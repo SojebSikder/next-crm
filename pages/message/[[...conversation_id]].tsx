@@ -136,6 +136,8 @@ export default function Message({
 }) {
   const router = useRouter();
 
+  const [isSocketConnected, setIsSocketConnected] = useState(socket.connected);
+
   const [workspace_id, setWorkspace_id] = useState(workspaceId);
   const [conversation_id, setConversation_id] = useState(
     conversationId ? conversationId : null
@@ -149,7 +151,9 @@ export default function Message({
       ? conversationDatas.find((con) => con.id == conversation_id)
       : {}
   );
-  const [lastMessageId, setLastMessageId] = useState(0);
+  const [lastMessageId, setLastMessageId] = useState(
+    messageDatas.length && messageDatas[0].id
+  );
 
   // const [workspaceChannelId, setWorkspaceChannelId] = useState(
   //   workspace_channels.length > 0 ? workspace_channels[0].id : 0
@@ -279,6 +283,30 @@ export default function Message({
     };
   }, [workspaceId]);
 
+  useEffect(() => {
+    setConversation_id(conversationId);
+    // set message
+    setMessages(messageDatas);
+    // handle websocket events
+    socket.on("connect", () => {
+      setIsSocketConnected(true);
+      console.log("connected");
+    });
+    socket.on("disconnect", () => {
+      setIsSocketConnected(false);
+    });
+    socket.on("message", ({ message }) => {
+      if (message.conversation_id == conversationId) {
+        setMessages((state: any) => [...state, message]);
+      }
+    });
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("message");
+    };
+  }, [conversationId]);
+
   const notify = () => {
     // notify using desktop notification
     const notification = NotificationManager.desktop().notify({
@@ -292,30 +320,19 @@ export default function Message({
     }
   };
 
-  useEffect(() => {
-    setConversation_id(conversationId);
-    // set message
-    setMessages(messageDatas);
-
-    // handle websocket events
-    socket.on("connect", () => {
-      console.log("connected");
+  const getMessage = async (last_message_id: number) => {
+    const messageService = await MessageService.findAll({
+      conversation_id: conversationId,
+      workspace_channel_id: workspaceChannelId,
+      workspace_id: workspaceId,
+      last_message_id: last_message_id,
     });
-    socket.on("message", ({ message }) => {
-      if (message.conversation_id == conversationId) {
-        setLastMessageId(message.id); // set last message id
-        setMessages((state: any) => [...state, message]);
-      }
-    });
-    return () => {
-      socket.off("connect");
-      socket.off("message");
-    };
-  }, [conversationId]);
 
-  const getMessage = (last_message_id: number) => {
-    console.log(last_message_id);
-
+    if (!messageService.data.error) {
+      setLastMessageId(messageService.data.data[0].id);
+      setMessages((state: any) => messageService.data.data);
+    }
+    console.log(messages);
     console.log("fetch messages");
   };
 
