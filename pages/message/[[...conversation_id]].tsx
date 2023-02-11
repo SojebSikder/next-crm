@@ -202,7 +202,7 @@ export default function Message({
       const messageService = await MessageService.create(data);
 
       // setMessages((state: any) => [...state, messageService.data.data]);
-      socket.emit("send_message", {
+      socket.emit("sendMessage", {
         to: workspaceId,
         data: messageService.data.data,
       });
