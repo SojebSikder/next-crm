@@ -202,7 +202,10 @@ export default function Message({
       const messageService = await MessageService.create(data);
 
       // setMessages((state: any) => [...state, messageService.data.data]);
-      socket.emit("send_message", messageService.data.data);
+      socket.emit("send_message", {
+        to: workspaceId,
+        data: messageService.data.data,
+      });
     } catch (error: any) {
       // return custom error message from API if any
       if (error.response && error.response.data.message) {
@@ -300,9 +303,11 @@ export default function Message({
     socket.on("disconnect", () => {
       setIsSocketConnected(false);
     });
-    socket.on("message", ({ message }) => {
-      if (message.conversation_id == conversationId) {
-        setMessages((state: any) => [...state, message]);
+    socket.on("message", ({ from, data }) => {
+      if (String(workspaceId) == from) {
+        if (data.message.conversation_id == conversationId) {
+          setMessages((state: any) => [...state, data.message]);
+        }
       }
     });
     return () => {
@@ -358,6 +363,12 @@ export default function Message({
       getMessage(lastMessageId);
     }
   };
+
+  useEffect(() => {
+    socket.emit("joinRoom", workspaceId);
+
+    return () => {};
+  }, []);
 
   return (
     <>
