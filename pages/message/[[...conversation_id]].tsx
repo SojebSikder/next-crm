@@ -211,11 +211,11 @@ export default function Message({
       if (error.response && error.response.data.message) {
         // setErrorMessage(error.response.data.message);
         // setLoading(false);
-        console.log(error.response.data.message);
+        // console.log(error.response.data.message);
       } else {
         // setErrorMessage(error.message);
         // setLoading(false);
-        console.log(error.message);
+        // console.log(error.message);
       }
     }
   };
@@ -248,11 +248,11 @@ export default function Message({
       if (error.response && error.response.data.message) {
         // setErrorMessage(error.response.data.message);
         // setLoading(false);
-        console.log(error.response.data.message);
+        // console.log(error.response.data.message);
       } else {
         // setErrorMessage(error.message);
         // setLoading(false);
-        console.log(error.message);
+        // console.log(error.message);
       }
     }
   };
@@ -348,9 +348,6 @@ export default function Message({
       );
 
       setMessages((state: any) => [...messageService.data.data, ...state]);
-
-      console.log(messages);
-      console.log("fetch messages", last_message_id);
     }
   };
 
@@ -358,8 +355,6 @@ export default function Message({
     let element = e.target;
     if (element.scrollTop === 0) {
       //fetch messages
-      console.log("last id", lastMessageId);
-
       getMessage(lastMessageId);
     }
   };
