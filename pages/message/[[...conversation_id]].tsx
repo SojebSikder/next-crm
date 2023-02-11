@@ -291,7 +291,7 @@ export default function Message({
     setConversation_id(conversationId);
     // set message
     setMessages(messageDatas);
-    setLastMessageId(messageDatas[0].id);
+    setLastMessageId(messageDatas.length > 0 && messageDatas[0].id);
     // handle websocket events
     socket.on("connect", () => {
       setIsSocketConnected(true);
