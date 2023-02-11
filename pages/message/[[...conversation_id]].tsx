@@ -152,7 +152,7 @@ export default function Message({
       : {}
   );
   const [lastMessageId, setLastMessageId] = useState(
-    messageDatas.length && messageDatas[0].id
+    messageDatas.length > 0 && messageDatas[0].id
   );
 
   // const [workspaceChannelId, setWorkspaceChannelId] = useState(
@@ -254,8 +254,12 @@ export default function Message({
     }
   };
 
+  /**
+   * Scroll to bottom
+   */
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
   };
 
   useEffect(() => {
@@ -287,6 +291,7 @@ export default function Message({
     setConversation_id(conversationId);
     // set message
     setMessages(messageDatas);
+    setLastMessageId(messageDatas[0].id);
     // handle websocket events
     socket.on("connect", () => {
       setIsSocketConnected(true);
@@ -321,6 +326,9 @@ export default function Message({
   };
 
   const getMessage = async (last_message_id: number) => {
+    if (last_message_id == 0) {
+      return;
+    }
     const messageService = await MessageService.findAll({
       conversation_id: conversationId,
       workspace_channel_id: workspaceChannelId,
@@ -329,17 +337,24 @@ export default function Message({
     });
 
     if (!messageService.data.error) {
-      setLastMessageId(messageService.data.data[0].id);
-      setMessages((state: any) => messageService.data.data);
+      setLastMessageId(
+        messageService.data.data.length > 0 &&
+          messageService.data.data.reverse()[0].id
+      );
+
+      setMessages((state: any) => [...messageService.data.data, ...state]);
+
+      console.log(messages);
+      console.log("fetch messages", last_message_id);
     }
-    console.log(messages);
-    console.log("fetch messages");
   };
 
   const handleMessageContainerScroll = (e: any) => {
     let element = e.target;
     if (element.scrollTop === 0) {
       //fetch messages
+      console.log("last id", lastMessageId);
+
       getMessage(lastMessageId);
     }
   };
