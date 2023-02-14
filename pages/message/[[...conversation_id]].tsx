@@ -18,6 +18,7 @@ import { DynamicVariableService } from "../../service/dynamic-variable/dynamic-v
 import { SnippetService } from "../../service/space/snippet.service";
 import { BsEmojiLaughing } from "react-icons/bs";
 import { NotificationManager } from "../../util/NotificationManager/NotificationManager";
+import { socket } from "../../util/Socket/Socket";
 
 // import in client side to avoid "document is not defined"
 const EmojiPicker = dynamic(
@@ -105,9 +106,6 @@ export const getServerSideProps = async (context: any) => {
     },
   };
 };
-
-// initialize socket
-const socket = io(AppConfig().app.url);
 
 export default function Message({
   workspaceId,
@@ -293,7 +291,7 @@ export default function Message({
   useEffect(() => {
     setConversation_id(conversationId);
     // set message
-    setMessages(messageDatas);
+    setMessages(messageDatas.reverse());
     setLastMessageId(messageDatas.length > 0 && messageDatas[0].id);
     // handle websocket events
     socket.on("connect", () => {
