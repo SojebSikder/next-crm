@@ -8,8 +8,8 @@ export default function OrgSettingSidebar() {
     bg-[#f1f1f1] dark:bg-gray-900"
     >
       <Caption text={"Organization"} />
-      <SideBarItem href={`/settings/general`} text="General" />
       <SideBarItem href={`/settings/workspace`} text="Workspace" />
+      <SideBarItem href={`/settings/billing`} text="Billing & Usage" />
     </div>
   );
 }
